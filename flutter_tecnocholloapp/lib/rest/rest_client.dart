@@ -170,44 +170,44 @@ class NotFoundException extends CustomException {
   NotFoundException([message]) : super(message, "");
 }
 
-// class AuthorizationInterceptor implements InterceptorContract {
-//   late LocalStorageService _localStorageService;
+class AuthorizationInterceptor implements InterceptorContract {
+  late LocalStorageService _localStorageService;
 
-//   AuthorizationInterceptor() {
-//     //_localStorageService = getIt<LocalStorageService>();
-//     GetIt.I
-//         .getAsync<LocalStorageService>()
-//         .then((value) => _localStorageService = value);
-//   }
+  AuthorizationInterceptor() {
+    //_localStorageService = getIt<LocalStorageService>();
+    GetIt.I
+        .getAsync<LocalStorageService>()
+        .then((value) => _localStorageService = value);
+  }
 
-//   @override
-//   Future<RequestData> interceptRequest({required RequestData data}) async {
-//     try {
-//       var token = await _localStorageService.getFromDisk("user_token");
-//       data.headers["Authorization"] = "Bearer " + token;
-//     } catch (e) {
-//       print(e);
-//     }
+  @override
+  Future<RequestData> interceptRequest({required RequestData data}) async {
+    try {
+      var token = await _localStorageService.getFromDisk("user_token");
+      data.headers["Authorization"] = "Bearer " + token;
+    } catch (e) {
+      print(e);
+    }
 
-//     return Future.value(data);
-//   }
+    return Future.value(data);
+  }
 
-//   @override
-//   Future<ResponseData> interceptResponse({required ResponseData data}) async {
-//     if (data.statusCode == 401 || data.statusCode == 403) {
-//       Future.delayed(Duration(seconds: 1), () {
-//         Navigator.of(GlobalContext.ctx).push<void>(MyApp.route());
-//       });
-//     }
+  @override
+  Future<ResponseData> interceptResponse({required ResponseData data}) async {
+    if (data.statusCode == 401 || data.statusCode == 403) {
+      Future.delayed(Duration(seconds: 1), () {
+        Navigator.of(GlobalContext.ctx).push<void>(MyApp.route());
+      });
+    }
 
-//     return Future.value(data);
-//   }
-// }
+    return Future.value(data);
+  }
+}
 
-// @Order(-10)
-// @singleton
-// class RestAuthenticatedClient extends RestClient {
-//   RestAuthenticatedClient()
-//       : super.withInterceptors(
-//             List.of(<InterceptorContract>[AuthorizationInterceptor()]));
-// }
+@Order(-10)
+@singleton
+class RestAuthenticatedClient extends RestClient {
+  RestAuthenticatedClient()
+      : super.withInterceptors(
+            List.of(<InterceptorContract>[AuthorizationInterceptor()]));
+}
