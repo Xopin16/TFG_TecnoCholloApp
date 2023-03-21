@@ -19,27 +19,36 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDto {
 
-
+    @JsonView({UserViews.Master.class, UserViews.Login.class})
     private UUID id;
 
+    @JsonView({UserViews.Master.class, UserViews.Productos.class, UserViews.Favoritos.class, UserViews.Login.class})
     private String username;
 
+    @JsonView({UserViews.Master.class, UserViews.Login.class})
     private String avatar;
+    @JsonView({UserViews.Master.class, UserViews.Productos.class, UserViews.Favoritos.class, UserViews.Login.class})
     private String fullName;
 
+    @JsonView(UserViews.Master.class)
     private String role;
 
+    @JsonView(UserViews.Productos.class)
     private List<CreateProductDto> productos = new ArrayList<>();
 
+    @JsonView(UserViews.Favoritos.class)
     private List<CreateProductDto> favoritos = new ArrayList<>();
 
+    @JsonView(UserViews.Master.class)
     private String email;
+    @JsonView({UserViews.Master.class, UserViews.Login.class})
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime createdAt;
 
+    @JsonView(UserViews.Login.class)
     private String token;
 
     public static UserDto fromUser(User user) {

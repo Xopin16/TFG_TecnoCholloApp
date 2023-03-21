@@ -1,6 +1,7 @@
 package com.salesianostriana.dam.tecnocholloapp.categoria.dto;
 
 import com.salesianostriana.dam.tecnocholloapp.categoria.model.Category;
+import com.salesianostriana.dam.tecnocholloapp.validation.annotation.UniqueCategoryName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,6 +16,8 @@ import javax.validation.constraints.NotEmpty;
 public class CategoryDto {
 
     private Long id;
+    @NotEmpty(message = "{categoryDto.name.notempty}")
+    @UniqueCategoryName
     private String nombre;
 
     public static Category of(CategoryDto categoryDto){
