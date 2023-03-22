@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -14,6 +15,10 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     public boolean userExists(String username) {
         return usuarioRepository.existsByUsername(username);
+    }
+
+    public Optional<User> findById(UUID id) {
+        return usuarioRepository.findById(id);
     }
 
     public Optional<User> findByUsername(String username) {
