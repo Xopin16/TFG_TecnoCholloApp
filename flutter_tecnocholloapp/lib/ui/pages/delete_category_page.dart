@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../models/user.dart';
-import '../models/models.dart';
 import 'home_page.dart';
 
 class DeletedCategoryPage extends StatefulWidget {

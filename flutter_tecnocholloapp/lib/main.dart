@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_tecnocholloapp/config/locator.dart';
 import 'package:flutter_tecnocholloapp/services/authentication_service.dart';
-import 'package:flutter_tecnocholloapp/services/services.dart';
-import 'package:flutter_tecnocholloapp/ui/pages/home_page.dart';
 
 import 'blocs/authentication/authentication.dart';
-import 'blocs/authentication/authentication_bloc.dart';
-import 'blocs/authentication/authentication_event.dart';
+import 'config/locator.dart';
+import 'ui/pages/pages.dart';
 
 void main() {
   //WidgetsFlutterBinding.ensureInitialized();
@@ -74,7 +71,8 @@ class MyApp extends StatelessWidget {
               user: state.user,
             );
           }
-          return Text("Null");
+          // otherwise show login page
+          return LoginPage();
         },
       ),
     );

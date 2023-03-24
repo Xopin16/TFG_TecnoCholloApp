@@ -1,18 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../blocs/authentication/authentication_bloc.dart';
-import '../../blocs/authentication/authentication_event.dart';
-import '../../blocs/category/category_bloc.dart';
-import '../../blocs/category/category_event.dart';
-import '../../blocs/product/product_bloc.dart';
-import '../../blocs/product/product_event.dart';
-import '../../blocs/productUser/product_user_bloc.dart';
-import '../../blocs/productUser/product_user_event.dart';
-import '../../config/locator.dart';
+import 'package:flutter_tecnocholloapp/config/locator.dart';
+import 'package:flutter_tecnocholloapp/repositories/repositories.dart';
+import 'package:flutter_tecnocholloapp/services/category_service.dart';
+import 'package:flutter_tecnocholloapp/services/product_service.dart';
+import '../../blocs/blocs.dart';
+import '../../blocs/category/category.dart';
+import '../../blocs/productUser/product_user.dart';
 import '../../models/user.dart';
-import '../../repositories/product_repository.dart';
-import '../../services/category_service.dart';
-import '../../services/product_service.dart';
 import '../widget/widget.dart';
 
 class HomePage extends StatefulWidget {
