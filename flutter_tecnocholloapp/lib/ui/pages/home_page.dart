@@ -1,9 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_tecnocholloapp/config/locator.dart';
-import 'package:flutter_tecnocholloapp/repositories/repositories.dart';
+import '../../blocs/authentication/authentication_bloc.dart';
+import '../../blocs/authentication/authentication_event.dart';
+import '../../blocs/category/category_bloc.dart';
+import '../../blocs/category/category_event.dart';
+import '../../blocs/product/product_bloc.dart';
+import '../../blocs/product/product_event.dart';
+import '../../blocs/productUser/product_user_bloc.dart';
+import '../../blocs/productUser/product_user_event.dart';
+import '../../config/locator.dart';
 import '../../models/user.dart';
-import '../../services/services.dart';
+import '../../repositories/product_repository.dart';
+import '../../services/category_service.dart';
+import '../../services/product_service.dart';
+import '../widget/widget.dart';
 
 class HomePage extends StatefulWidget {
   final User user;
@@ -85,7 +95,19 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text("SCREEN");
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return BlocProvider(
+          create: (context) {
+            final productService = getIt<ProductService>();
+            return ProductUserBloc(productService)..add(ProductUserFetched());
+          },
+          child: ProductUserList(
+            user: homePage.user,
+          ),
+        );
+      },
+    );
   }
 }
 
@@ -94,16 +116,43 @@ class ChollosScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text("SCREEN");
+    return BlocProvider(
+      create: (context) {
+        final productService = getIt<ProductService>();
+        return ProductBloc(productService)..add(ProductFetched());
+      },
+      child: ProductList(),
+    );
   }
 }
+
+// class FavouriteScreen extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return BlocProvider(
+//       create: (context) {
+//         final productService = getIt<ProductService>();
+//         return FavouriteBloc(productService)..add(FavouriteFetched());
+//       },
+//       child: FavouriteList(),
+//     );
+//   }
+// }
 
 class CategoryScreen extends StatelessWidget {
   final HomePage homePage;
   CategoryScreen({required this.homePage});
   @override
   Widget build(BuildContext context) {
-    return Text("SCREEN");
+    return BlocProvider(
+      create: (context) {
+        final categoryService = getIt<CategoryService>();
+        return CategoryBloc(categoryService)..add(CategoryFetched());
+      },
+      child: CategoryList(
+        user: homePage.user,
+      ),
+    );
   }
 }
 
@@ -113,6 +162,101 @@ class ProfileScreen extends StatelessWidget {
   ProfileScreen({required this.homePage});
   @override
   Widget build(BuildContext context) {
-    return Text("SCREEN");
+    final authBloc = BlocProvider.of<AuthenticationBloc>(context);
+    final Size screenSize = MediaQuery.of(context).size;
+    final bool isMobile = screenSize.width < 600;
+    final TextStyle? titleTextStyle = Theme.of(context).textTheme.headlineSmall;
+    final TextStyle? subtitleTextStyle =
+        Theme.of(context).textTheme.titleMedium;
+    final Widget profileImage = CircleAvatar(
+      radius: isMobile ? 50 : 75,
+      backgroundImage: NetworkImage(homePage.user.avatar == null
+          ? "https://electronicssoftware.net/wp-content/uploads/user.png"
+          : "http://localhost:8080/download/${homePage.user.avatar}"),
+    );
+
+    return SafeArea(
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(isMobile ? 16.0 : 32.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: profileImage,
+              ),
+              SizedBox(height: isMobile ? 16 : 32),
+              Text(
+                'Nombre de usuario:',
+                style: titleTextStyle,
+              ),
+              Text(
+                "${homePage.user.username}",
+                style: subtitleTextStyle,
+              ),
+              SizedBox(height: isMobile ? 16 : 32),
+              Text(
+                'Nombre completo:',
+                style: titleTextStyle,
+              ),
+              Text(
+                "${homePage.user.fullName}",
+                style: subtitleTextStyle,
+              ),
+              SizedBox(height: isMobile ? 16 : 32),
+              Text(
+                'Rol:',
+                style: titleTextStyle,
+              ),
+              Text(
+                "${homePage.user.role}",
+                style: subtitleTextStyle,
+              ),
+              SizedBox(height: isMobile ? 16 : 32),
+              Text(
+                'Fecha de creación:',
+                style: titleTextStyle,
+              ),
+              Text(
+                "${homePage.user.createdAt}",
+                style: subtitleTextStyle,
+              ),
+              SizedBox(height: isMobile ? 32 : 64),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // SizedBox(
+                  //   height: isMobile ? 40 : 50,
+                  //   width: isMobile ? double.infinity : 150,
+                  //   child: ElevatedButton(
+                  //     onPressed: () {
+                  //       Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(
+                  //           builder: (_) => PasswordPage(),
+                  //         ),
+                  //       );
+                  //     },
+                  //     child: Text('Cambiar contraseña'),
+                  //   ),
+                  // ),
+                  SizedBox(height: isMobile ? 16 : 32),
+                  SizedBox(
+                    height: isMobile ? 40 : 50,
+                    width: isMobile ? double.infinity : 150,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        authBloc.add(UserLoggedOut());
+                      },
+                      child: Text('Cerrar sesión'),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
