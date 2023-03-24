@@ -14,6 +14,7 @@ import javax.validation.constraints.NotEmpty;
 @Builder
 public class EditUserDto {
 
+    @NotEmpty
     private String fullName;
 
     private String avatar;

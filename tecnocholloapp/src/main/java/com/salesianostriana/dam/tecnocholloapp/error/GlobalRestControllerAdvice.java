@@ -4,7 +4,9 @@ import com.salesianostriana.dam.tecnocholloapp.error.model.impl.ApiErrorImpl;
 import com.salesianostriana.dam.tecnocholloapp.error.model.impl.ApiValidationSubError;
 import com.salesianostriana.dam.tecnocholloapp.exception.CategoryNotFoundException;
 import com.salesianostriana.dam.tecnocholloapp.exception.ProductNotFoundException;
+import com.salesianostriana.dam.tecnocholloapp.exception.StorageException;
 import com.salesianostriana.dam.tecnocholloapp.exception.UserNotFoundException;
+import com.salesianostriana.dam.tecnocholloapp.security.errorhandling.JwtTokenException;
 import org.hibernate.validator.internal.engine.path.PathImpl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -113,6 +115,12 @@ public class GlobalRestControllerAdvice extends ResponseEntityExceptionHandler {
 
     }
 
+
+    @ExceptionHandler({JwtTokenException.class})
+    public ResponseEntity<?> handleTokenException(JwtTokenException ex, WebRequest request) {
+        return buildApiError(ex.getMessage(), request, HttpStatus.FORBIDDEN);
+    }
+
     @ExceptionHandler({UsernameNotFoundException.class})
     public ResponseEntity<?> handleUserNotExistsException(UsernameNotFoundException ex, WebRequest request) {
         return buildApiError(ex.getMessage(), request, HttpStatus.UNAUTHORIZED);
@@ -132,4 +140,12 @@ public class GlobalRestControllerAdvice extends ResponseEntityExceptionHandler {
     public ResponseEntity<?> handleUserNotFoundException(UserNotFoundException ex, WebRequest request){
         return buildApiError(ex.getMessage(), request, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler({StorageException.class})
+    public ResponseEntity<?> handleStorageException(StorageException ex, WebRequest request){
+        return buildApiError(ex.getMessage(), request, HttpStatus.BAD_REQUEST);
+    }
+
+
+
 }
