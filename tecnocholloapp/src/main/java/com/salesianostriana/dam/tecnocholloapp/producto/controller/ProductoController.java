@@ -22,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -387,6 +388,7 @@ public class ProductoController {
                     description = "No se ha podido encontrar el producto por su ID",
                     content = @Content),
     })
+    @PreAuthorize("authentication.principal.id == @productoService.findById(#id).user.id")
     @PutMapping("/usuario/producto/{id}")
     public CreateProductDto editarProducto(@Valid @RequestBody CreateProductDto productDto, @AuthenticationPrincipal User user , @PathVariable Long id) {
         User usuario = usuarioService.findUserProducts(user.getId());
@@ -464,7 +466,7 @@ public class ProductoController {
                     description = "No se encuentra un producto con este ID",
                     content = @Content),
     })
-    @DeleteMapping("/producto/{id}")
+    @DeleteMapping("/usuario/producto/{id}")
     public ResponseEntity<?> eliminarMiProducto(@PathVariable Long id, @AuthenticationPrincipal User user) {
         User usuario = usuarioService.findUserProducts(user.getId());
         productoService.deleteMiProducto(id, usuario);

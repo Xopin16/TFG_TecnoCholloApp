@@ -39,6 +39,8 @@ public class CreateProductDto {
     @Builder.Default
     private LocalDate fechaPublicacion = LocalDate.now();
 
+    private String imagen;
+
     public static Product of(CreateProductDto dto){
         return Product
                 .builder()
@@ -56,8 +58,11 @@ public class CreateProductDto {
                 .nombre(p.getNombre())
                 .precio(p.getPrecio())
                 .descripcion(p.getDescripcion())
+                .imagen("teclado.jpg")
                 .categoria(p.getCategoria().getNombre())
                 .fechaPublicacion(p.getFechaPublicacion())
                 .build();
     }
+
+
 }

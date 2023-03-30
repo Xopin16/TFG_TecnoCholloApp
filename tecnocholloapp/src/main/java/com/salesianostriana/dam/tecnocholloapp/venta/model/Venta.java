@@ -1,6 +1,7 @@
 package com.salesianostriana.dam.tecnocholloapp.venta.model;
 
 import com.salesianostriana.dam.tecnocholloapp.lineaventa.model.LineaVenta;
+import com.salesianostriana.dam.tecnocholloapp.usuario.model.User;
 import lombok.*;
 
 import javax.persistence.*;
@@ -23,7 +24,8 @@ public class Venta {
 
     private LocalDate fechaVenta;
 
-    private String cliente;
+    @ManyToOne
+    private User user;
 
     @Builder.Default
     @ToString.Exclude

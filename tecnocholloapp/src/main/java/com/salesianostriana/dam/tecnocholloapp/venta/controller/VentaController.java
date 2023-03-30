@@ -18,7 +18,7 @@ public class VentaController {
         return null;
     }
 
-    @GetMapping("/usuario/historico")
+    @GetMapping("/usuario/historico/")
     public String mostrarVentasUsuario(@AuthenticationPrincipal User user) {
         return null;
     }
