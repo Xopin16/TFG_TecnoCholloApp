@@ -1,5 +1,6 @@
 package com.salesianostriana.dam.tecnocholloapp.lineaventa.model;
 
+import com.salesianostriana.dam.tecnocholloapp.carrito.model.Carrito;
 import com.salesianostriana.dam.tecnocholloapp.producto.model.Product;
 import com.salesianostriana.dam.tecnocholloapp.venta.model.Venta;
 import lombok.AllArgsConstructor;

@@ -33,4 +33,15 @@ public class Venta {
     @OneToMany(mappedBy="venta", fetch = FetchType.EAGER)
     private List<LineaVenta> lista = new ArrayList<>();
 
+
+    public Double calcularTotal(){
+        return lista.stream()
+                .mapToDouble(linea -> linea.getProducto().getPrecio() * linea.getCantidad())
+                .sum();
+    }
+
+    public void addLineaVenta(LineaVenta lineaVenta) {
+        lineaVenta.setVenta(this);
+        lista.add(lineaVenta);
+    }
 }

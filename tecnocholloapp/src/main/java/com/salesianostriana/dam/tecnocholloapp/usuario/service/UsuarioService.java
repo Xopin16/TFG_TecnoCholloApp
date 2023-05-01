@@ -73,6 +73,10 @@ public class UsuarioService {
         return result;
     }
 
+    public User save(User user){
+        return usuarioRepository.save(user);
+    }
+
     public Optional<User> findById(UUID id) {
         return usuarioRepository.findById(id);
     }
