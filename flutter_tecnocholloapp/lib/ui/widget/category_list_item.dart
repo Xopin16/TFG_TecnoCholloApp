@@ -18,165 +18,73 @@ class CategoryListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final isMobile = MediaQuery.of(context).size.width < 600;
-    final imageWidth = isMobile ? 120.0 : 200.0;
+    final imageWidth = isMobile ? 80.0 : 120.0;
     final imageSize = Size(imageWidth, imageWidth);
 
-    return ConstrainedBox(
-      constraints: BoxConstraints(
-        maxWidth: 600.0,
-      ),
-      child: Card(
-        margin: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(4.0),
-              child: SizedBox(
-                width: imageWidth,
-                height: imageWidth,
-                child: Image.network(
-                  "https://img.salamancartvaldia.es/simg/imgf/2016/09/fichero_160070_20160906.jpg",
-                  fit: BoxFit.cover,
-                  width: imageWidth,
-                  height: imageWidth,
+    return Card(
+      margin: const EdgeInsets.all(10),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4.0),
+            child: SizedBox(
+              width: imageWidth,
+              height: imageWidth,
+              child: Image.network(
+                "https://img.salamancartvaldia.es/simg/imgf/2016/09/fichero_160070_20160906.jpg",
+                fit: BoxFit.cover,
+                // width: imageWidth,
+                // height: imageWidth,
+              ),
+            ),
+          ),
+          SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "${utf8.decode(category.nombre.codeUnits)}",
+                  style: textTheme.titleLarge,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
                 ),
-              ),
-            ),
-            SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12.0),
-              child: Text(
-                "${utf8.decode(category.nombre.codeUnits)}",
-                style: textTheme.titleLarge,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 2,
-              ),
-            ),
-            SizedBox(height: 16),
-            isMobile
-                ? Wrap(
-                    direction: Axis.horizontal,
-                    alignment: WrapAlignment.end,
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) =>
-                                  CategoryProductPage(id: category.id),
+                SizedBox(height: 4),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                CategoryProductPage(id: category.id),
+                          ),
+                        );
+                      },
+                      icon: Icon(Icons.visibility),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => NewProductForm(
+                              id: category.id,
                             ),
-                          );
-                        },
-                        icon: Icon(Icons.visibility),
-                      ),
-                      if (user.role == "ADMIN")
-                        IconButton(
-                          onPressed: () {
-                            // onPressed: () {
-                            dialog(context, category);
-                            // }
-                          },
-                          icon: Icon(Icons.delete),
-                        ),
-                      if (user.role == "ADMIN")
-                        IconButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => EditCategoryForm(
-                                  id: category.id,
-                                  user: user,
-                                ),
-                              ),
-                            );
-                          },
-                          icon: Icon(Icons.edit),
-                        ),
-                      if (user.role == "ADMIN")
-                        IconButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => NewProductForm(
-                                  id: category.id,
-                                ),
-                              ),
-                            );
-                          },
-                          icon: Icon(Icons.add),
-                        ),
-                    ],
-                  )
-                : Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) =>
-                                  CategoryProductPage(id: category.id),
-                            ),
-                          );
-                        },
-                        icon: Icon(Icons.visibility),
-                      ),
-                      if (user.role == "ADMIN")
-                        IconButton(
-                          onPressed: () {
-                            // onPressed: () {
-                            dialog(context, category);
-                            // }
-                          },
-                          icon: Icon(Icons.delete),
-                        ),
-                      if (user.role == "ADMIN")
-                        IconButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => EditCategoryForm(
-                                  id: category.id,
-                                  user: user,
-                                ),
-                              ),
-                            );
-                          },
-                          icon: Icon(Icons.edit),
-                        ),
-                      if (user.role == "ADMIN")
-                        IconButton(
-                          onPressed: () {
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder: (_) => NewCategoryForm(),
-                            //   ),
-                            // );
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => NewProductForm(
-                                  id: category.id,
-                                ),
-                              ),
-                            );
-                          },
-                          icon: Icon(Icons.add),
-                        ),
-                    ],
-                  ),
-            SizedBox(height: 16),
-          ],
-        ),
+                          ),
+                        );
+                      },
+                      icon: Icon(Icons.add),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -49,7 +49,10 @@ class NewProductForm extends StatelessWidget {
 
           return Scaffold(
             resizeToAvoidBottomInset: false,
-            appBar: AppBar(title: const Text('Crear chollo')),
+            appBar: AppBar(
+              title: const Text('Crear chollo'),
+              backgroundColor: Color.fromARGB(211, 244, 67, 54),
+            ),
             body: FormBlocListener<NewProductBloc, String, String>(
               onSubmitting: (context, state) {
                 LoadingDialog.show(context);
@@ -101,7 +104,31 @@ class NewProductForm extends StatelessWidget {
                       ElevatedButton(
                         onPressed: newProductBloc.submit,
                         child: const Text('AGREGAR'),
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              Color.fromARGB(211, 244, 67, 54)),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                          // padding: MaterialStateProperty.all<EdgeInsets>(
+                          //     EdgeInsets.fromLTRB(0, 10, 0, 10)),
+                        ),
                       ),
+                      // SizedBox(
+                      //   height: 50,
+                      //   child: Padding(
+                      //     padding: EdgeInsets.fromLTRB(0, 70, 0, 0),
+                      //     child: Container(
+                      //       decoration: BoxDecoration(
+                      //         color: Color.fromARGB(211, 244, 67, 54),
+                      //       ),
+                      //       alignment: Alignment.bottomCenter,
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),

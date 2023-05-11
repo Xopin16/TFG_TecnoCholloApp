@@ -35,19 +35,48 @@ class _ProductUserListState extends State<ProductUserList> {
           if (state.products.isEmpty) {
             return NoProducts();
           }
-          return ListView.builder(
-            itemBuilder: (BuildContext context, int index) {
-              return index >= state.products.length
-                  ? const BottomLoader()
-                  : ProductUserListItem(
-                      product: state.products[index],
-                      user: widget.user,
-                    );
-            },
-            itemCount: state.hasReachedMax
-                ? state.products.length
-                : state.products.length + 1,
-            controller: _scrollController,
+          return Column(
+            children: [
+              Padding(padding: EdgeInsets.fromLTRB(0, 0, 0, 12)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      // Lógica para abrir el filtro
+                    },
+                    icon: Icon(Icons.filter_list),
+                  ),
+                  Expanded(
+                    child: TextField(
+                      onChanged: (value) {
+                        // Lógica para buscar
+                      },
+                      decoration: InputDecoration(
+                          hintText: 'Buscar...',
+                          prefixIcon: Icon(Icons.search),
+                          border: UnderlineInputBorder()),
+                    ),
+                  ),
+                ],
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemBuilder: (BuildContext context, int index) {
+                    return index >= state.products.length
+                        ? const BottomLoader()
+                        : ProductUserListItem(
+                            product: state.products[index],
+                            user: widget.user,
+                          );
+                  },
+                  itemCount: state.hasReachedMax
+                      ? state.products.length
+                      : state.products.length + 1,
+                  controller: _scrollController,
+                ),
+              ),
+            ],
           );
         case ProductUserStatus.initial:
           return const Center(child: CircularProgressIndicator());

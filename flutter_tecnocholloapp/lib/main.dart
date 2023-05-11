@@ -58,9 +58,10 @@ class MyApp extends StatelessWidget {
     //GlobalContext.ctx = context;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Authentication Demo',
+      title: 'TecnocholloApp',
+      // color: Color.fromRGBO(222, 32, 32, 0.726),
       theme: ThemeData(
-        primarySwatch: Colors.grey,
+        primarySwatch: Colors.blue,
       ),
       home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
         builder: (context, state) {

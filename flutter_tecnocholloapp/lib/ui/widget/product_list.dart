@@ -32,16 +32,45 @@ class _ProductListState extends State<ProductList> {
             if (state.products.isEmpty) {
               return const Center(child: Text('no products'));
             }
-            return ListView.builder(
-              itemBuilder: (BuildContext context, int index) {
-                return index >= state.products.length
-                    ? const BottomLoader()
-                    : ProductListItem(product: state.products[index]);
-              },
-              itemCount: state.hasReachedMax
-                  ? state.products.length
-                  : state.products.length + 1,
-              controller: _scrollController,
+            return Column(
+              children: [
+                Padding(padding: EdgeInsets.fromLTRB(0, 0, 0, 12)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        // Lógica para abrir el filtro
+                      },
+                      icon: Icon(Icons.filter_list),
+                    ),
+                    Expanded(
+                      child: TextField(
+                        onChanged: (value) {
+                          // Lógica para buscar
+                        },
+                        decoration: InputDecoration(
+                            hintText: 'Buscar...',
+                            prefixIcon: Icon(Icons.search),
+                            border: UnderlineInputBorder()),
+                      ),
+                    ),
+                  ],
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemBuilder: (BuildContext context, int index) {
+                      return index >= state.products.length
+                          ? const BottomLoader()
+                          : ProductListItem(product: state.products[index]);
+                    },
+                    itemCount: state.hasReachedMax
+                        ? state.products.length
+                        : state.products.length + 1,
+                    controller: _scrollController,
+                  ),
+                ),
+              ],
             );
           case ProductStatus.initial:
             return const Center(child: CircularProgressIndicator());
