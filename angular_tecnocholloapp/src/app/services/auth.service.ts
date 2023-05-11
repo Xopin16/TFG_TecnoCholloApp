@@ -1,16 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { User } from '../interfaces/user';
 import { Observable } from 'rxjs';
-import { Product } from '../interfaces/product';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ProductService {
+export class AuthService {
 
   constructor(private http: HttpClient) { }
 
-  getProducts(page: number): Observable<Product[]>{
-    return this.http.get<Product[]>(`https://localhost:8080/producto/?page=${page}`);
+  login(page: number): Observable<User[]>{
+    return this.http.get<User[]>(`https://localhost:8080/auth/login`);
   }
 }

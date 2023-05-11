@@ -10,6 +10,8 @@ import { CategoryListComponent } from './components/category-list/category-list.
 import { VentaListComponent } from './components/venta-list/venta-list.component';
 import { CartComponent } from './components/cart/cart.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { MaterialImportModule } from './material-imports/material-imports.module';
 
 @NgModule({
   declarations: [
@@ -25,6 +27,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     AppRoutingModule,
     BrowserAnimationsModule,
     FormsModule,
+    HttpClientModule,
+    MaterialImportModule,
     ReactiveFormsModule
   ],
   providers: [],
