@@ -1,5 +1,5 @@
 export interface ProductResponse {
-    product: Product[]
+    content: Product[]
     currentPage: number
     last: boolean
     first: boolean

@@ -10,14 +10,16 @@ import { ProductService } from 'src/app/services/product.service';
 export class ProductListComponent implements OnInit {
   
   products: Product[] = [];
+  displayedColumns: string[] = ['imagen', 'nombre', 'precio', 'descripcion'];
 
   constructor(private productService: ProductService) { }
 
   ngOnInit(): void {
     this.productService.getProducts(1).subscribe((resp) => {
-      this.products = resp.product;
+      this.products = resp.content;
       console.log(resp)
     });
   }
+
 
 }

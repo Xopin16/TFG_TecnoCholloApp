@@ -4,10 +4,12 @@ import { ProductListComponent } from './components/product-list/product-list.com
 import { CartComponent } from './components/cart/cart.component';
 import { UserListComponent } from './components/user-list/user-list.component';
 import { VentaListComponent } from './components/venta-list/venta-list.component';
+import { CategoryListComponent } from './components/category-list/category-list.component';
 
 const routes: Routes = [
   {path: 'product', component: ProductListComponent},
   {path: 'cart', component: CartComponent},
+  {path: 'category', component: CategoryListComponent},
   {path: 'user', component: UserListComponent},
   {path: 'venta', component: VentaListComponent},
   {path: '', redirectTo: '/product', pathMatch: 'full'}

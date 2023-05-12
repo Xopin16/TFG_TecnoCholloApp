@@ -1,0 +1,31 @@
+
+.menu-links { 
+  display: flex;
+  flex-direction: column;
+  margin-top: 50px;
+}
+
+.menu-links a {
+  margin: 16px;
+  text-decoration: none;
+  color: black    ;
+}
+
+table {
+  width: 100%;
+  margin-left: 120px;
+  margin-top: 36px;
+}
+
+.my-green-button {
+  background-color: green;
+  color: white;
+  margin-top: 24px; 
+  margin-left: 136px;
+}
+
+.my-green-button:hover {
+  background-color: darkgreen;
+}
+
+ 
