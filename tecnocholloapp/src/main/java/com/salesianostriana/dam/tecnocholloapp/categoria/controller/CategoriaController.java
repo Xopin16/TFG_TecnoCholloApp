@@ -81,7 +81,7 @@ public class CategoriaController {
     @GetMapping("/categoria/")
     public PageDto<CategoryDto> obtenerTodos(
             @RequestParam(value = "s", defaultValue = "") String search,
-            @PageableDefault(size = 5, page = 0) Pageable pageable) {
+            @PageableDefault(size = 10, page = 0) Pageable pageable) {
 
         List<SearchCriteria> params = SearchCriteriaExtractor.extractSearchCriteriaList(search);
         return categoriaService.search(params, pageable);
@@ -135,7 +135,7 @@ public class CategoriaController {
     @GetMapping("/categoria/producto/{id}")
     public PageDto<ProductDto> obtenerProductosCategoria(
             @PathVariable Long id,
-            @PageableDefault(size = 5, page = 0) Pageable pageable
+            @PageableDefault(size = 10, page = 0) Pageable pageable
     ){
         return productoService.findProductsCategory(id, pageable);
     }

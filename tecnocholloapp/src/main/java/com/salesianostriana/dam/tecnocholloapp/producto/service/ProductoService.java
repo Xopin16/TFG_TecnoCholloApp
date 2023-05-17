@@ -57,7 +57,7 @@ public class ProductoService {
         Product product = CreateProductDto.of(productDto);
         product.setCategoria(categoriaService.findById(idCategoria));
         product.setUser(user);
-        product.setFechaPublicacion(productDto.getFechaPublicacion());
+//        product.setFechaPublicacion(productDto.getFechaPublicacion());
         user.addProduct(product);
         return productoRepository.save(product);
     }

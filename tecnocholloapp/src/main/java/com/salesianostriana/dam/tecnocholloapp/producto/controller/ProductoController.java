@@ -100,7 +100,7 @@ public class ProductoController {
     @GetMapping("/producto/")
     public PageDto<ProductDto> obtenerTodos(
             @RequestParam(value = "s", defaultValue = "") String search,
-            @PageableDefault(size = 15, page = 0) Pageable pageable) {
+            @PageableDefault(size = 10, page = 0) Pageable pageable) {
 
         List<SearchCriteria> params = SearchCriteriaExtractor.extractSearchCriteriaList(search);
         return productoService.search(params, pageable);

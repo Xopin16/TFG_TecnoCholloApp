@@ -1,5 +1,5 @@
 export interface UserResponse {
-  user: User[]
+  content: User[]
   currentPage: number
   last: boolean
   first: boolean

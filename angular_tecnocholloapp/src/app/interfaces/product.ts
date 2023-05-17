@@ -8,12 +8,13 @@ export interface ProductResponse {
   }
   
   export interface Product {
-    id: number
+    id?: number
     nombre: string
     precio: number
     descripcion: string
-    imagen: string
-    fechaPublicacion: string
-    categoria: string
-    usuario: string
+    imagen?: string
+    // fechaPublicacion?: string
+    categoria?: string
+    usuario?: string
+    idCategory?: number
   }

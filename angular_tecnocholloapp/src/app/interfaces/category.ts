@@ -8,6 +8,6 @@ export interface CategoryResponse {
   }
   
   export interface Category {
-    id: number
+    id?: number
     nombre: string
   }

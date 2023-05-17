@@ -3,9 +3,7 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false,
-  token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI3NTFjMzYxMS04ODgyLTU3NTEtOWYwZC1kMjE2ZGQwNDdlYmMiLCJpYXQiOjE2ODM4NzQ4ODUsImV4cCI6MTY4NDczODg4NX0.iPBa183gK21D14Y6YL2UoywpdQttd9U_i0TorljlvImqvkmXL7vE3TGkaP_t447rXFHHsLOeyI0lHdTLJix2zQ'
-};
+  production: false};
 
 /*
  * For easier debugging in development mode, you can import the following file
