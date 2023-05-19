@@ -5,7 +5,7 @@ import 'package:flutter_tecnocholloapp/blocs/productUser/product_user_event.dart
 import '../../blocs/productUser/product_user.dart';
 import '../../models/models.dart';
 import '../pages/details_page.dart';
-
+import '../pages/edit_product_page.dart';
 
 class ProductUserListItem extends StatelessWidget {
   final Product product;
@@ -17,13 +17,13 @@ class ProductUserListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final isMobile = MediaQuery.of(context).size.width < 600;
-    final imageWidth = isMobile ? 120.0 : 200.0;
+    final imageWidth = isMobile ? 60.0 : 100.0;
     final imageSize = Size(imageWidth, imageWidth);
 
     return Card(
-      margin: const EdgeInsets.all(8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      margin: const EdgeInsets.all(10),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(4.0),
@@ -35,69 +35,67 @@ class ProductUserListItem extends StatelessWidget {
                     ? "https://m.media-amazon.com/images/I/71uwa0mHA8L._AC_SY450_.jpg"
                     : "http://localhost:8080/download/${product.imagen}",
                 fit: BoxFit.cover,
-                width: imageWidth,
-                height: imageWidth,
+                // width: imageWidth,
+                // height: imageWidth,
               ),
             ),
           ),
-          SizedBox(height: 8),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-            child: Text(
-              "${utf8.decode(product.nombre.codeUnits)}",
-              style: textTheme.titleLarge,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 2,
-            ),
-          ),
-          SizedBox(height: 8),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-            child: Text(
-              "${product.precio}€",
-              style: textTheme.titleMedium,
-            ),
-          ),
-          SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              IconButton(
-                onPressed: () {
-                  //                       onPressed: () {
-                  dialog(context, product);
-                  //                       }
-                },
-                icon: Icon(Icons.delete),
-              ),
-              IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => DetailPage(id: product.id),
+          SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "${utf8.decode(product.nombre.codeUnits)}",
+                  style: textTheme.titleLarge,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                ),
+                SizedBox(height: 4),
+                Text(
+                  "${product.precio}€",
+                  style: textTheme.titleMedium,
+                ),
+                SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        dialog(context, product);
+                      },
+                      icon: Icon(Icons.delete),
                     ),
-                  );
-                },
-                icon: Icon(Icons.visibility),
-              ),
-              // IconButton(
-              //   onPressed: () {
-              //     Navigator.push(
-              //       context,
-              //       MaterialPageRoute(
-              //         builder: (_) => EditProductForm(
-              //           id: product.id,
-              //           user: user,
-              //         ),
-              //       ),
-              //     );
-              //   },
-              //   icon: Icon(Icons.edit),
-              // ),
-            ],
+                    IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => DetailPage(id: product.id),
+                          ),
+                        );
+                      },
+                      icon: Icon(Icons.visibility),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => EditProductForm(
+                              id: product.id,
+                              user: user,
+                            ),
+                          ),
+                        );
+                      },
+                      icon: Icon(Icons.edit),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
-          SizedBox(height: 16),
         ],
       ),
     );
@@ -112,12 +110,20 @@ class ProductUserListItem extends StatelessWidget {
           actions: <Widget>[
             ElevatedButton(
               child: const Text('Cancelar'),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(
+                    Color.fromARGB(210, 102, 97, 97)),
+              ),
               onPressed: () {
                 Navigator.pop(context);
               },
             ),
             ElevatedButton(
               child: const Text('Borrar'),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(
+                    Color.fromARGB(211, 244, 67, 54)),
+              ),
               onPressed: () {
                 BlocProvider.of<ProductUserBloc>(contexto)
                   ..add(RemoveProduct(product.id));

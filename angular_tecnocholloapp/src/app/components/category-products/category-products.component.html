@@ -1,0 +1,104 @@
+<mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #sidenav mode="side" opened>
+      <mat-toolbar>
+        <img src="{{'assets/images/logotecnocholloapp.PNG'}}" alt="logo de la empresa" height="50px">
+      </mat-toolbar>
+      <mat-nav-list class="menu">
+        <a mat-list-item routerLink="/product">
+          <mat-icon>shopping_cart</mat-icon>
+          PRODUCTOS
+        </a>
+        <a mat-list-item routerLink="/category">
+          <mat-icon>category</mat-icon>
+          CATEGORIA
+        </a>
+        <a mat-list-item routerLink="/user">
+          <mat-icon>account_circle</mat-icon>
+          USUARIOS
+        </a>
+        <a mat-list-item routerLink="/venta">
+          <mat-icon>monetization_on</mat-icon>
+          VENTAS
+        </a>
+        <a mat-list-item routerLink="/profile">
+          <mat-icon>account_circle</mat-icon>
+          PROFILE
+      </a>
+      </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <mat-toolbar color="warn">
+        <mat-toolbar-row>
+          <span class="spacer"></span>
+          <mat-form-field class="search-field">
+            <mat-icon matPrefix>search</mat-icon>
+            <input matInput placeholder="Buscar">
+          </mat-form-field>
+          <span *ngIf="isLoggedIn" class="username">{{username}}</span>
+          <button *ngIf="isLoggedIn" mat-icon-button (click)="logout()" routerLink="/login">
+            <mat-icon>exit_to_app</mat-icon>
+          </button>
+        </mat-toolbar-row>
+      </mat-toolbar>
+      <router-outlet></router-outlet>
+      <div class="table-container">
+        <button mat-button routerLink="/new-product" style="background-color: rgb(19, 192, 19); color: white; margin-bottom: 12px;">
+          AGREGAR PRODUCTO
+          <!-- <mat-icon>add</mat-icon> -->
+        </button>
+        <table mat-table class="mat-elevation-z8" [dataSource]="products">
+          <ng-container matColumnDef="imagen">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let element" style="width: 100px;">
+              <img [src]="'http://localhost:8080/download/' + element.imagen" alt="Imagen de producto" style="width: 40px; height: 40px;">
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="nombre">
+            <th mat-header-cell *matHeaderCellDef> Nombre </th>
+            <td mat-cell *matCellDef="let element"> {{element.nombre}} </td>
+          </ng-container>
+          <ng-container matColumnDef="precio">
+            <th mat-header-cell *matHeaderCellDef> Precio </th>
+            <td mat-cell *matCellDef="let element"> {{element.precio}}€ </td>
+          </ng-container>
+          <ng-container matColumnDef="descripcion">
+            <th mat-header-cell *matHeaderCellDef> Descripcion </th>
+            <td mat-cell *matCellDef="let element"> {{element.descripcion }} </td>
+          </ng-container>
+          <ng-container matColumnDef="acciones">
+            <th mat-header-cell *matHeaderCellDef> Acciones </th>
+            <td mat-cell *matCellDef="let element">
+              <button mat-icon-button (click)="deleteProduct(element.id)">
+                <mat-icon>delete</mat-icon>
+              </button>
+              <button mat-icon-button route [routerLink]="['/edit-product', element.id]">
+                <mat-icon>edit</mat-icon>
+              </button>            
+              <button mat-icon-button route [routerLink]="['/product', element.id]">
+                <mat-icon>visibility</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+        <div class="contenido">
+          <button mat-raised-button (click)="getPage(currentPage - 1)">
+            <mat-icon aria-hidden="false" aria-label="Example thumbs up SVG icon"
+              >navigate_before</mat-icon
+            ></button
+          >&nbsp;
+          <div>
+            <button mat-raised-button>{{currentPage+1}}</button
+            >&nbsp;
+          </div>
+          <button mat-raised-button (click)="getPage(currentPage + 1)">
+            <mat-icon aria-hidden="false" aria-label="Example thumbs up SVG icon"
+              >navigate_next</mat-icon
+            ></button
+          >&nbsp;
+        </div>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+  

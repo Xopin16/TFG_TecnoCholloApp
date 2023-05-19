@@ -27,3 +27,5 @@ class UserLoggedOut extends AuthenticationEvent {}
 
 // Se emite cuando la sesión ha expirado
 class SessionExpiredEvent extends AuthenticationEvent {}
+
+class DeleteAccount extends AuthenticationEvent {}

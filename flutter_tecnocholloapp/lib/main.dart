@@ -40,13 +40,6 @@ class MyApp extends StatelessWidget {
       authBloc..add(SessionExpiredEvent());
       return _instance;
     });
-    /*return MaterialPageRoute<void>(builder: (context) {
-      return BlocProvider<AuthenticationBloc>(create: (context) {
-        final authService = getIt<JwtAuthenticationService>();
-        return AuthenticationBloc(authService)..add(SessionExpiredEvent());
-      }, 
-      child: MyApp(),);
-    });*/
   }
 
   MyApp() {
@@ -58,9 +51,10 @@ class MyApp extends StatelessWidget {
     //GlobalContext.ctx = context;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Authentication Demo',
+      title: 'TecnocholloApp',
+      // color: Color.fromRGBO(222, 32, 32, 0.726),
       theme: ThemeData(
-        primarySwatch: Colors.grey,
+        primarySwatch: Colors.blue,
       ),
       home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
         builder: (context, state) {

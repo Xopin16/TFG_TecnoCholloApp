@@ -1,9 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../blocs/favorito/favourite.dart';
+import '../../config/locator.dart';
+import '../../services/product_service.dart';
 import '../pages/no_products_page.dart';
 import 'bottom_loader.dart';
 import 'favourite_list_item.dart';
+
+class FavouriteScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Favoritos'),
+        backgroundColor: Color.fromARGB(211, 244, 67, 54),
+      ),
+      body: BlocProvider(
+        create: (context) {
+          final productService = getIt<ProductService>();
+          return FavouriteBloc(productService)..add(FavouriteFetched());
+        },
+        child: FavouriteList(),
+      ),
+    );
+  }
+}
 
 class FavouriteList extends StatefulWidget {
   const FavouriteList({super.key});

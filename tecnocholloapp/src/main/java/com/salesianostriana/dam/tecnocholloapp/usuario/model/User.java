@@ -1,6 +1,7 @@
 package com.salesianostriana.dam.tecnocholloapp.usuario.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.salesianostriana.dam.tecnocholloapp.carrito.model.Carrito;
 import com.salesianostriana.dam.tecnocholloapp.categoria.model.Category;
 import com.salesianostriana.dam.tecnocholloapp.producto.model.Product;
 import lombok.*;
@@ -60,6 +61,9 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Product> products = new ArrayList<>();
+
+    @OneToOne
+    private Carrito carrito;
 
     @Builder.Default
     private boolean accountNonExpired = true;

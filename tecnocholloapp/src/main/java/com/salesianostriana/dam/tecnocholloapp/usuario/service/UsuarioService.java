@@ -9,6 +9,7 @@ import com.salesianostriana.dam.tecnocholloapp.search.util.SearchCriteria;
 import com.salesianostriana.dam.tecnocholloapp.usuario.dto.CreateUserDto;
 import com.salesianostriana.dam.tecnocholloapp.usuario.dto.EditUserDto;
 import com.salesianostriana.dam.tecnocholloapp.usuario.dto.UserDto;
+import com.salesianostriana.dam.tecnocholloapp.usuario.dto.UserPasswordDto;
 import com.salesianostriana.dam.tecnocholloapp.usuario.model.User;
 import com.salesianostriana.dam.tecnocholloapp.usuario.model.UserRole;
 import com.salesianostriana.dam.tecnocholloapp.usuario.repository.UsuarioRepository;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.EnumSet;
@@ -73,6 +75,10 @@ public class UsuarioService {
         return result;
     }
 
+    public User save(User user){
+        return usuarioRepository.save(user);
+    }
+
     public Optional<User> findById(UUID id) {
         return usuarioRepository.findById(id);
     }
@@ -95,16 +101,20 @@ public class UsuarioService {
                 }).orElseThrow(UserNotFoundException::new);
     }
 
+    public boolean passwordMatch(User user, String clearPassword) {
+        return passwordEncoder.matches(clearPassword, user.getPassword());
+    }
 
-    public User editPassword(UUID userId, String newPassword) {
+    public User editPassword(User user, UserPasswordDto userPasswordDto) {
 
-        // Aquí no se realizan comprobaciones de seguridad. Tan solo se modifica
+        if(!passwordMatch(user, userPasswordDto.getOldPassword()))
+            throw new EntityNotFoundException();
 
-        return usuarioRepository.findById(userId)
+        return usuarioRepository.findById(user.getId())
                 .map(u -> {
-                    u.setPassword(passwordEncoder.encode(newPassword));
+                    u.setPassword(passwordEncoder.encode(userPasswordDto.getNewPassword()));
                     return usuarioRepository.save(u);
-                }).orElseThrow(()-> new UserNotFoundException(userId));
+                }).orElseThrow(UserNotFoundException::new);
 
     }
 
@@ -160,10 +170,6 @@ public class UsuarioService {
     public void deleteById(UUID id) {
         if (usuarioRepository.existsById(id))
             usuarioRepository.deleteById(id);
-    }
-
-    public boolean passwordMatch(User user, String clearPassword) {
-        return passwordEncoder.matches(clearPassword, user.getPassword());
     }
 
     public boolean userExists(String username) {

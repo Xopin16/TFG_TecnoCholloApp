@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_tecnocholloapp/blocs/carrito/carrito_event.dart';
 import 'package:flutter_tecnocholloapp/config/locator.dart';
 import 'package:flutter_tecnocholloapp/repositories/repositories.dart';
+import 'package:flutter_tecnocholloapp/services/carrito_service.dart';
 import 'package:flutter_tecnocholloapp/services/category_service.dart';
 import 'package:flutter_tecnocholloapp/services/product_service.dart';
+import 'package:flutter_tecnocholloapp/ui/pages/login_page.dart';
+import 'package:flutter_tecnocholloapp/ui/widget/carrito_list.dart';
 import '../../blocs/blocs.dart';
+import '../../blocs/carrito/carrito_bloc.dart';
 import '../../blocs/category/category.dart';
 import '../../blocs/productUser/product_user.dart';
 import '../../models/user.dart';
@@ -25,12 +30,14 @@ class _HomePageState extends State<HomePage> {
   late final int id;
 
   List<Widget> _pages(BuildContext context) => [
+        ChollosScreen(),
         HomeScreen(
           homePage: this.widget,
         ),
-        ChollosScreen(),
         // FavouriteScreen(),
         CategoryScreen(homePage: this.widget),
+        CarritoScreen(),
+        VentasScreen(),
         ProfileScreen(
           homePage: this.widget,
         ),
@@ -41,7 +48,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('TECNOCHOLLOAPP'),
-        backgroundColor: Color.fromARGB(104, 86, 159, 192),
+        backgroundColor: Color.fromARGB(211, 244, 67, 54),
       ),
       body: SafeArea(
         minimum: const EdgeInsets.all(50),
@@ -60,11 +67,11 @@ class _HomePageState extends State<HomePage> {
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: 'Publicaciones',
+            label: 'Chollos',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.local_mall),
-            label: 'Chollos',
+            label: 'Publicaciones',
           ),
           // BottomNavigationBarItem(
           //   icon: Icon(Icons.favorite),
@@ -73,6 +80,14 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.category),
             label: 'Categoría',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_cart),
+            label: 'Carrito',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.receipt),
+            label: 'Ventas',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
@@ -151,6 +166,26 @@ class CategoryScreen extends StatelessWidget {
   }
 }
 
+class CarritoScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) {
+        final carritoService = getIt<CarritoService>();
+        return CarritoBloc(carritoService)..add(CarritoFetched());
+      },
+      child: const CarritoList(),
+    );
+  }
+}
+
+class VentasScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(child: Text("AQUI VA EL HISTORICO DE VENTAS DEL USUARIO"));
+  }
+}
+
 class ProfileScreen extends StatelessWidget {
   final HomePage homePage;
 
@@ -177,13 +212,24 @@ class ProfileScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      authBloc.add(UserLoggedOut());
+                    },
+                    icon: Icon(Icons.logout),
+                  ),
+                ],
+              ),
               Center(
                 child: profileImage,
               ),
               SizedBox(height: isMobile ? 16 : 32),
               Text(
-                'Nombre de usuario:',
-                style: titleTextStyle,
+                'Username:',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
               Text(
                 "${homePage.user.username}",
@@ -192,7 +238,7 @@ class ProfileScreen extends StatelessWidget {
               SizedBox(height: isMobile ? 16 : 32),
               Text(
                 'Nombre completo:',
-                style: titleTextStyle,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
               Text(
                 "${homePage.user.fullName}",
@@ -200,17 +246,17 @@ class ProfileScreen extends StatelessWidget {
               ),
               SizedBox(height: isMobile ? 16 : 32),
               Text(
-                'Rol:',
-                style: titleTextStyle,
+                'Email:',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
               Text(
-                "${homePage.user.role}",
+                "${homePage.user.email}",
                 style: subtitleTextStyle,
               ),
               SizedBox(height: isMobile ? 16 : 32),
               Text(
                 'Fecha de creación:',
-                style: titleTextStyle,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
               Text(
                 "${homePage.user.createdAt}",
@@ -224,26 +270,52 @@ class ProfileScreen extends StatelessWidget {
                   //   height: isMobile ? 40 : 50,
                   //   width: isMobile ? double.infinity : 150,
                   //   child: ElevatedButton(
+                  //     style: ButtonStyle(
+                  //       backgroundColor: MaterialStateProperty.all<Color>(
+                  //           Color.fromARGB(210, 228, 222, 222)),
+                  //       shape:
+                  //           MaterialStateProperty.all<RoundedRectangleBorder>(
+                  //         RoundedRectangleBorder(
+                  //             borderRadius: BorderRadius.circular(20),
+                  //             side: BorderSide(color: Colors.black)),
+                  //       ),
+                  //     ),
                   //     onPressed: () {
                   //       Navigator.push(
                   //         context,
                   //         MaterialPageRoute(
-                  //           builder: (_) => PasswordPage(),
+                  //           builder: (context) => PasswordPage(),
                   //         ),
                   //       );
                   //     },
-                  //     child: Text('Cambiar contraseña'),
+                  //     child: Text(
+                  //       'Cambiar contraseña',
+                  //       style: TextStyle(fontSize: 16, color: Colors.black),
+                  //     ),
                   //   ),
                   // ),
-                  SizedBox(height: isMobile ? 16 : 32),
+                  // SizedBox(height: isMobile ? 16 : 32),
                   SizedBox(
                     height: isMobile ? 40 : 50,
                     width: isMobile ? double.infinity : 150,
                     child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            Color.fromARGB(211, 244, 67, 54)),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                              side: BorderSide(color: Colors.black)),
+                        ),
+                      ),
                       onPressed: () {
-                        authBloc.add(UserLoggedOut());
+                        dialog(context);
                       },
-                      child: Text('Cerrar sesión'),
+                      child: Text(
+                        'Borrar Cuenta',
+                        style: TextStyle(fontSize: 16, color: Colors.black),
+                      ),
                     ),
                   ),
                 ],
@@ -252,6 +324,53 @@ class ProfileScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> dialog(BuildContext contexto) {
+    return showDialog<void>(
+      context: contexto,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("¿Estás seguro de querer eliminar tu cuenta?"),
+          actions: <Widget>[
+            ElevatedButton(
+              child: const Text('Cancelar'),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(
+                    Color.fromARGB(210, 102, 97, 97)),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            ElevatedButton(
+              child: const Text('Borrar'),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(
+                    Color.fromARGB(211, 244, 67, 54)),
+              ),
+              onPressed: () {
+                BlocProvider.of<AuthenticationBloc>(contexto)
+                    .add(DeleteAccount());
+
+                BlocProvider.of<AuthenticationBloc>(contexto)
+                    .stream
+                    .listen((state) {
+                  if (state is UserDeletedState) {
+                    BlocProvider.of<AuthenticationBloc>(contexto)
+                        .add(UserLoggedOut());
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (_) => LoginPage()),
+                    );
+                  }
+                });
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

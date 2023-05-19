@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_tecnocholloapp/ui/widget/favourite_list.dart';
 import 'package:flutter_tecnocholloapp/ui/widget/product_list_item.dart';
 import '../../blocs/blocs.dart';
+import '../pages/new_product_page.dart';
 import 'bottom_loader.dart';
 
 class ProductList extends StatefulWidget {
@@ -13,6 +15,7 @@ class ProductList extends StatefulWidget {
 
 class _ProductListState extends State<ProductList> {
   final _scrollController = ScrollController();
+  int id = 0;
 
   @override
   void initState() {
@@ -32,16 +35,61 @@ class _ProductListState extends State<ProductList> {
             if (state.products.isEmpty) {
               return const Center(child: Text('no products'));
             }
-            return ListView.builder(
-              itemBuilder: (BuildContext context, int index) {
-                return index >= state.products.length
-                    ? const BottomLoader()
-                    : ProductListItem(product: state.products[index]);
-              },
-              itemCount: state.hasReachedMax
-                  ? state.products.length
-                  : state.products.length + 1,
-              controller: _scrollController,
+            return Column(
+              children: [
+                Padding(padding: EdgeInsets.fromLTRB(0, 0, 0, 12)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => FavouriteScreen()),
+                        );
+                      },
+                      icon: Icon(Icons.favorite),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => NewProductForm(
+                              id: id,
+                            ),
+                          ),
+                        );
+                      },
+                      icon: Icon(Icons.add),
+                    ),
+                    Expanded(
+                      child: TextField(
+                        onChanged: (value) {
+                          // Lógica para buscar
+                        },
+                        decoration: InputDecoration(
+                            hintText: 'Buscar...',
+                            prefixIcon: Icon(Icons.search),
+                            border: UnderlineInputBorder()),
+                      ),
+                    ),
+                  ],
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemBuilder: (BuildContext context, int index) {
+                      return index >= state.products.length
+                          ? const BottomLoader()
+                          : ProductListItem(product: state.products[index]);
+                    },
+                    itemCount: state.hasReachedMax
+                        ? state.products.length
+                        : state.products.length + 1,
+                    controller: _scrollController,
+                  ),
+                ),
+              ],
             );
           case ProductStatus.initial:
             return const Center(child: CircularProgressIndicator());

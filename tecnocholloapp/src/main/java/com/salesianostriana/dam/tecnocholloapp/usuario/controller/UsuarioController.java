@@ -74,7 +74,7 @@ public class UsuarioController {
     @GetMapping("/usuario/")
     public PageDto<UserDto> obtenerTodos(
             @RequestParam(value = "s", defaultValue = "") String search,
-            @PageableDefault(size = 5, page = 0) Pageable pageable) {
+            @PageableDefault(size = 10, page = 0) Pageable pageable) {
 
         List<SearchCriteria> params = SearchCriteriaExtractor.extractSearchCriteriaList(search);
 

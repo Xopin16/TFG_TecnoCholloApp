@@ -3,9 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tecnocholloapp/config/locator.dart';
 import 'package:flutter_tecnocholloapp/ui/pages/register_page.dart';
 
-import '../../blocs/authentication/authentication.dart';
 import '../../blocs/blocs.dart';
-import '../../blocs/login/login_bloc.dart';
 import '../../services/authentication_service.dart';
 
 class LoginPage extends StatelessWidget {
@@ -15,7 +13,7 @@ class LoginPage extends StatelessWidget {
       // backgroundColor: Color.fromRGBO(30, 11, 204, 0),
       appBar: AppBar(
         title: Text('LOGIN'),
-        backgroundColor: Colors.orangeAccent,
+        backgroundColor: Color.fromARGB(211, 244, 67, 54),
       ),
       body: SafeArea(
           minimum: const EdgeInsets.all(16),
@@ -43,6 +41,9 @@ class LoginPage extends StatelessWidget {
                     )
                   ],
                 ));
+              }
+              if (state is UserDeletedState) {
+                return _AuthForm();
               }
               // return splash screen
               return Center(
@@ -169,8 +170,8 @@ class __SignInFormState extends State<_SignInForm> {
                   ),
                   ElevatedButton(
                     style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.orangeAccent),
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          Color.fromARGB(211, 244, 67, 54)),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -198,7 +199,7 @@ class __SignInFormState extends State<_SignInForm> {
                       );
                     },
                     child: Text(
-                      'Regístrate como usuario.',
+                      '¿No tienes cuenta? Regístrate',
                       style: TextStyle(
                         color: Colors.grey[800],
                       ),

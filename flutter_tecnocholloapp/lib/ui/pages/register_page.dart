@@ -4,7 +4,6 @@ import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import '../../config/locator.dart';
 import '../../services/authentication_service.dart';
 
-
 class LoginFormBloc extends FormBloc<String, String> {
   late final AuthenticationService _authenticationService;
   final username = TextFieldBloc();
@@ -60,7 +59,10 @@ class RegisterForm extends StatelessWidget {
 
           return Scaffold(
             resizeToAvoidBottomInset: false,
-            appBar: AppBar(title: const Text('Registrar usuario')),
+            appBar: AppBar(
+              title: const Text('REGISTRARSE'),
+              backgroundColor: Color.fromARGB(211, 244, 67, 54),
+            ),
             body: FormBlocListener<LoginFormBloc, String, String>(
               onSubmitting: (context, state) {
                 LoadingDialog.show(context);
@@ -85,65 +87,219 @@ class RegisterForm extends StatelessWidget {
                 child: AutofillGroup(
                   child: Column(
                     children: <Widget>[
-                      TextFieldBlocBuilder(
-                        textFieldBloc: registerFormBloc.username,
-                        keyboardType: TextInputType.name,
-                        decoration: const InputDecoration(
-                          labelText: 'Username',
-                          prefixIcon: Icon(Icons.person),
-                        ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(32, 20, 2, 0),
+                            child: Text(
+                              "Username",
+                              style: TextStyle(
+                                color: Colors.grey,
+                                // fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 4,
+                          ),
+                          Container(
+                            padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                            child: TextFieldBlocBuilder(
+                              textFieldBloc: registerFormBloc.username,
+                              keyboardType: TextInputType.emailAddress,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(36),
+                                  borderSide: BorderSide(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      TextFieldBlocBuilder(
-                        textFieldBloc: registerFormBloc.password,
-                        keyboardType: TextInputType.visiblePassword,
-                        decoration: const InputDecoration(
-                          labelText: 'Contraseña',
-                          prefixIcon: Icon(Icons.password),
-                        ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(32, 2, 2, 0),
+                            child: Text(
+                              "Password",
+                              style: TextStyle(
+                                color: Colors.grey,
+                                // fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 4,
+                          ),
+                          Container(
+                            padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                            child: TextFieldBlocBuilder(
+                              textFieldBloc: registerFormBloc.password,
+                              keyboardType: TextInputType.emailAddress,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(36),
+                                  borderSide: BorderSide(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      TextFieldBlocBuilder(
-                        textFieldBloc: registerFormBloc.verifyPassword,
-                        keyboardType: TextInputType.visiblePassword,
-                        decoration: const InputDecoration(
-                          labelText: 'Verificación de contraseña',
-                          prefixIcon: Icon(Icons.password),
-                        ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(32, 2, 2, 0),
+                            child: Text(
+                              "Re-Password",
+                              style: TextStyle(
+                                color: Colors.grey,
+                                // fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 4,
+                          ),
+                          Container(
+                            padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                            child: TextFieldBlocBuilder(
+                              textFieldBloc: registerFormBloc.verifyPassword,
+                              keyboardType: TextInputType.emailAddress,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(36),
+                                  borderSide: BorderSide(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      TextFieldBlocBuilder(
-                        textFieldBloc: registerFormBloc.email,
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: const InputDecoration(
-                          labelText: 'Email',
-                          prefixIcon: Icon(Icons.email),
-                        ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(32, 2, 2, 0),
+                            child: Text(
+                              "Email",
+                              style: TextStyle(
+                                color: Colors.grey,
+                                // fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 4,
+                          ),
+                          Container(
+                            padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                            child: TextFieldBlocBuilder(
+                              textFieldBloc: registerFormBloc.email,
+                              keyboardType: TextInputType.emailAddress,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(36),
+                                  borderSide: BorderSide(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      TextFieldBlocBuilder(
-                        textFieldBloc: registerFormBloc.verifyEmail,
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: const InputDecoration(
-                          labelText: 'Verificación de email',
-                          prefixIcon: Icon(Icons.email),
-                        ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(32, 2, 2, 0),
+                            child: Text(
+                              "Re-Email",
+                              style: TextStyle(
+                                color: Colors.grey,
+                                // fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 4,
+                          ),
+                          Container(
+                            padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                            child: TextFieldBlocBuilder(
+                              textFieldBloc: registerFormBloc.verifyEmail,
+                              keyboardType: TextInputType.emailAddress,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(36),
+                                  borderSide: BorderSide(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      TextFieldBlocBuilder(
-                        textStyle: TextStyle(color: Colors.white),
-                        cursorColor: Colors.white,
-                        textFieldBloc: registerFormBloc.fullName,
-                        keyboardType: TextInputType.name,
-                        decoration: const InputDecoration(
-                          focusColor: Colors.white,
-                          focusedBorder: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20)),
-                              borderSide: const BorderSide(
-                                  color: Colors.white, width: 2.0)),
-                          labelText: 'Nombre completo',
-                          prefixIcon: Icon(Icons.person_2_outlined),
-                        ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(32, 2, 2, 0),
+                            child: Text(
+                              "Fullname",
+                              style: TextStyle(
+                                color: Colors.grey,
+                                // fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 4,
+                          ),
+                          Container(
+                            padding: EdgeInsets.fromLTRB(16, 0, 16, 12),
+                            child: TextFieldBlocBuilder(
+                              textFieldBloc: registerFormBloc.fullName,
+                              keyboardType: TextInputType.emailAddress,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(36),
+                                  borderSide: BorderSide(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                       ElevatedButton(
                         onPressed: registerFormBloc.submit,
                         child: const Text('Registrarse'),
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              Color.fromARGB(211, 244, 67, 54)),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                          // padding: MaterialStateProperty.all<EdgeInsets>(
+                          //     EdgeInsets.fromLTRB(0, 10, 0, 10)),
+                        ),
                       ),
                     ],
                   ),

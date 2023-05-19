@@ -5,6 +5,7 @@ import com.salesianostriana.dam.tecnocholloapp.page.PageDto;
 import com.salesianostriana.dam.tecnocholloapp.producto.dto.CreateProductDto;
 import com.salesianostriana.dam.tecnocholloapp.producto.dto.ProductDto;
 import com.salesianostriana.dam.tecnocholloapp.producto.model.Product;
+import com.salesianostriana.dam.tecnocholloapp.producto.repository.ProductoRepository;
 import com.salesianostriana.dam.tecnocholloapp.producto.service.ProductoService;
 import com.salesianostriana.dam.tecnocholloapp.search.util.SearchCriteria;
 import com.salesianostriana.dam.tecnocholloapp.search.util.SearchCriteriaExtractor;
@@ -38,6 +39,8 @@ import java.util.UUID;
 public class ProductoController {
 
     private final ProductoService productoService;
+
+    private final ProductoRepository productoRepository;
 
     private final UsuarioService usuarioService;
 
@@ -100,7 +103,7 @@ public class ProductoController {
     @GetMapping("/producto/")
     public PageDto<ProductDto> obtenerTodos(
             @RequestParam(value = "s", defaultValue = "") String search,
-            @PageableDefault(size = 15, page = 0) Pageable pageable) {
+            @PageableDefault(size = 10, page = 0) Pageable pageable) {
 
         List<SearchCriteria> params = SearchCriteriaExtractor.extractSearchCriteriaList(search);
         return productoService.search(params, pageable);
@@ -198,62 +201,6 @@ public class ProductoController {
             @AuthenticationPrincipal User user){
         User usuario = usuarioService.findUserProducts(user.getId());
         return productoService.paginarChollos(usuario, pageable);
-    }
-
-    @Operation(summary = "Obtiene los productos favoritos del usuario autenticado")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
-                    description = "Se ha obtenido el usuario y sus favoritos",
-                    content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = UserDto.class),
-                            examples = {@ExampleObject(
-                                    value = """
-                                            {
-                                                      {
-                                                          "id": 15,
-                                                          "nombre": "Google Pixel 7",
-                                                          "precio": 899.99,
-                                                          "descripcion": "El nuevo modelo de Google",
-                                                          "imagen": "movil.jpg",
-                                                          "fechaPublicacion": "2022-02-23",
-                                                          "categoria": "Moviles",
-                                                          "usuario": "mhoggins0"
-                                                      },
-                                                      {
-                                                          "id": 16,
-                                                          "nombre": "Huawei P60",
-                                                          "precio": 799.99,
-                                                          "descripcion": "El nuevo modelo de Huawei",
-                                                          "imagen": "movil.jpg",
-                                                          "fechaPublicacion": "2022-02-23",
-                                                          "categoria": "Moviles",
-                                                          "usuario": "mhoggins0"
-                                                      },
-                                                      {
-                                                          "id": 17,
-                                                          "nombre": "Motorola Edge 30",
-                                                          "precio": 599.99,
-                                                          "descripcion": "El nuevo modelo de Motorola",
-                                                          "imagen": "movil.jpg",
-                                                          "fechaPublicacion": "2022-02-23",
-                                                          "categoria": "Moviles",
-                                                          "usuario": "mhoggins0"
-                                                      },
-                                              }  
-                                            """
-                            )}
-                    )}),
-            @ApiResponse(responseCode = "401",
-                    description = "No hay autenticación para ver los favoritos del usuario",
-                    content = @Content),
-    })
-//    @JsonView(UserViews.Favoritos.class)
-    @GetMapping("/usuario/favorito/")
-    public List<ProductDto> mostrarFavoritos(
-            @PageableDefault(size = 5, page = 0) Pageable pageable,
-            @AuthenticationPrincipal User user){
-        User usuario = usuarioService.findUserFavoritos(user.getId());
-        return usuario.getFavoritos().stream().map(ProductDto::fromProduct).toList();
     }
 
 
@@ -388,7 +335,7 @@ public class ProductoController {
                     description = "No se ha podido encontrar el producto por su ID",
                     content = @Content),
     })
-    @PreAuthorize("authentication.principal.id == @productoService.findById(#id).user.id")
+    @PreAuthorize("isAuthenticated()")
     @PutMapping("/usuario/producto/{id}")
     public CreateProductDto editarProducto(@Valid @RequestBody CreateProductDto productDto, @AuthenticationPrincipal User user , @PathVariable Long id) {
         User usuario = usuarioService.findUserProducts(user.getId());
@@ -490,14 +437,74 @@ public class ProductoController {
                     description = "No se ha encontrado el producto por su ID",
                     content = @Content),
     })
-    @PostMapping("/usuario/producto/{id1}")
-    public CreateProductDto agregarFavoritos(@AuthenticationPrincipal User user, @PathVariable Long id1){
+    @PostMapping("/usuario/producto/{id}")
+    public ProductDto agregarFavoritos(@AuthenticationPrincipal User user, @PathVariable Long id){
         User usuario = usuarioService.findUserFavoritos(user.getId());
-        Product product = productoService.findById(id1);
-        CreateProductDto dto = CreateProductDto.fromProducto(product);
-        product.addFavorito(product);
-        productoService.add(dto);
-        return dto;
+        Product product = productoService.findById(id);
+//        product.addFavorito(product);
+        usuario.addFavorito(product);
+        productoRepository.save(product);
+        usuarioService.save(user);
+//        CreateProductDto dto = CreateProductDto.fromProducto(product);
+        //        productoService.add(productDto);
+        return ProductDto.fromProduct(product);
+    }
+
+    @Operation(summary = "Obtiene los productos favoritos del usuario autenticado")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Se ha obtenido el usuario y sus favoritos",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = UserDto.class),
+                            examples = {@ExampleObject(
+                                    value = """
+                                            {
+                                                      {
+                                                          "id": 15,
+                                                          "nombre": "Google Pixel 7",
+                                                          "precio": 899.99,
+                                                          "descripcion": "El nuevo modelo de Google",
+                                                          "imagen": "movil.jpg",
+                                                          "fechaPublicacion": "2022-02-23",
+                                                          "categoria": "Moviles",
+                                                          "usuario": "mhoggins0"
+                                                      },
+                                                      {
+                                                          "id": 16,
+                                                          "nombre": "Huawei P60",
+                                                          "precio": 799.99,
+                                                          "descripcion": "El nuevo modelo de Huawei",
+                                                          "imagen": "movil.jpg",
+                                                          "fechaPublicacion": "2022-02-23",
+                                                          "categoria": "Moviles",
+                                                          "usuario": "mhoggins0"
+                                                      },
+                                                      {
+                                                          "id": 17,
+                                                          "nombre": "Motorola Edge 30",
+                                                          "precio": 599.99,
+                                                          "descripcion": "El nuevo modelo de Motorola",
+                                                          "imagen": "movil.jpg",
+                                                          "fechaPublicacion": "2022-02-23",
+                                                          "categoria": "Moviles",
+                                                          "usuario": "mhoggins0"
+                                                      },
+                                              }  
+                                            """
+                            )}
+                    )}),
+            @ApiResponse(responseCode = "401",
+                    description = "No hay autenticación para ver los favoritos del usuario",
+                    content = @Content),
+    })
+//    @JsonView(UserViews.Favoritos.class)
+    @GetMapping("/usuario/favorito/")
+    public PageDto<ProductDto> mostrarFavoritos(
+            @PageableDefault(size = 5, page = 0) Pageable pageable,
+            @AuthenticationPrincipal User user){
+        User usuario = usuarioService.findUserFavoritos(user.getId());
+        return productoService.paginarFavoritos(usuario, pageable);
+//        return usuario.getFavoritos().stream().map(ProductDto::fromProduct).toList();
     }
 
     @Operation(summary = "Elimina un favorito del en base a su ID")

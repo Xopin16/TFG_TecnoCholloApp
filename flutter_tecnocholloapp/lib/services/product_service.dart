@@ -64,9 +64,9 @@ class ProductService {
     return response;
   }
 
-  Future<ProductResponse> editProduct(
+  Future<Product> editProduct(
       int id, String nombre, double precio, String descripcion) async {
-    ProductResponse response =
+    Product response =
         await _productRepository.editProduct(id, nombre, precio, descripcion);
     return response;
   }
