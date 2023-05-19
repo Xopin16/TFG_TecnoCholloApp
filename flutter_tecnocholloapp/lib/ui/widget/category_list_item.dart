@@ -4,8 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tecnocholloapp/blocs/category/category.dart';
 import '../../models/category.dart';
 import '../../models/user.dart';
-import '../pages/edit_category_page.dart';
-import '../pages/new_product_page.dart';
 import '../pages/products_category_page.dart';
 
 class CategoryListItem extends StatelessWidget {
@@ -65,19 +63,6 @@ class CategoryListItem extends StatelessWidget {
                         );
                       },
                       icon: Icon(Icons.visibility),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => NewProductForm(
-                              id: category.id,
-                            ),
-                          ),
-                        );
-                      },
-                      icon: Icon(Icons.add),
                     ),
                   ],
                 ),

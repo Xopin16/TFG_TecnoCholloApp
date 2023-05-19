@@ -65,18 +65,18 @@ class ProductRepository {
     return Product.fromJson(jsonDecode(jsonResponse));
   }
 
-  Future<ProductResponse> editProduct(
+  Future<Product> editProduct(
       int id, String nombre, double precio, String descripcion) async {
-    String url = "/producto/$id";
+    String url = "/usuario/producto/$id";
     var jsonResponse = await _client.put(
         url,
         CreateProduct(
-            nombre: nombre, precio: precio, descripcion: descripcion));
-    return ProductResponse.fromJson(jsonDecode(jsonResponse));
+            id: id, nombre: nombre, precio: precio, descripcion: descripcion));
+    return Product.fromJson(jsonDecode(jsonResponse));
   }
 
   void deleteProduct(int id) async {
-    String url = "/producto/$id";
+    String url = "/usuario/producto/$id";
     await _client.delete(url);
   }
 }

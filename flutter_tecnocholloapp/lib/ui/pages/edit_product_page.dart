@@ -29,7 +29,7 @@ class EditProductBloc extends FormBloc<String, String> {
   void onSubmitting() async {
     // await Future<void>.delayed(const Duration(seconds: 1));
     try {
-      final result = await _productService.newProduct(
+      final result = await _productService.editProduct(
           id, nombre.value, double.parse(precio.value), descripcion.value);
       emitSuccess();
     } on Exception catch (_) {

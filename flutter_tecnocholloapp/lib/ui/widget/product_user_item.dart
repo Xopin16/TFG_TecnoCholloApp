@@ -5,6 +5,7 @@ import 'package:flutter_tecnocholloapp/blocs/productUser/product_user_event.dart
 import '../../blocs/productUser/product_user.dart';
 import '../../models/models.dart';
 import '../pages/details_page.dart';
+import '../pages/edit_product_page.dart';
 
 class ProductUserListItem extends StatelessWidget {
   final Product product;
@@ -61,6 +62,12 @@ class ProductUserListItem extends StatelessWidget {
                   children: [
                     IconButton(
                       onPressed: () {
+                        dialog(context, product);
+                      },
+                      icon: Icon(Icons.delete),
+                    ),
+                    IconButton(
+                      onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -70,68 +77,25 @@ class ProductUserListItem extends StatelessWidget {
                       },
                       icon: Icon(Icons.visibility),
                     ),
+                    IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => EditProductForm(
+                              id: product.id,
+                              user: user,
+                            ),
+                          ),
+                        );
+                      },
+                      icon: Icon(Icons.edit),
+                    ),
                   ],
                 ),
               ],
             ),
           ),
-          // Padding(
-          //   padding: const EdgeInsets.symmetric(horizontal: 12.0),
-          //   child: Text(
-          //     "${utf8.decode(product.nombre.codeUnits)}",
-          //     style: textTheme.titleLarge,
-          //     overflow: TextOverflow.ellipsis,
-          //     maxLines: 2,
-          //   ),
-          // ),
-          // SizedBox(height: 8),
-          // Padding(
-          //   padding: const EdgeInsets.symmetric(horizontal: 12.0),
-          //   child: Text(
-          //     "${product.precio}€",
-          //     style: textTheme.titleMedium,
-          //   ),
-          // ),
-          // SizedBox(height: 8),
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.end,
-          //   children: [
-          //     IconButton(
-          //       onPressed: () {
-          //         //                       onPressed: () {
-          //         dialog(context, product);
-          //         //                       }
-          //       },
-          //       icon: Icon(Icons.delete),
-          //     ),
-          //     IconButton(
-          //       onPressed: () {
-          //         Navigator.push(
-          //           context,
-          //           MaterialPageRoute(
-          //             builder: (_) => DetailPage(id: product.id),
-          //           ),
-          //         );
-          //       },
-          //       icon: Icon(Icons.visibility),
-          //     ),
-          //     // IconButton(
-          //     //   onPressed: () {
-          //     //     Navigator.push(
-          //     //       context,
-          //     //       MaterialPageRoute(
-          //     //         builder: (_) => EditProductForm(
-          //     //           id: product.id,
-          //     //           user: user,
-          //     //         ),
-          //     //       ),
-          //     //     );
-          //     //   },
-          //     //   icon: Icon(Icons.edit),
-          //     // ),
-          //   ],
-          // ),
-          // SizedBox(height: 8),
         ],
       ),
     );
@@ -146,12 +110,20 @@ class ProductUserListItem extends StatelessWidget {
           actions: <Widget>[
             ElevatedButton(
               child: const Text('Cancelar'),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(
+                    Color.fromARGB(210, 102, 97, 97)),
+              ),
               onPressed: () {
                 Navigator.pop(context);
               },
             ),
             ElevatedButton(
               child: const Text('Borrar'),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(
+                    Color.fromARGB(211, 244, 67, 54)),
+              ),
               onPressed: () {
                 BlocProvider.of<ProductUserBloc>(contexto)
                   ..add(RemoveProduct(product.id));

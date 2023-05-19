@@ -1,13 +1,13 @@
 package com.salesianostriana.dam.tecnocholloapp.venta.model.dto;
 
-import com.salesianostriana.dam.tecnocholloapp.lineaventa.dto.LineaVentaDto;
-import com.salesianostriana.dam.tecnocholloapp.lineaventa.model.LineaVenta;
+import com.salesianostriana.dam.tecnocholloapp.producto.dto.ProductDto;
 import com.salesianostriana.dam.tecnocholloapp.venta.model.Venta;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,19 +17,22 @@ import java.util.List;
 public class VentaDto {
 
     private Long id;
-    private List<LineaVentaDto> lineasDeVentaDto = new ArrayList<>();
 
-    private double precioFinal;
+    private double precio;
+
+    private List<ProductDto> productDtos = new ArrayList<>();
+
+    private LocalDate fechaVenta;
 
     private String nombreUsuario;
 
-    public static VentaDto of(Venta venta) {
-
-        return VentaDto.builder()
+    public static VentaDto of(Venta venta){
+        return VentaDto
+                .builder()
                 .id(venta.getId())
-                .lineasDeVentaDto(venta.getLista().stream().map(LineaVentaDto::of).toList())
+                .productDtos(venta.getProducts().stream().map(ProductDto::fromProduct).toList())
+                .fechaVenta(venta.getFechaVenta())
                 .nombreUsuario(venta.getUser().getUsername())
-                .precioFinal(venta.calcularTotal())
                 .build();
     }
 }

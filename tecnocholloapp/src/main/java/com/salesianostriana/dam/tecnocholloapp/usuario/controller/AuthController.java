@@ -161,11 +161,12 @@ public class AuthController {
     })
     @JsonView({UserViews.Master.class})
     @PutMapping("/user/changePassword")
-    public ResponseEntity<UserDto> changePassword(@Valid @RequestBody UserPasswordDto userPasswordDto,
+    public UserDto changePassword(@Valid @RequestBody UserPasswordDto userPasswordDto,
                                                   @AuthenticationPrincipal User loggedUser) {
 
-        User modified = userService.editPassword(loggedUser.getId(), userPasswordDto.getNewPassword());
-        return ResponseEntity.ok(UserDto.fromUser(modified));
+//        User modified = userService.editPassword(loggedUser.getId(), userPasswordDto.getNewPassword());
+        return UserDto.fromUser(userService.editPassword(loggedUser, userPasswordDto));
+//        return ResponseEntity.ok(UserDto.fromUser(modified));
     }
 
 }

@@ -43,7 +43,7 @@ public interface ProductoRepository extends JpaRepository<Product, Long>, JpaSpe
     Page<Product> productConUser(UUID id, Pageable pageable);
 
     @Query("""
-            select u.favoritos
+            select distinct u.favoritos
             from User u join u.favoritos
             where u.id = :id
             """)

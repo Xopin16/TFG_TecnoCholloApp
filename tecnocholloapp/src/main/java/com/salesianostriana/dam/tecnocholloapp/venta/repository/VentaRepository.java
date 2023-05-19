@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface VentaRepository extends JpaRepository<Venta, Long> {
 
-    @Query("select v from Venta v where v.user = user")
-    public List<Venta> obtenerVentas(User user);
+//    @Query("select v from Venta v where v.user = user")
+//    public List<Venta> obtenerVentas(User user);
 }

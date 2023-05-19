@@ -1,6 +1,7 @@
 package com.salesianostriana.dam.tecnocholloapp.venta.model;
 
-import com.salesianostriana.dam.tecnocholloapp.lineaventa.model.LineaVenta;
+import com.salesianostriana.dam.tecnocholloapp.carrito.model.Carrito;
+import com.salesianostriana.dam.tecnocholloapp.producto.model.Product;
 import com.salesianostriana.dam.tecnocholloapp.usuario.model.User;
 import lombok.*;
 
@@ -27,21 +28,24 @@ public class Venta {
     @ManyToOne
     private User user;
 
-    @Builder.Default
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy="venta", fetch = FetchType.EAGER)
-    private List<LineaVenta> lista = new ArrayList<>();
+    @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL)
+    private List<Product> products = new ArrayList<>();
+
+//    @Builder.Default
+//    @ToString.Exclude
+//    @EqualsAndHashCode.Exclude
+//    @OneToMany(mappedBy="venta", fetch = FetchType.EAGER)
+//    private List<LineaVenta> lista = new ArrayList<>();
 
 
-    public Double calcularTotal(){
-        return lista.stream()
-                .mapToDouble(linea -> linea.getProducto().getPrecio() * linea.getCantidad())
-                .sum();
-    }
-
-    public void addLineaVenta(LineaVenta lineaVenta) {
-        lineaVenta.setVenta(this);
-        lista.add(lineaVenta);
-    }
+//    public Double calcularTotal(){
+//        return lista.stream()
+//                .mapToDouble(linea -> linea.getProducto().getPrecio() * linea.getCantidad())
+//                .sum();
+//    }
+//
+//    public void addLineaVenta(LineaVenta lineaVenta) {
+//        lineaVenta.setVenta(this);
+//        lista.add(lineaVenta);
+//    }
 }

@@ -1,6 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_tecnocholloapp/services/carrito_service.dart';
+import '../../config/locator.dart';
 import '../../models/models.dart';
+import '../../services/product_service.dart';
 
 class DetailsListItem extends StatelessWidget {
   const DetailsListItem({super.key, required this.details});
@@ -46,16 +49,8 @@ class DetailsListItem extends StatelessWidget {
                   child: IconButton(
                     icon: Icon(Icons.favorite, color: Colors.red),
                     onPressed: () {
-                      // acción al presionar el icono de me gusta
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: IconButton(
-                    icon: Icon(Icons.star, color: Colors.yellow),
-                    onPressed: () {
-                      // acción al presionar el icono de favorito
+                      final productService = getIt<ProductService>();
+                      productService.addFavourite(details.id);
                     },
                   ),
                 ),
@@ -89,20 +84,20 @@ class DetailsListItem extends StatelessWidget {
               "${details.precio}" + "€",
               style: textTheme.bodySmall,
             ),
-            SizedBox(
-              height: 16.0,
-            ),
-            Text(
-              "Fecha de publicación:",
-              style: textTheme.titleSmall,
-            ),
-            SizedBox(
-              height: 8.0,
-            ),
-            Text(
-              "${details.fechaPublicacion}",
-              style: textTheme.bodySmall,
-            ),
+            // SizedBox(
+            //   height: 16.0,
+            // ),
+            // Text(
+            //   "Fecha de publicación:",
+            //   style: textTheme.titleSmall,
+            // ),
+            // SizedBox(
+            //   height: 8.0,
+            // ),
+            // Text(
+            //   "${details.fechaPublicacion}",
+            //   style: textTheme.bodySmall,
+            // ),
             SizedBox(
               height: 16.0,
             ),
@@ -121,10 +116,11 @@ class DetailsListItem extends StatelessWidget {
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
-                  // padding: MaterialStateProperty.all<EdgeInsets>(
-                  //     EdgeInsets.fromLTRB(0, 10, 0, 10)),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  final carritoService = getIt<CarritoService>();
+                  carritoService.addProductToCart(details.id);
+                },
               ),
             )
           ],

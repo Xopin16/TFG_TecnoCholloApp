@@ -1,9 +1,8 @@
 package com.salesianostriana.dam.tecnocholloapp.carrito.model;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.salesianostriana.dam.tecnocholloapp.lineaventa.model.LineaVenta;
 import com.salesianostriana.dam.tecnocholloapp.producto.model.Product;
 import com.salesianostriana.dam.tecnocholloapp.usuario.model.User;
+import com.salesianostriana.dam.tecnocholloapp.venta.model.Venta;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,17 +10,15 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@NamedEntityGraph(name = "carrito-with-lineasDeVenta",
-        attributeNodes = @NamedAttributeNode("lineasDeVenta"))
+//@NamedEntityGraph(name = "carrito-with-lineasDeVenta",
+//        attributeNodes = @NamedAttributeNode("lineasDeVenta"))
 public class Carrito {
 
     @Id
@@ -30,8 +27,25 @@ public class Carrito {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<LineaVenta> lineasDeVenta = new ArrayList<>();
+    private List<Product> productos = new ArrayList<>();
 
-    @OneToOne
+    @ManyToOne
     private User user;
+
+    @ManyToOne
+    private Venta venta;
+
+    public double calcularTotal() {
+        double total = 0;
+        for (Product producto : productos) {
+            total += producto.getPrecio();
+        }
+        return total;
+    }
+
+    public void removeProductos(List<Product> productos){
+        this.productos.removeAll(productos);
+    }
+
+
 }

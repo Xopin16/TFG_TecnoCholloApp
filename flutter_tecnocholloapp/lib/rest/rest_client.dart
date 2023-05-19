@@ -78,7 +78,7 @@ class RestClient {
     }
   }
 
-  Future<dynamic> put(String url, [dynamic body]) async {
+  Future<dynamic> put(String url, dynamic body) async {
     try {
       Uri uri = Uri.parse(ApiConstants.baseUrl + url);
 

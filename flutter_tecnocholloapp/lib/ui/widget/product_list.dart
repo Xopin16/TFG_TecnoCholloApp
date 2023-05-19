@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_tecnocholloapp/ui/widget/favourite_list.dart';
 import 'package:flutter_tecnocholloapp/ui/widget/product_list_item.dart';
 import '../../blocs/blocs.dart';
+import '../pages/new_product_page.dart';
 import 'bottom_loader.dart';
 
 class ProductList extends StatefulWidget {
@@ -13,6 +15,7 @@ class ProductList extends StatefulWidget {
 
 class _ProductListState extends State<ProductList> {
   final _scrollController = ScrollController();
+  int id = 0;
 
   @override
   void initState() {
@@ -40,9 +43,25 @@ class _ProductListState extends State<ProductList> {
                   children: [
                     IconButton(
                       onPressed: () {
-                        // Lógica para abrir el filtro
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => FavouriteScreen()),
+                        );
                       },
-                      icon: Icon(Icons.filter_list),
+                      icon: Icon(Icons.favorite),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => NewProductForm(
+                              id: id,
+                            ),
+                          ),
+                        );
+                      },
+                      icon: Icon(Icons.add),
                     ),
                     Expanded(
                       child: TextField(

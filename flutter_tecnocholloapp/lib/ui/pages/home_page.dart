@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_tecnocholloapp/blocs/carrito/carrito_event.dart';
 import 'package:flutter_tecnocholloapp/config/locator.dart';
 import 'package:flutter_tecnocholloapp/repositories/repositories.dart';
+import 'package:flutter_tecnocholloapp/services/carrito_service.dart';
 import 'package:flutter_tecnocholloapp/services/category_service.dart';
 import 'package:flutter_tecnocholloapp/services/product_service.dart';
+import 'package:flutter_tecnocholloapp/ui/pages/login_page.dart';
+import 'package:flutter_tecnocholloapp/ui/widget/carrito_list.dart';
 import '../../blocs/blocs.dart';
+import '../../blocs/carrito/carrito_bloc.dart';
 import '../../blocs/category/category.dart';
 import '../../blocs/productUser/product_user.dart';
 import '../../models/user.dart';
 import '../widget/widget.dart';
-import 'change_password_page.dart';
 
 class HomePage extends StatefulWidget {
   final User user;
@@ -165,8 +169,12 @@ class CategoryScreen extends StatelessWidget {
 class CarritoScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [Text("AQUI VA EL CARRITO")],
+    return BlocProvider(
+      create: (context) {
+        final carritoService = getIt<CarritoService>();
+        return CarritoBloc(carritoService)..add(CarritoFetched());
+      },
+      child: const CarritoList(),
     );
   }
 }
@@ -174,9 +182,7 @@ class CarritoScreen extends StatelessWidget {
 class VentasScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [Text("AQUI VAN LAS VENTAS")],
-    );
+    return Center(child: Text("AQUI VA EL HISTORICO DE VENTAS DEL USUARIO"));
   }
 }
 
@@ -260,35 +266,35 @@ class ProfileScreen extends StatelessWidget {
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  SizedBox(
-                    height: isMobile ? 40 : 50,
-                    width: isMobile ? double.infinity : 150,
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                            Color.fromARGB(210, 228, 222, 222)),
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                              side: BorderSide(color: Colors.black)),
-                        ),
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => PasswordPage(),
-                          ),
-                        );
-                      },
-                      child: Text(
-                        'Cambiar contraseña',
-                        style: TextStyle(fontSize: 16, color: Colors.black),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: isMobile ? 16 : 32),
+                  // SizedBox(
+                  //   height: isMobile ? 40 : 50,
+                  //   width: isMobile ? double.infinity : 150,
+                  //   child: ElevatedButton(
+                  //     style: ButtonStyle(
+                  //       backgroundColor: MaterialStateProperty.all<Color>(
+                  //           Color.fromARGB(210, 228, 222, 222)),
+                  //       shape:
+                  //           MaterialStateProperty.all<RoundedRectangleBorder>(
+                  //         RoundedRectangleBorder(
+                  //             borderRadius: BorderRadius.circular(20),
+                  //             side: BorderSide(color: Colors.black)),
+                  //       ),
+                  //     ),
+                  //     onPressed: () {
+                  //       Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(
+                  //           builder: (context) => PasswordPage(),
+                  //         ),
+                  //       );
+                  //     },
+                  //     child: Text(
+                  //       'Cambiar contraseña',
+                  //       style: TextStyle(fontSize: 16, color: Colors.black),
+                  //     ),
+                  //   ),
+                  // ),
+                  // SizedBox(height: isMobile ? 16 : 32),
                   SizedBox(
                     height: isMobile ? 40 : 50,
                     width: isMobile ? double.infinity : 150,
@@ -304,7 +310,7 @@ class ProfileScreen extends StatelessWidget {
                         ),
                       ),
                       onPressed: () {
-                        authBloc.add(UserLoggedOut());
+                        dialog(context);
                       },
                       child: Text(
                         'Borrar Cuenta',
@@ -312,36 +318,59 @@ class ProfileScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  // SizedBox(
-                  //   height: isMobile ? 40 : 50,
-                  //   width: isMobile ? double.infinity : 150,
-                  //   child: Padding(
-                  //     padding: EdgeInsets.all(8),
-                  //     child: ElevatedButton(
-                  //       style: ButtonStyle(
-                  //         backgroundColor: MaterialStateProperty.all<Color>(
-                  //             Color.fromARGB(211, 244, 67, 54)),
-                  //         shape:
-                  //             MaterialStateProperty.all<RoundedRectangleBorder>(
-                  //           RoundedRectangleBorder(
-                  //             borderRadius: BorderRadius.circular(10),
-                  //           ),
-                  //         ),
-                  //       ),
-                  //       onPressed: () {},
-                  //       child: Text(
-                  //         'Borrar cuenta',
-                  //         style: TextStyle(fontSize: 16, color: Colors.black),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
                 ],
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> dialog(BuildContext contexto) {
+    return showDialog<void>(
+      context: contexto,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("¿Estás seguro de querer eliminar tu cuenta?"),
+          actions: <Widget>[
+            ElevatedButton(
+              child: const Text('Cancelar'),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(
+                    Color.fromARGB(210, 102, 97, 97)),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            ElevatedButton(
+              child: const Text('Borrar'),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(
+                    Color.fromARGB(211, 244, 67, 54)),
+              ),
+              onPressed: () {
+                BlocProvider.of<AuthenticationBloc>(contexto)
+                    .add(DeleteAccount());
+
+                BlocProvider.of<AuthenticationBloc>(contexto)
+                    .stream
+                    .listen((state) {
+                  if (state is UserDeletedState) {
+                    BlocProvider.of<AuthenticationBloc>(contexto)
+                        .add(UserLoggedOut());
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (_) => LoginPage()),
+                    );
+                  }
+                });
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

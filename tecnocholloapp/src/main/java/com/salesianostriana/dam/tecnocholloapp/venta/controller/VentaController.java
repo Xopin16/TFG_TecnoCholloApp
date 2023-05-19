@@ -25,24 +25,27 @@ public class VentaController {
 
     private final UsuarioService usuarioService;
 
-    @GetMapping("/admin/historico/")
-    public List<VentaDto> mostrarHistorico() {
-        return ventaService.mostrarHistorico();
-    }
-
-    @GetMapping("/usuario/historico/")
-    public List<VentaDto> mostrarVentasUsuario(@AuthenticationPrincipal User user) {
-        return ventaService.mostrarVentasUsuario(user);
-    }
-
-//    @GetMapping("/usuario/detalles/{id}")
-//    public VentaDto mostrarDetallesVenta(@PathVariable("id") Long id) {
-//        return ventaService.findById(id);
-//    }
-
     @PostMapping("/usuario/checkout/")
-    public ResponseEntity<VentaDto> finalizarCompra(@AuthenticationPrincipal User user){
+    public VentaDto finalizarCompra(@AuthenticationPrincipal User user){
         User usuario = usuarioService.findUserProducts(user.getId());
-        return ResponseEntity.ok(ventaService.checkout(usuario));
+        Venta venta = ventaService.finalizarCompra(usuario);
+        return VentaDto.of(venta);
     }
+
+//    @GetMapping("/admin/historico/")
+//    public List<VentaDto> mostrarHistorico() {
+//        return ventaService.mostrarHistorico();
+//    }
+//
+//    @GetMapping("/usuario/historico/")
+//    public List<VentaDto> mostrarVentasUsuario(@AuthenticationPrincipal User user) {
+//        return ventaService.mostrarVentasUsuario(user);
+//    }
+//
+////    @GetMapping("/usuario/detalles/{id}")
+////    public VentaDto mostrarDetallesVenta(@PathVariable("id") Long id) {
+////        return ventaService.findById(id);
+////    }
+//
+
 }

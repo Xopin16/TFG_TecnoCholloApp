@@ -1,7 +1,9 @@
 package com.salesianostriana.dam.tecnocholloapp.producto.model;
 
+import com.salesianostriana.dam.tecnocholloapp.carrito.model.Carrito;
 import com.salesianostriana.dam.tecnocholloapp.categoria.model.Category;
 import com.salesianostriana.dam.tecnocholloapp.usuario.model.User;
+import com.salesianostriana.dam.tecnocholloapp.venta.model.Venta;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -41,6 +43,13 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "usuario_id", foreignKey = @ForeignKey(name ="FK_PRODUCTO_USUARIO"))
     private User user;
+
+    @ManyToOne
+    private Carrito carrito;
+
+    @ManyToOne
+    private Venta venta;
+
 
     @PreRemove
     public void deleteProduct(){

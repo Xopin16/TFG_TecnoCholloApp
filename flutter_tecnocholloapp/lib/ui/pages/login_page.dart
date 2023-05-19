@@ -3,9 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tecnocholloapp/config/locator.dart';
 import 'package:flutter_tecnocholloapp/ui/pages/register_page.dart';
 
-import '../../blocs/authentication/authentication.dart';
 import '../../blocs/blocs.dart';
-import '../../blocs/login/login_bloc.dart';
 import '../../services/authentication_service.dart';
 
 class LoginPage extends StatelessWidget {
@@ -43,6 +41,9 @@ class LoginPage extends StatelessWidget {
                     )
                   ],
                 ));
+              }
+              if (state is UserDeletedState) {
+                return _AuthForm();
               }
               // return splash screen
               return Center(

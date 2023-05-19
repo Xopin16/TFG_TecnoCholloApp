@@ -94,6 +94,7 @@ class JwtAuthenticationService extends AuthenticationService {
 
   @override
   Future<void> deleteUser() async {
+    // await _localStorageService.deleteFromDisk("user_token");
     return _userRepository.deleteUser();
   }
 }

@@ -78,6 +78,7 @@ public class SecurityConfig {
                                 .antMatchers("/producto/**").hasAnyRole("ADMIN", "USER")
                                 .antMatchers("/categoria/**").hasAnyRole("ADMIN", "USER")
                                 .antMatchers("/admin/**").hasRole("ADMIN")
+                                .antMatchers("/user/**").authenticated()
                                 .antMatchers("/auth/register/admin").hasRole("ADMIN")
                                 .anyRequest().authenticated();
 

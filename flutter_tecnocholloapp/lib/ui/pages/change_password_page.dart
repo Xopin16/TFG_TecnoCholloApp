@@ -53,7 +53,7 @@ class PasswordPage extends StatelessWidget {
 
           return Scaffold(
             resizeToAvoidBottomInset: false,
-            appBar: AppBar(title: const Text('Login')),
+            appBar: AppBar(title: const Text('Cambiar contraseña')),
             body: FormBlocListener<PasswordBloc, String, String>(
               onSubmitting: (context, state) {
                 LoadingDialog.show(context);
@@ -102,7 +102,7 @@ class PasswordPage extends StatelessWidget {
                       ),
                       ElevatedButton(
                         onPressed: changePasswordBloc.submit,
-                        child: const Text('EDITA'),
+                        child: const Text('GUARDAR'),
                       ),
                     ],
                   ),
