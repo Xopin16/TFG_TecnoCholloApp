@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "4af5c4c4-1726-42e1-8293-c38c52d74283",
+		"_postman_id": "9d39a234-e9a8-48a6-a341-894ee5b9ed82",
 		"name": "TECNOCHOLLOAPP",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "23783395"
@@ -15,7 +15,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/producto/?page=0",
+							"raw": "{{baseUrl}}/producto/?page=9",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -26,7 +26,7 @@
 							"query": [
 								{
 									"key": "page",
-									"value": "0"
+									"value": "9"
 								}
 							]
 						}
@@ -39,13 +39,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/producto/11",
+							"raw": "{{baseUrl}}/producto/16",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"producto",
-								"11"
+								"16"
 							]
 						}
 					},
@@ -86,14 +86,14 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/usuario/producto/14",
+							"raw": "{{baseUrl}}/usuario/producto/16",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"usuario",
 								"producto",
-								"14"
+								"16"
 							]
 						}
 					},
@@ -106,7 +106,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"nombre\": \"Iphone 18\",\n    \"precio\": 154.2,\n    \"descripcion\" : \"description\"\n}",
+							"raw": "{\n    \"nombre\": \"iPhone 13 Pro\",\n    \"precio\": 1100,\n    \"descripcion\": \"El último modelo de Apple\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -114,13 +114,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/producto/16",
+							"raw": "{{baseUrl}}/usuario/producto/12",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
+								"usuario",
 								"producto",
-								"16"
+								"12"
 							]
 						}
 					},
@@ -132,11 +133,12 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/producto/16",
+							"raw": "{{baseUrl}}/usuario/producto/16",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
+								"usuario",
 								"producto",
 								"16"
 							]
@@ -214,7 +216,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/usuario/?page=0",
+							"raw": "{{baseUrl}}/usuario/?page=1",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -225,7 +227,7 @@
 							"query": [
 								{
 									"key": "page",
-									"value": "0"
+									"value": "1"
 								}
 							]
 						}
@@ -238,13 +240,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/usuario/751c3611-8882-5751-9f0d-d216dd047ebc",
+							"raw": "{{baseUrl}}/usuario/35f1c870-f312-11ed-a05b-0242ac120003",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"usuario",
-								"751c3611-8882-5751-9f0d-d216dd047ebc"
+								"35f1c870-f312-11ed-a05b-0242ac120003"
 							]
 						}
 					},
@@ -648,7 +650,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"nombre\": \"Note 1100\",\n    \"precio\": 154.2,\n    \"descripcion\" : \"descripcion\"\n}",
+							"raw": "{\n    \"nombre\": \"iPhone 13 Pro\",\n    \"precio\": 1099.99,\n    \"descripcion\": \"El último modelo de Apple\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -656,14 +658,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/admin/producto/11",
+							"raw": "{{baseUrl}}/admin/producto/12",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"admin",
 								"producto",
-								"11"
+								"12"
 							]
 						}
 					},
@@ -694,14 +696,14 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/admin/usuario/e641d9ec-ca50-4002-b87b-464b6c7686a9",
+							"raw": "{{baseUrl}}/admin/usuario/35f1c870-f312-11ed-a05b-0242ac120003",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"admin",
 								"usuario",
-								"e641d9ec-ca50-4002-b87b-464b6c7686a9"
+								"35f1c870-f312-11ed-a05b-0242ac120003"
 							]
 						}
 					},
@@ -809,20 +811,227 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/categoria/producto/49?page=1",
+							"raw": "{{baseUrl}}/categoria/producto/1/?page=0",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"categoria",
 								"producto",
-								"49"
+								"1",
+								""
 							],
 							"query": [
 								{
 									"key": "page",
-									"value": "1"
+									"value": "0"
 								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Venta",
+			"item": [
+				{
+					"name": "GET Historico",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/admin/historico/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"admin",
+								"historico",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Ventas usuario",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/usuario/historico/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"usuario",
+								"historico",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Detalles venta",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/usuario/detalles/10006",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"usuario",
+								"detalles",
+								"10006"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Finalizar compra",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/usuario/checkout/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"usuario",
+								"checkout",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Carrito",
+			"item": [
+				{
+					"name": "GET Carrito",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/usuario/cesta/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"usuario",
+								"cesta",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Agregar a carrito",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/usuario/cesta/producto/16",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"usuario",
+								"cesta",
+								"producto",
+								"16"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Borrar de carrito",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/usuario/cesta/100/producto/16",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"usuario",
+								"cesta",
+								"100",
+								"producto",
+								"16"
 							]
 						}
 					},
