@@ -28,7 +28,12 @@ public class CarritoController {
     @GetMapping("/usuario/cesta/")
     public CarritoDto mostrarCarrito(@AuthenticationPrincipal User user){
         User usuario = usuarioService.findUserProducts(user.getId());
-        Carrito carrito = carritoService.findCartById(user.getCarrito().getId());
+        Carrito carrito;
+        if(usuario.getCarrito() == null){
+            carrito = new Carrito();
+        }else{
+            carrito = carritoService.findCartById(user.getCarrito().getId());
+        }
         return CarritoDto.of(carrito);
     }
 
@@ -40,13 +45,15 @@ public class CarritoController {
     }
 
     @DeleteMapping("/usuario/cesta/{idProducto}")
-    public ResponseEntity<?> borrarProducto(@AuthenticationPrincipal User user, @PathVariable Long idProducto){
-        return null;
+    public ResponseEntity<?> borrarProductoDelCarrito(@AuthenticationPrincipal User user, @PathVariable Long idProducto){
+        carritoService.borrarProductoDelCarrito(idProducto, user);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/usuario/cesta/")
     public ResponseEntity<?> borrarCarrito(@AuthenticationPrincipal User user){
-        return null;
+        carritoService.borrarCarrito(user);
+        return ResponseEntity.noContent().build();
     }
 
 

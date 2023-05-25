@@ -7,3 +7,8 @@ abstract class ProductEvent extends Equatable {
 
 class ProductFetched extends ProductEvent {}
 
+class ProductFiltered extends ProductEvent {
+  final String nombre;
+
+  ProductFiltered(this.nombre);
+}

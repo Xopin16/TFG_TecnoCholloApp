@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 import '../../models/user.dart';
 import 'home_page.dart';
 
-class DeletedCategoryPage extends StatefulWidget {
+class DeletedCarritoPage extends StatefulWidget {
   final User user;
-  const DeletedCategoryPage({super.key, required this.user});
+  const DeletedCarritoPage({super.key, required this.user});
 
   @override
-  State<DeletedCategoryPage> createState() => _DeletedCategoryPageState();
+  State<DeletedCarritoPage> createState() => _DeletedCarritoPageState();
 }
 
-class _DeletedCategoryPageState extends State<DeletedCategoryPage> {
+class _DeletedCarritoPageState extends State<DeletedCarritoPage> {
   @override
   void initState() {
     Timer(Duration(seconds: 1), () {
@@ -40,7 +40,7 @@ class _DeletedCategoryPageState extends State<DeletedCategoryPage> {
             ),
             const SizedBox(height: 10),
             const Text(
-              '¡SE HA ELIMINADO DE FAVORITOS!',
+              '¡PRODUCTO BORRADO!',
               style: TextStyle(fontSize: 24, color: Colors.black),
               textAlign: TextAlign.center,
             ),

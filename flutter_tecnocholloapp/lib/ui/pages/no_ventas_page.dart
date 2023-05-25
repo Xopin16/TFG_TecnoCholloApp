@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class NoProducts extends StatelessWidget {
+class NoVentas extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -19,7 +19,7 @@ class NoProducts extends StatelessWidget {
           SizedBox(height: 16.0),
           Center(
             child: Text(
-              ("NO HAY PRODUCTOS"),
+              ("NO HA REALIZADO NINGUNA COMPRA"),
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 24.0,

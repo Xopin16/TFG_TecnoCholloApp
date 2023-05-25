@@ -36,6 +36,14 @@ public class Product {
     @Builder.Default
     private LocalDate fechaPublicacion = LocalDate.now();
 
+    @Column(name = "in_cart")
+    private boolean inCart = false;
+
+    @Column(name = "in_fav")
+    private boolean inFav = false;
+
+    private boolean sent = false;
+
     @ManyToOne
     @JoinColumn(name = "categoria_id", foreignKey = @ForeignKey(name ="FK_PRODUCTO_CATEGORIA"))
     private Category categoria;

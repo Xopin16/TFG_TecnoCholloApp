@@ -14,9 +14,19 @@ class VentaRepository {
     _client = getIt<RestAuthenticatedClient>();
   }
 
+  Future<List<Venta>> getVentasUsuario() async {
+    String url = "/usuario/historico/";
+    var jsonResponse = await _client.get(url);
+    var ventasData = jsonDecode(jsonResponse) as List<dynamic>;
+
+    List<Venta> ventas =
+        ventasData.map((data) => Venta.fromJson(data)).toList();
+    return ventas;
+  }
+
   Future<Venta> checkout() async {
     String url = "/usuario/checkout/";
-    var jsonResponse = await _client.get(url);
+    var jsonResponse = await _client.post(url);
     var venta = Venta.fromJson(jsonDecode(jsonResponse));
     return venta;
   }

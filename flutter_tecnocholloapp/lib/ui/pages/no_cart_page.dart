@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class NoProducts extends StatelessWidget {
+class NoCart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -11,7 +11,7 @@ class NoProducts extends StatelessWidget {
         children: [
           Center(
             child: Icon(
-              Icons.shopping_bag_outlined,
+              Icons.shopping_cart,
               size: 96.0,
               color: Colors.grey[500],
             ),
@@ -19,7 +19,7 @@ class NoProducts extends StatelessWidget {
           SizedBox(height: 16.0),
           Center(
             child: Text(
-              ("NO HAY PRODUCTOS"),
+              ("NO HAY NINGÚN PRODUCTO EN EL CARRITO"),
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 24.0,

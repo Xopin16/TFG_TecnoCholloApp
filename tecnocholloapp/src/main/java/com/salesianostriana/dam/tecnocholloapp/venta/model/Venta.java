@@ -31,21 +31,12 @@ public class Venta {
     @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL)
     private List<Product> products = new ArrayList<>();
 
-//    @Builder.Default
-//    @ToString.Exclude
-//    @EqualsAndHashCode.Exclude
-//    @OneToMany(mappedBy="venta", fetch = FetchType.EAGER)
-//    private List<LineaVenta> lista = new ArrayList<>();
+    public double calcularTotal() {
+        double total = 0;
+        for (Product producto : products) {
+            total += producto.getPrecio();
+        }
+        return total;
+    }
 
-
-//    public Double calcularTotal(){
-//        return lista.stream()
-//                .mapToDouble(linea -> linea.getProducto().getPrecio() * linea.getCantidad())
-//                .sum();
-//    }
-//
-//    public void addLineaVenta(LineaVenta lineaVenta) {
-//        lineaVenta.setVenta(this);
-//        lista.add(lineaVenta);
-//    }
 }

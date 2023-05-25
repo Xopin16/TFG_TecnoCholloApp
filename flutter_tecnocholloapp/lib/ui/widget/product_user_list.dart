@@ -25,76 +25,56 @@ class _ProductUserListState extends State<ProductUserList> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ProductUserBloc, ProductUserState>(
-        builder: (context, state) {
-      switch (state.status) {
-        case ProductUserStatus.failure:
-          return const Center(child: Text('failed to fetch products'));
-        // return const CircularProgressIndicator();
-        case ProductUserStatus.success:
-          if (state.products.isEmpty) {
-            return NoProducts();
-          }
-          return Column(
-            children: [
-              Padding(padding: EdgeInsets.fromLTRB(0, 0, 0, 12)),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      // Lógica para abrir el filtro
-                    },
-                    icon: Icon(Icons.filter_list),
-                  ),
-                  Expanded(
-                    child: TextField(
-                      onChanged: (value) {
-                        // Lógica para buscar
-                      },
-                      decoration: InputDecoration(
-                          hintText: 'Buscar...',
-                          prefixIcon: Icon(Icons.search),
-                          border: UnderlineInputBorder()),
-                    ),
-                  ),
-                ],
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("MIS PRODUCTOS"),
+        backgroundColor: Color.fromARGB(211, 244, 67, 54),
+      ),
+      body: BlocBuilder<ProductUserBloc, ProductUserState>(
+          builder: (context, state) {
+        switch (state.status) {
+          case ProductUserStatus.failure:
+            return const Center(child: Text('failed to fetch products'));
+          // return const CircularProgressIndicator();
+          case ProductUserStatus.success:
+            if (state.products.isEmpty) {
+              return NoProducts();
+            }
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListView.builder(
+                itemBuilder: (BuildContext context, int index) {
+                  return index >= state.products.length
+                      ? const BottomLoader()
+                      : ProductUserListItem(
+                          product: state.products[index],
+                          user: widget.user,
+                        );
+                },
+                itemCount: state.hasReachedMax
+                    ? state.products.length
+                    : state.products.length + 1,
+                controller: _scrollController,
               ),
-              Expanded(
-                child: ListView.builder(
-                  itemBuilder: (BuildContext context, int index) {
-                    return index >= state.products.length
-                        ? const BottomLoader()
-                        : ProductUserListItem(
-                            product: state.products[index],
-                            user: widget.user,
-                          );
-                  },
-                  itemCount: state.hasReachedMax
-                      ? state.products.length
-                      : state.products.length + 1,
-                  controller: _scrollController,
-                ),
-              ),
-            ],
-          );
-        case ProductUserStatus.initial:
-          return const Center(child: CircularProgressIndicator());
+            );
+          case ProductUserStatus.initial:
+            return const Center(child: CircularProgressIndicator());
 
-        case ProductUserStatus.deleted:
-          return DeletedProductPage(
-            user: widget.user,
-          );
+          case ProductUserStatus.deleted:
+            return DeletedProductPage(
+              user: widget.user,
+            );
 
-        case ProductUserStatus.failDeteled:
-          return Text("Fallo al borrar");
+          case ProductUserStatus.failDeteled:
+            return Text("Fallo al borrar");
 
-        // case ProductUserStatus.edited:
-        //   return const EditProductPage()
-        // case ProductUserStatus.failEdited:
-        //   return Text("Fallo al editar");
-      }
-    });
+          // case ProductUserStatus.edited:
+          //   return const EditProductPage()
+          // case ProductUserStatus.failEdited:
+          //   return Text("Fallo al editar");
+        }
+      }),
+    );
   }
 
   @override

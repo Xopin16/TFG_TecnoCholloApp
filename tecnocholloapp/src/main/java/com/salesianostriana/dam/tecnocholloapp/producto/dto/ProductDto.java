@@ -32,6 +32,12 @@ public class ProductDto {
 
     private String usuario;
 
+    private boolean inCart;
+
+    private boolean inFav;
+
+    private boolean sent;
+
     public static ProductDto fromProduct(Product p){
         return ProductDto
                 .builder()
@@ -43,6 +49,9 @@ public class ProductDto {
                 .fechaPublicacion(p.getFechaPublicacion())
                 .categoria(p.getCategoria().getNombre())
                 .usuario(p.getUser().getUsername())
+                .inCart(p.isInCart())
+                .inFav(p.isInFav())
+                .sent(p.isSent())
                 .build();
     }
 

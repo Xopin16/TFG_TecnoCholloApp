@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_tecnocholloapp/services/category_service.dart';
 import 'package:flutter_tecnocholloapp/services/product_service.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
@@ -82,10 +83,9 @@ class _NewProductFormState extends State<NewProductForm> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => _newFormBloc,
-      child: Builder(
-        builder: (context) {
-          final newProductBloc = context.read<NewProductBloc>();
-
+      child: Builder(builder: (context) {
+        final newProductBloc = context.read<NewProductBloc>();
+/*
           return Scaffold(
             resizeToAvoidBottomInset: false,
             appBar: AppBar(
@@ -111,36 +111,129 @@ class _NewProductFormState extends State<NewProductForm> {
                 ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text(state.failureResponse!)));
               },
+*/
+        return Scaffold(
+            resizeToAvoidBottomInset: false,
+            appBar: AppBar(
+              title: const Text('CREAR CHOLLO'),
+              backgroundColor: Color.fromARGB(211, 244, 67, 54),
+            ),
+            body: FormBlocListener<NewProductBloc, String, String>(
+              onSubmitting: (context, state) {
+                LoadingDialog.show(context);
+              },
+              onSubmissionFailed: (context, state) {
+                LoadingDialog.hide(context);
+              },
+              onSuccess: (context, state) {
+                LoadingDialog.hide(context);
+
+                Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (_) => const SuccessScreen()));
+              },
+              onFailure: (context, state) {
+                LoadingDialog.hide(context);
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(state.failureResponse!)));
+              },
               child: SingleChildScrollView(
                 physics: const ClampingScrollPhysics(),
-                child: AutofillGroup(
-                  child: Column(
-                    children: <Widget>[
-                      TextFieldBlocBuilder(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(32, 20, 2, 0),
+                      child: Text(
+                        'Nombre',
+                        style: TextStyle(
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                      child: TextFieldBlocBuilder(
                         textFieldBloc: newProductBloc.nombre,
                         keyboardType: TextInputType.name,
-                        decoration: const InputDecoration(
-                          labelText: 'Nombre',
-                          prefixIcon: Icon(Icons.person),
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(36),
+                            borderSide: BorderSide(
+                              color: Colors.black,
+                            ),
+                          ),
                         ),
                       ),
-                      TextFieldBlocBuilder(
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(32, 2, 2, 0),
+                      child: Text(
+                        'Precio',
+                        style: TextStyle(
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                      child: TextFieldBlocBuilder(
                         textFieldBloc: newProductBloc.precio,
-                        keyboardType: TextInputType.visiblePassword,
-                        decoration: const InputDecoration(
-                          labelText: 'Precio',
-                          prefixIcon: Icon(Icons.price_change),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(36),
+                            borderSide: BorderSide(
+                              color: Colors.black,
+                            ),
+                          ),
                         ),
                       ),
-                      TextFieldBlocBuilder(
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(32, 2, 2, 0),
+                      child: Text(
+                        'Descripción',
+                        style: TextStyle(
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                      child: TextFieldBlocBuilder(
                         textFieldBloc: newProductBloc.descripcion,
-                        keyboardType: TextInputType.visiblePassword,
-                        decoration: const InputDecoration(
-                          labelText: 'Descripcion',
-                          prefixIcon: Icon(Icons.password),
+                        keyboardType: TextInputType.multiline,
+                        maxLines: null,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(36),
+                            borderSide: BorderSide(
+                              color: Colors.black,
+                            ),
+                          ),
                         ),
                       ),
-                      DropdownButtonFormField<int>(
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(32, 2, 2, 0),
+                      child: Text(
+                        'Categoría',
+                        style: TextStyle(
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(16, 0, 16, 8),
+                      child: DropdownButtonFormField<int>(
                         value: selectedCategoryId,
                         items: _categories.category.map((category) {
                           return DropdownMenuItem<int>(
@@ -152,14 +245,20 @@ class _NewProductFormState extends State<NewProductForm> {
                           setState(() {
                             selectedCategoryId = value!;
                             _newFormBloc.id.updateValue(value);
-                            // widget.id = selectedCategoryId;
                           });
                         },
-                        decoration: const InputDecoration(
-                          labelText: 'Categoría',
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(36),
+                            borderSide: BorderSide(
+                              color: Colors.black,
+                            ),
+                          ),
                         ),
                       ),
-                      ElevatedButton(
+                    ),
+                    Center(
+                      child: ElevatedButton(
                         onPressed: newProductBloc.submit,
                         child: const Text('AGREGAR'),
                         style: ButtonStyle(
@@ -173,14 +272,12 @@ class _NewProductFormState extends State<NewProductForm> {
                           ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-            ),
-          );
-        },
-      ),
+            ));
+      }),
     );
   }
 }

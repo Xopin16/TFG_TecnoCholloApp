@@ -4,13 +4,17 @@ import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:flutter_tecnocholloapp/rest/rest.dart';
 
+import '../config/locator.dart';
+
 @Order(-1)
 @singleton
 class AuthenticationRepository {
   late RestClient _client;
+  late RestAuthenticatedClient _cliente;
 
   AuthenticationRepository() {
     _client = GetIt.I.get<RestClient>();
+    _cliente = getIt<RestAuthenticatedClient>();
     //_client = RestClient();
   }
 
@@ -66,7 +70,7 @@ class AuthenticationRepository {
 
   Future<LoginResponse> changePassword(UserPassword userPassword) async {
     String url = "/user/changePassword";
-    var jsonResponse = await _client.put(url, userPassword);
+    var jsonResponse = await _cliente.put(url, userPassword);
     return LoginResponse.fromJson(jsonDecode(jsonResponse));
   }
 }

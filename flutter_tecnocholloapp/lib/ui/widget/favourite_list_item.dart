@@ -1,6 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../blocs/favorito/favorito_bloc.dart';
+import '../../blocs/favorito/favorito_event.dart';
 import '../../models/models.dart';
 
 class FavouriteListItem extends StatelessWidget {
@@ -15,7 +18,7 @@ class FavouriteListItem extends StatelessWidget {
     final imageSize = Size(imageWidth, imageWidth);
 
     return Card(
-      margin: const EdgeInsets.all(10),
+      margin: const EdgeInsets.all(30),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -58,12 +61,8 @@ class FavouriteListItem extends StatelessWidget {
             children: [
               IconButton(
                 onPressed: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (_) => DetailPage(id: product.id),
-                  //   ),
-                  // );
+                  BlocProvider.of<FavouriteBloc>(context)
+                    ..add(RemoveFavorite(product.id));
                 },
                 icon: Icon(Icons.delete),
               ),

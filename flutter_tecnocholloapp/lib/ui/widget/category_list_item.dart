@@ -74,30 +74,30 @@ class CategoryListItem extends StatelessWidget {
     );
   }
 
-  Future<void> dialog(BuildContext contexto, Category category) {
-    return showDialog<void>(
-      context: contexto,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("¿Estás seguro de querer eliminar la categoría?"),
-          actions: <Widget>[
-            ElevatedButton(
-              child: const Text('Cancelar'),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            ElevatedButton(
-              child: const Text('Borrar'),
-              onPressed: () {
-                BlocProvider.of<CategoryBloc>(contexto)
-                  ..add(RemoveCategory(category.id));
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+  // Future<void> dialog(BuildContext contexto, Category category) {
+  //   return showDialog<void>(
+  //     context: contexto,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: Text("¿Estás seguro de querer eliminar la categoría?"),
+  //         actions: <Widget>[
+  //           ElevatedButton(
+  //             child: const Text('Cancelar'),
+  //             onPressed: () {
+  //               Navigator.pop(context);
+  //             },
+  //           ),
+  //           ElevatedButton(
+  //             child: const Text('Borrar'),
+  //             onPressed: () {
+  //               BlocProvider.of<CategoryBloc>(contexto)
+  //                 ..add(RemoveCategory(category.id));
+  //               Navigator.pop(context);
+  //             },
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 }

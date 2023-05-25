@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_tecnocholloapp/ui/pages/delete_category_page.dart';
 import '../../blocs/favorito/favourite.dart';
 import '../../config/locator.dart';
+import '../../models/user.dart';
 import '../../services/product_service.dart';
 import '../pages/no_products_page.dart';
 import 'bottom_loader.dart';
 import 'favourite_list_item.dart';
 
 class FavouriteScreen extends StatelessWidget {
+  final User user;
+
+  const FavouriteScreen({super.key, required this.user});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Favoritos'),
+        title: Text('FAVORITOS'),
         backgroundColor: Color.fromARGB(211, 244, 67, 54),
       ),
       body: BlocProvider(
@@ -20,14 +25,17 @@ class FavouriteScreen extends StatelessWidget {
           final productService = getIt<ProductService>();
           return FavouriteBloc(productService)..add(FavouriteFetched());
         },
-        child: FavouriteList(),
+        child: FavouriteList(
+          user: this.user,
+        ),
       ),
     );
   }
 }
 
 class FavouriteList extends StatefulWidget {
-  const FavouriteList({super.key});
+  final User user;
+  const FavouriteList({super.key, required this.user});
 
   @override
   State<FavouriteList> createState() => _FavouriteListState();
@@ -68,7 +76,7 @@ class _FavouriteListState extends State<FavouriteList> {
           case FavouriteStatus.initial:
             return const Center(child: CircularProgressIndicator());
           case FavouriteStatus.deleted:
-            return const Center(child: CircularProgressIndicator());
+            return DeletedCategoryPage(user: widget.user);
           case FavouriteStatus.failDeleted:
             return const Text("Fallo al eliminar favorito");
         }

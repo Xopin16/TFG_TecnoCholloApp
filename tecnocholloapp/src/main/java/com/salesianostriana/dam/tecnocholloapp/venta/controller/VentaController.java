@@ -32,20 +32,24 @@ public class VentaController {
         return VentaDto.of(venta);
     }
 
-//    @GetMapping("/admin/historico/")
-//    public List<VentaDto> mostrarHistorico() {
-//        return ventaService.mostrarHistorico();
-//    }
-//
-//    @GetMapping("/usuario/historico/")
-//    public List<VentaDto> mostrarVentasUsuario(@AuthenticationPrincipal User user) {
-//        return ventaService.mostrarVentasUsuario(user);
-//    }
-//
-////    @GetMapping("/usuario/detalles/{id}")
-////    public VentaDto mostrarDetallesVenta(@PathVariable("id") Long id) {
-////        return ventaService.findById(id);
-////    }
-//
+    @GetMapping("/admin/historico/")
+    public List<VentaDto> mostrarHistorico(@AuthenticationPrincipal User user) {
+        return ventaService.obtenerHistoricoVentas().stream().map(VentaDto::of).toList();
+    }
+
+    @GetMapping("/usuario/historico/")
+    public List<VentaDto> mostrarVentasUsuario(@AuthenticationPrincipal User user) {
+        return ventaService.obtenerHistoricoUsuario(user).stream().map(VentaDto::of).toList();
+    }
+
+    @DeleteMapping("/admin/venta/{id}")
+    public ResponseEntity<?> borrarVentaDelHistorico(@AuthenticationPrincipal User user, @PathVariable Long id){
+        Optional<Venta> ventaOptional = ventaService.findById(id);
+        if(ventaOptional.isPresent()){
+            Venta venta = ventaOptional.get();
+            ventaService.borrarVenta(venta);
+        }
+        return ResponseEntity.noContent().build();
+    }
 
 }

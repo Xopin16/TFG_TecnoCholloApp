@@ -297,8 +297,6 @@ class RegisterForm extends StatelessWidget {
                               borderRadius: BorderRadius.circular(20),
                             ),
                           ),
-                          // padding: MaterialStateProperty.all<EdgeInsets>(
-                          //     EdgeInsets.fromLTRB(0, 10, 0, 10)),
                         ),
                       ),
                     ],

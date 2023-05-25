@@ -29,4 +29,8 @@ class CarritoService {
     Carrito carrito = await _carritoRepository.addToCart(id);
     return carrito;
   }
+
+  Future<void> deleteProductCart(id) async {
+    return _carritoRepository.deleteProductCart(id);
+  }
 }

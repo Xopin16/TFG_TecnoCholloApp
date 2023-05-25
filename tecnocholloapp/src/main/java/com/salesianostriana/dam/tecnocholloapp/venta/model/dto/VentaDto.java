@@ -20,7 +20,7 @@ public class VentaDto {
 
     private double precio;
 
-    private List<ProductDto> productDtos = new ArrayList<>();
+    private List<ProductDto> products = new ArrayList<>();
 
     private LocalDate fechaVenta;
 
@@ -30,7 +30,8 @@ public class VentaDto {
         return VentaDto
                 .builder()
                 .id(venta.getId())
-                .productDtos(venta.getProducts().stream().map(ProductDto::fromProduct).toList())
+                .precio(venta.calcularTotal())
+                .products(venta.getProducts().stream().map(ProductDto::fromProduct).toList())
                 .fechaVenta(venta.getFechaVenta())
                 .nombreUsuario(venta.getUser().getUsername())
                 .build();

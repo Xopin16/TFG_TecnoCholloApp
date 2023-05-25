@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import '../../models/carrito.dart';
 
-enum CarritoStatus { initial, success, failure }
+enum CarritoStatus { initial, success, failure, deleted, failDeleted, sold }
 
 class CarritoState extends Equatable {
   const CarritoState({this.status = CarritoStatus.initial, this.carrito});

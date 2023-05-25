@@ -440,14 +440,7 @@ public class ProductoController {
     @PostMapping("/usuario/producto/{id}")
     public ProductDto agregarFavoritos(@AuthenticationPrincipal User user, @PathVariable Long id){
         User usuario = usuarioService.findUserFavoritos(user.getId());
-        Product product = productoService.findById(id);
-//        product.addFavorito(product);
-        usuario.addFavorito(product);
-        productoRepository.save(product);
-        usuarioService.save(user);
-//        CreateProductDto dto = CreateProductDto.fromProducto(product);
-        //        productoService.add(productDto);
-        return ProductDto.fromProduct(product);
+        return productoService.agregarFavorito(usuario, id);
     }
 
     @Operation(summary = "Obtiene los productos favoritos del usuario autenticado")

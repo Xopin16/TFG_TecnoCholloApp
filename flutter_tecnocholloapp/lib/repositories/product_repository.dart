@@ -15,8 +15,15 @@ class ProductRepository {
     _client = getIt<RestAuthenticatedClient>();
   }
 
-  Future<ProductResponse> getProducts(int page) async {
-    String url = "/producto/?page=$page";
+  Future<ProductResponse> getProducts(int page, [String? nombre]) async {
+    // String url;
+    if (nombre == null) {
+      nombre = "";
+    }
+    String url = "/producto/?s=sent:false,nombre:$nombre&page=$page";
+    //   url = "/producto/?page=$page&s=nombre:${nombre}";
+    // }
+
     var jsonResponse = await _client.get(url);
     var products = ProductResponse.fromJson(jsonDecode(jsonResponse));
     return products;
@@ -77,6 +84,11 @@ class ProductRepository {
 
   void deleteProduct(int id) async {
     String url = "/usuario/producto/$id";
+    await _client.delete(url);
+  }
+
+  void deleteFavorite(int id) async {
+    String url = "/usuario/favorito/$id";
     await _client.delete(url);
   }
 }

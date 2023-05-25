@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_tecnocholloapp/blocs/productUser/product_user_event.dart';
 import '../../blocs/productUser/product_user.dart';
 import '../../models/models.dart';
 import '../pages/details_page.dart';
@@ -85,6 +84,7 @@ class ProductUserListItem extends StatelessWidget {
                             builder: (_) => EditProductForm(
                               id: product.id,
                               user: user,
+                              product: product,
                             ),
                           ),
                         );

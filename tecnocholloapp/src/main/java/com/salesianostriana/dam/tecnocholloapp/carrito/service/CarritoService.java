@@ -33,6 +33,14 @@ public class CarritoService {
         return CarritoDto.of(carritoSaved);
     }
 
+    public Carrito edit(Carrito carrito){
+       return carritoRepository.save(carrito);
+    }
+
+    public Carrito saveAndFlush(Carrito carrito){
+        return carritoRepository.saveAndFlush(carrito);
+    }
+
     public Carrito findCartById(Long id) {
         return carritoRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
     }
@@ -42,12 +50,11 @@ public class CarritoService {
         Carrito carrito = usuario.getCarrito();
         if (carrito == null) {
             carrito = new Carrito();
-            carrito.setUser(usuario);
             usuario.setCarrito(carrito);
+            carrito.setUser(usuario);
         }
-
-        producto.setUser(usuario);
-
+        producto.setInCart(true);
+        producto.setCarrito(carrito);
         carrito.getProductos().add(producto);
 
         carritoRepository.save(carrito);
@@ -55,78 +62,21 @@ public class CarritoService {
 
         return CarritoDto.of(carrito);
     }
+    @Transactional
+    public Carrito getCarritoWithProducts(Long id){
+        return carritoRepository.carritoConProductos(id);
+    }
 
-//    public Carrito findCartById(Long id) {
-//        return carritoRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
-//    }
-//
-//    public Carrito getCarritoByUsername(String username) {
-//        Optional<Carrito> carritoOptional = carritoRepository.findFirstByUserUsername(username);
-//        if (carritoOptional.isPresent()) {
-//            return carritoOptional.get();
-//        } else {
-//            throw new CategoryNotFoundException();
-//        }
-//    }
-//
-//    public CarritoDto findById(Long id) {
-//        Optional<Carrito> cart = carritoRepository.findById(id);
-//        if (cart.isPresent()) {
-//            Carrito carrito = cart.get();
-//            return CarritoDto.of(carrito);
-//        } else {
-//            throw new ProductNotFoundException();
-//        }
-//    }
-//
-//    public CarritoDto agregarProducto(User user, Long idProducto) {
-//        Product product = productoService.findById(idProducto);
-//        LineaVenta lineaVenta = LineaVenta.builder()
-//                .producto(product)
-//                .build();
-//        Carrito carrito;
-//        if (user.getCarrito() == null) {
-//            carrito = Carrito.builder().build();
-//            carrito.getLineasDeVenta().add(lineaVenta);
-////            lineaVenta.setCarrito(carrito);
-//            user.setCarrito(carrito);
-//        } else {
-//            carrito = getCarritoByUsername(user.getUsername());
-//            carrito.getLineasDeVenta().add(lineaVenta);
-//        }
-//        carrito.setUser(user);
-//        carritoRepository.save(carrito);
-//        usuarioService.save(user);
-//        return CarritoDto.of(carrito);
-//
-//    }
-//
-//    @Transactional
-//    public CarritoDto getCarritoWithLineaVenta(Long id) {
-//        Optional<Carrito> carritoOptional = carritoRepository.carritoConLineasVenta(id);
-//        if (carritoOptional.isPresent()) {
-//            return CarritoDto.of(carritoOptional.get());
-//        } else {
-//            throw new CategoryNotFoundException();
-//        }
-//    }
-//
-////    public void borrarProducto(Long idCarrito, Long idProducto){
-////        Optional<Carrito> cart = carritoRepository.findById(idCarrito);
-////        Product product = productoService.findById(idProducto);
-////        if(cart.isPresent()){
-////            Carrito carrito = cart.get();
-////            Optional<LineaVenta> lineaVentaOptional = carrito.getLineasDeVenta().stream()
-////                    .filter(linea -> linea.getProducto().getId().equals(idProducto))
-////                    .findFirst();
-////            if(lineaVentaOptional.isPresent()){
-////                LineaVenta lineaVenta = lineaVentaOptional.get();
-////                carrito.getLineasDeVenta().remove(lineaVenta);
-////                carritoRepository.save(carrito);
-////            }
-////        }else{
-////            throw new NotFoundException("No hay productos en el carrito");
-////        }
-////    }
+    public void borrarProductoDelCarrito(Long id, User user){
+        Carrito carrito = getCarritoWithProducts(user.getCarrito().getId());
+        Product product = productoService.findById(id);
+        product.setInCart(false);
+        carrito.removeProduct(product);
+        carritoRepository.saveAndFlush(carrito);
+    }
+
+    public void borrarCarrito(User user){
+        carritoRepository.delete(user.getCarrito());
+    }
 
 }

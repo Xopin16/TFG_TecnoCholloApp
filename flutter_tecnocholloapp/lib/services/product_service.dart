@@ -20,9 +20,10 @@ class ProductService {
         .then((value) => _localStorageService = value);
   }
 
-  Future<ProductResponse> getAllProducts(page) async {
+  Future<ProductResponse> getAllProducts(page, [String? nombre]) async {
     String? token = _localStorageService.getFromDisk("user_token");
-    ProductResponse products = await _productRepository.getProducts(page);
+    ProductResponse products =
+        await _productRepository.getProducts(page, nombre);
     return products;
   }
 
@@ -73,5 +74,9 @@ class ProductService {
 
   Future<void> deteleProduct(id) async {
     return _productRepository.deleteProduct(id);
+  }
+
+  Future<void> deleteFavorite(id) async {
+    return _productRepository.deleteFavorite(id);
   }
 }

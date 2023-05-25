@@ -6,3 +6,8 @@ abstract class FavouriteEvent extends Equatable {
 }
 
 class FavouriteFetched extends FavouriteEvent {}
+
+class RemoveFavorite extends FavouriteEvent {
+  final int id;
+  RemoveFavorite(this.id);
+}

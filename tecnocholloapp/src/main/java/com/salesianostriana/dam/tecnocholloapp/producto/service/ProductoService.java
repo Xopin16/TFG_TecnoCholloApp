@@ -37,6 +37,10 @@ public class ProductoService {
 
     private final StorageService storageService;
 
+    public Product edit(Product product){
+       return productoRepository.save(product);
+    }
+
     public List<Product> findAll() {
         List<Product> result = productoRepository.findAll();
 
@@ -116,15 +120,6 @@ public class ProductoService {
         }
     }
 
-    public void removeFavorito(Long id, User user) {
-        Product product = findById(id);
-        if (productoRepository.existsById(id) && user.getFavoritos().contains(product)) {
-            user.deleteFavorito(product);
-        } else {
-            throw new ProductNotFoundException(id);
-        }
-    }
-
     public PageDto<ProductDto> paginarProductos(User user, Pageable pageable) {
         List<ProductDto> productos = user.getProducts().stream().map(ProductDto::fromProduct).toList();
         if (!productos.isEmpty()) {
@@ -135,6 +130,27 @@ public class ProductoService {
         }
     }
 
+    public ProductDto agregarFavorito(User user, Long idProducto){
+        Product product = findById(idProducto);
+        product.setInFav(true);
+        user.addFavorito(product);
+        productoRepository.save(product);
+        usuarioService.save(user);
+        return ProductDto.fromProduct(product);
+    }
+
+    public void removeFavorito(Long id, User user) {
+        Product product = findById(id);
+        product.setInFav(false);
+        user.deleteFavorito(product);
+        productoRepository.save(product);
+        usuarioService.save(user);
+//        if (productoRepository.existsById(id)) {
+//            user.deleteFavorito(product);
+//        } else {
+//            throw new ProductNotFoundException(id);
+//        }
+    }
     public PageDto<ProductDto> paginarFavoritos(User user, Pageable pageable) {
 //        List<ProductDto> favoritos = user.getFavoritos().stream().map(ProductDto::fromProduct).toList();
         Page<ProductDto> pageFavoritos = productoRepository.favoritosDeUnUsuario(user.getId(), pageable).map(ProductDto::fromProduct);

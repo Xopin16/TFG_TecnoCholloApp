@@ -25,4 +25,9 @@ class CarritoRepository {
     var jsonResponse = await _client.post(url);
     return Carrito.fromJson(jsonDecode(jsonResponse));
   }
+
+  void deleteProductCart(int id) async {
+    String url = "/usuario/cesta/$id";
+    await _client.delete(url);
+  }
 }

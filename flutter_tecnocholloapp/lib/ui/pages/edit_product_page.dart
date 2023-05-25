@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_tecnocholloapp/models/models.dart';
 import 'package:flutter_tecnocholloapp/services/product_service.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import '../../config/locator.dart';
-import '../../models/user.dart';
 import 'home_page.dart';
 
 class EditProductBloc extends FormBloc<String, String> {
@@ -14,8 +15,11 @@ class EditProductBloc extends FormBloc<String, String> {
   final descripcion = TextFieldBloc();
   // final showSuccessResponse = BooleanFieldBloc();
 
-  EditProductBloc(this.id) {
+  EditProductBloc(this.id, Product product) {
     _productService = getIt<ProductService>();
+    nombre.updateValue(product.nombre);
+    precio.updateValue(product.precio.toString());
+    descripcion.updateValue(product.descripcion);
     addFieldBlocs(
       fieldBlocs: [
         nombre,
@@ -39,21 +43,26 @@ class EditProductBloc extends FormBloc<String, String> {
 }
 
 class EditProductForm extends StatelessWidget {
-  const EditProductForm({super.key, required this.id, required this.user});
+  const EditProductForm(
+      {super.key, required this.id, required this.user, required this.product});
   final int id;
   final User user;
+  final Product product;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => EditProductBloc(id),
+      create: (context) => EditProductBloc(id, product),
       child: Builder(
         builder: (context) {
-          final newProductBloc = context.read<EditProductBloc>();
+          final editProductBloc = context.read<EditProductBloc>();
 
           return Scaffold(
             resizeToAvoidBottomInset: false,
-            appBar: AppBar(title: const Text('Editar chollo')),
+            appBar: AppBar(
+              title: const Text('EDITAR CHOLLO'),
+              backgroundColor: Color.fromARGB(211, 244, 67, 54),
+            ),
             body: FormBlocListener<EditProductBloc, String, String>(
               onSubmitting: (context, state) {
                 LoadingDialog.show(context);
@@ -65,48 +74,132 @@ class EditProductForm extends StatelessWidget {
                 LoadingDialog.hide(context);
 
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (_) => SuccessScreen(
-                          user: user,
-                        )));
+                  builder: (_) => SuccessScreen(
+                    user: user,
+                  ),
+                ));
               },
               onFailure: (context, state) {
                 LoadingDialog.hide(context);
 
                 ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(state.failureResponse!)));
+                  SnackBar(content: Text(state.failureResponse!)),
+                );
               },
               child: SingleChildScrollView(
                 physics: const ClampingScrollPhysics(),
                 child: AutofillGroup(
                   child: Column(
                     children: <Widget>[
-                      TextFieldBlocBuilder(
-                        textFieldBloc: newProductBloc.nombre,
-                        keyboardType: TextInputType.name,
-                        decoration: const InputDecoration(
-                          labelText: 'Nombre',
-                          prefixIcon: Icon(Icons.person),
-                        ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(32, 20, 2, 0),
+                            child: Text(
+                              "Nombre",
+                              style: TextStyle(
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Container(
+                            padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                            child: TextFieldBlocBuilder(
+                              textFieldBloc: editProductBloc.nombre,
+                              keyboardType: TextInputType.name,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(36),
+                                  borderSide: BorderSide(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      TextFieldBlocBuilder(
-                        textFieldBloc: newProductBloc.precio,
-                        keyboardType: TextInputType.visiblePassword,
-                        decoration: const InputDecoration(
-                          labelText: 'Precio',
-                          prefixIcon: Icon(Icons.price_change),
-                        ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(32, 2, 2, 0),
+                            child: Text(
+                              "Precio",
+                              style: TextStyle(
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Container(
+                            padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                            child: TextFieldBlocBuilder(
+                              textFieldBloc: editProductBloc.precio,
+                              keyboardType: TextInputType.number,
+                              inputFormatters: <TextInputFormatter>[
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(36),
+                                  borderSide: BorderSide(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      TextFieldBlocBuilder(
-                        textFieldBloc: newProductBloc.descripcion,
-                        keyboardType: TextInputType.visiblePassword,
-                        decoration: const InputDecoration(
-                          labelText: 'Descripcion',
-                          prefixIcon: Icon(Icons.password),
-                        ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(32, 2, 2, 0),
+                            child: Text(
+                              "Descripción",
+                              style: TextStyle(
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Container(
+                            padding: EdgeInsets.fromLTRB(16, 0, 16, 8),
+                            child: TextFieldBlocBuilder(
+                              textFieldBloc: editProductBloc.descripcion,
+                              keyboardType: TextInputType.text,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(36),
+                                  borderSide: BorderSide(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      ElevatedButton(
-                        onPressed: newProductBloc.submit,
-                        child: const Text('EDITAR'),
+                      Center(
+                        child: ElevatedButton(
+                          onPressed: editProductBloc.submit,
+                          child: const Text('EDITAR'),
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                              Color.fromARGB(211, 244, 67, 54),
+                            ),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),

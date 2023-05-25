@@ -8,6 +8,8 @@ import 'package:http_interceptor/http_interceptor.dart';
 import 'package:injectable/injectable.dart';
 import 'package:http/http.dart' as http;
 
+import '../models/login.dart';
+
 class ApiConstants {
   static String baseUrl = "http://localhost:8080";
   //static String baseUrl = "http://10.0.2.2:8080";
@@ -26,8 +28,48 @@ class HeadersApiInterceptor implements InterceptorContract {
   }
 
   @override
-  Future<ResponseData> interceptResponse({required ResponseData data}) async =>
-      data;
+  Future<ResponseData> interceptResponse({required ResponseData data}) async {
+    late LocalStorageService _localStorageService;
+
+    interceptResponse() {
+      //_localStorageService = getIt<LocalStorageService>();
+      GetIt.I
+          .getAsync<LocalStorageService>()
+          .then((value) => _localStorageService = value);
+    }
+
+    if (data.statusCode == 401 || data.statusCode == 403) {
+      // Future.delayed(Duration(seconds: 1), () {
+      //   Navigator.of(GlobalContext.ctx).push<void>(MyApp.route());
+      // });
+      var refreshToken = _localStorageService.getFromDisk("user_refresh_token");
+      final response = await http.post(
+          Uri.parse(ApiConstants.baseUrl + "/user/refreshtoken"),
+          body: jsonEncode({"refreshToken": refreshToken}),
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          });
+      if (response.statusCode == 201) {
+        LoginResponse loginResponse =
+            LoginResponse.fromJson(jsonDecode(response.body));
+
+        await _localStorageService.saveToDisk(
+            "user_token", loginResponse.token);
+        await _localStorageService.saveToDisk(
+            "user_refresh_token", loginResponse.refreshToken);
+
+        var request = data.request;
+        request!.headers["Authorization"] =
+            "Bearer " + _localStorageService.getFromDisk("user_token");
+        var retryResponseStream = await request.toHttpRequest().send();
+        var retryResponse = await http.Response.fromStream(retryResponseStream);
+        var datos = ResponseData.fromHttpResponse(retryResponse);
+        return Future.value(datos);
+      }
+    }
+    return Future.value(data);
+  }
 }
 
 @Order(-10)

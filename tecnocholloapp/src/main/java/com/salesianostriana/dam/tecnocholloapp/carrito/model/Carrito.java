@@ -17,15 +17,13 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-//@NamedEntityGraph(name = "carrito-with-lineasDeVenta",
-//        attributeNodes = @NamedAttributeNode("lineasDeVenta"))
 public class Carrito {
 
     @Id
     @GeneratedValue
     private Long id;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "carrito", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @Builder.Default
     private List<Product> productos = new ArrayList<>();
 
@@ -43,8 +41,13 @@ public class Carrito {
         return total;
     }
 
-    public void removeProductos(List<Product> productos){
-        this.productos.removeAll(productos);
+    public void removeProductos(List<Product> products){
+        productos.removeAll(products);
+    }
+
+    public void removeProduct(Product p){
+        productos.remove(p);
+        p.setCarrito(null);
     }
 
 

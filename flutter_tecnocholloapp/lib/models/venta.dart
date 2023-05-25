@@ -2,25 +2,25 @@ import 'package:flutter_tecnocholloapp/models/models.dart';
 
 class Venta {
   int? id;
-  int? precio;
-  List<Product>? product;
+  double? precio;
+  List<Product>? products;
   String? fechaVenta;
   String? nombreUsuario;
 
   Venta(
       {this.id,
       this.precio,
-      this.product,
+      this.products,
       this.fechaVenta,
       this.nombreUsuario});
 
   Venta.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     precio = json['precio'];
-    if (json['product'] != null) {
-      product = <Product>[];
-      json['productDtos'].forEach((v) {
-        product!.add(new Product.fromJson(v));
+    if (json['products'] != null) {
+      products = <Product>[];
+      json['products'].forEach((v) {
+        products!.add(new Product.fromJson(v));
       });
     }
     fechaVenta = json['fechaVenta'];
@@ -31,8 +31,8 @@ class Venta {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['precio'] = this.precio;
-    if (this.product != null) {
-      data['product'] = this.product!.map((v) => v.toJson()).toList();
+    if (this.products != null) {
+      data['products'] = this.products!.map((v) => v.toJson()).toList();
     }
     data['fechaVenta'] = this.fechaVenta;
     data['nombreUsuario'] = this.nombreUsuario;
