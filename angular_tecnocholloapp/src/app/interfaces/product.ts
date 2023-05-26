@@ -13,7 +13,7 @@ export interface ProductResponse {
     precio: number
     descripcion: string
     imagen?: string
-    // fechaPublicacion?: string
+    fechaPublicacion?: Date
     categoria?: string
     usuario?: string
     idCategory?: number

@@ -39,11 +39,10 @@ class CarritoBloc extends Bloc<CarritoEvent, CarritoState> {
   ) async {
     if (state.props.isEmpty) return;
     try {
-      if (state.status == CarritoStatus.initial) {
         final carrito = await _carritoService.getCarrito();
         return emit(
             state.copyWith(carrito: carrito, status: CarritoStatus.success));
-      }
+  
     } catch (_) {
       emit(state.copyWith(status: CarritoStatus.failure));
     }

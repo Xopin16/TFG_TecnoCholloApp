@@ -22,6 +22,7 @@ import { EditCategoryComponent } from './components/edit-category/edit-category.
 import { CategoryProductsComponent } from './components/category-products/category-products.component';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
 import { UserMeComponent } from './components/user-me/user-me.component';
+import { ChangePasswordComponent } from './components/change-password/change-password.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { UserMeComponent } from './components/user-me/user-me.component';
     EditCategoryComponent,
     CategoryProductsComponent,
     UserProfileComponent,
-    UserMeComponent
+    UserMeComponent,
+    ChangePasswordComponent
   ],
   imports: [
     BrowserModule,

@@ -33,7 +33,6 @@ public class RefreshTokenService {
 
         refreshToken = refreshTokenRepository.save(refreshToken);
 
-
         return refreshToken;
     }
 
@@ -47,7 +46,6 @@ public class RefreshTokenService {
         }
 
         return refreshToken;
-
 
     }
 

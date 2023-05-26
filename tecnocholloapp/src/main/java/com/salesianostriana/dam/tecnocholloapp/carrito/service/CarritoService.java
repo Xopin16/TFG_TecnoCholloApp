@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
@@ -42,7 +43,7 @@ public class CarritoService {
     }
 
     public Carrito findCartById(Long id) {
-        return carritoRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
+        return carritoRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     }
 
     public CarritoDto agregarProductoAlCarrito(User usuario, Product producto) {

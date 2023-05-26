@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_tecnocholloapp/blocs/carrito/carrito_event.dart';
 import 'package:flutter_tecnocholloapp/blocs/venta/venta_bloc.dart';
 import 'package:flutter_tecnocholloapp/blocs/venta/venta_event.dart';
 import 'package:flutter_tecnocholloapp/config/locator.dart';
 import 'package:flutter_tecnocholloapp/repositories/repositories.dart';
-import 'package:flutter_tecnocholloapp/services/carrito_service.dart';
 import 'package:flutter_tecnocholloapp/services/category_service.dart';
 import 'package:flutter_tecnocholloapp/services/product_service.dart';
 import 'package:flutter_tecnocholloapp/services/venta_service.dart';
@@ -13,7 +11,6 @@ import 'package:flutter_tecnocholloapp/ui/pages/login_page.dart';
 import 'package:flutter_tecnocholloapp/ui/widget/carrito_list.dart';
 import 'package:flutter_tecnocholloapp/ui/widget/venta_list.dart';
 import '../../blocs/blocs.dart';
-import '../../blocs/carrito/carrito_bloc.dart';
 import '../../blocs/category/category.dart';
 import '../../models/user.dart';
 import '../widget/widget.dart';
@@ -61,9 +58,9 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Color.fromARGB(211, 244, 67, 54),
       ),
       body: SafeArea(
-        minimum: const EdgeInsets.all(50),
+        minimum: const EdgeInsets.all(10),
         child: _pages(context)[_currentIndex],
-      ),
+      ),  
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         backgroundColor: Color.fromARGB(104, 86, 159, 192),
@@ -172,15 +169,8 @@ class CarritoScreen extends StatelessWidget {
   const CarritoScreen({super.key, required this.homePage});
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) {
-        final carritoService = getIt<CarritoService>();
-        final ventaService = getIt<VentaService>();
-        return CarritoBloc(carritoService, ventaService)..add(CarritoFetched());
-      },
-      child: CarritoList(
+    return  CarritoList(
         user: homePage.user,
-      ),
     );
   }
 }
