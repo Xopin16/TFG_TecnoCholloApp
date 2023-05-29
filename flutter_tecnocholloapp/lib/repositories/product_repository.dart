@@ -16,14 +16,10 @@ class ProductRepository {
   }
 
   Future<ProductResponse> getProducts(int page, [String? nombre]) async {
-    // String url;
     if (nombre == null) {
       nombre = "";
     }
     String url = "/producto/?s=sent:false,nombre:$nombre&page=$page";
-    //   url = "/producto/?page=$page&s=nombre:${nombre}";
-    // }
-
     var jsonResponse = await _client.get(url);
     var products = ProductResponse.fromJson(jsonDecode(jsonResponse));
     return products;

@@ -45,21 +45,18 @@ class Product {
   String? imagen;
   late final String categoria;
   late final String fechaPublicacion;
-  late final bool inCart;
-  late final bool inFav;
-  late final bool sent;
+  late final int cantidad;
 
-  Product(
-      {required this.id,
-      required this.nombre,
-      required this.precio,
-      required this.descripcion,
-      this.imagen,
-      required this.categoria,
-      required this.fechaPublicacion,
-      required this.inCart,
-      required this.inFav,
-      required this.sent});
+  Product({
+    required this.id,
+    required this.nombre,
+    required this.precio,
+    required this.descripcion,
+    this.imagen,
+    required this.categoria,
+    required this.fechaPublicacion,
+    required this.cantidad,
+  });
 
   Product.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -69,9 +66,7 @@ class Product {
     descripcion = json['descripcion'];
     imagen = json['imagen'];
     categoria = json['categoria'];
-    inCart = json['inCart'];
-    inFav = json['inFav'];
-    sent = json['sent'];
+    cantidad = json['cantidad'];
   }
 
   Map<String, dynamic> toJson() {
@@ -83,9 +78,8 @@ class Product {
     data['imagen'] = this.imagen;
     data['categoria'] = this.categoria;
     data['fechaPublicacion'] = this.fechaPublicacion;
-    data['inCart'] = this.inCart;
-    data['inFav'] = this.inFav;
-    data['sent'] = this.sent;
+    data['cantidad'] = this.cantidad;
+
     return data;
   }
 }

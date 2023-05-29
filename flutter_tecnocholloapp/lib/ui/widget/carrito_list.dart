@@ -35,10 +35,10 @@ class CarritoListState extends State<CarritoList> {
         builder: (context, state) {
           switch (state.status) {
             case CarritoStatus.failure:
-              return Text("failed to fetch carrito");
+              return NoCart();
             // return const Center(child: Text('NO HAY PRODUCTOS.'));
             case CarritoStatus.success:
-              if (state.carrito!.productos!.isEmpty) {
+              if (state.carrito!.lineasVenta!.isEmpty) {
                 return NoCart();
               }
               // return DetailsListItem(details: state.carrito!);
@@ -55,8 +55,7 @@ class CarritoListState extends State<CarritoList> {
             case CarritoStatus.deleted:
               carritoBloc..add(CarritoFetched());
               return const CircularProgressIndicator();
-          }          
-
+          }
         },
       ),
     );

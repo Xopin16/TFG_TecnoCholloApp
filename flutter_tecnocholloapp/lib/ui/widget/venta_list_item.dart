@@ -42,13 +42,13 @@ class VentaListItem extends StatelessWidget {
             ListView.separated(
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
-              itemCount: venta.products!.length,
+              itemCount: venta.lineasVenta!.length,
               separatorBuilder: (context, index) => Divider(),
               itemBuilder: (context, index) {
-                final producto = venta.products?[index];
+                final lv = venta.lineasVenta?[index];
                 return ListTile(
-                  title: Text(producto!.nombre),
-                  subtitle: Text('Precio: ${producto.precio}€'),
+                  title: Text(lv!.producto!.nombre),
+                  subtitle: Text('Precio: ${lv.producto!.precio}€'),
                 );
               },
             ),

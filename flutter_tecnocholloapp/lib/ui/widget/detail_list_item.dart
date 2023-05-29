@@ -27,8 +27,8 @@ class _DetailsListItemState extends State<DetailsListItem> {
   @override
   void initState() {
     super.initState();
-    inCart = widget.details.inCart;
-    inFav = widget.details.inFav;
+    // inCart = widget.details.inCart;
+    // inFav = widget.details.inFav;
   }
 
   void _toggleCart() {
@@ -45,22 +45,21 @@ class _DetailsListItemState extends State<DetailsListItem> {
       appBar: AppBar(
         title: Text('DETALLES'),
         backgroundColor: Color.fromARGB(211, 244, 67, 54),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.shopping_basket),
-            tooltip: 'Show Snackbar',
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('This is a snackbar')));
-            },
-          ),
-        ],
+        // actions: [
+        //   IconButton(
+        //     icon: const Icon(Icons.shopping_basket),
+        //     tooltip: 'Show Snackbar',
+        //     onPressed: () {
+        //       ScaffoldMessenger.of(context).showSnackBar(
+        //           const SnackBar(content: Text('This is a snackbar')));
+        //     },
+        //   ),
+        // ],
       ),
-      floatingActionButton: FloatingActionButton(onPressed: () {
-        
-      },
-      backgroundColor: Colors.green,
-        child: const Icon(Icons.favorite)),
+      floatingActionButton: FloatingActionButton(
+          onPressed: () {},
+          backgroundColor: Colors.green,
+          child: const Icon(Icons.favorite)),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -174,7 +173,6 @@ class _DetailsListItemState extends State<DetailsListItem> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
-                  
                 ),
                 onPressed: () {
                   setState(() {
@@ -184,16 +182,14 @@ class _DetailsListItemState extends State<DetailsListItem> {
                       CarritoBloc(carritoService, ventaService)
                         ..add(RemoveCarrito(widget.details.id));
                       ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("¡Se borró del carrito!")));
-                      Timer(Duration(seconds: 1), () {
-                      });                                        
+                          SnackBar(content: Text("¡Se borró del carrito!")));
+                      Timer(Duration(seconds: 1), () {});
                     } else {
                       final carritoService = getIt<CarritoService>();
                       carritoService.addProductToCart(widget.details.id);
                       ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("¡Se agregó del carrito!")));
-                      Timer(Duration(seconds: 1), () {
-                      });   
+                          SnackBar(content: Text("¡Se agregó del carrito!")));
+                      Timer(Duration(seconds: 1), () {});
                     }
                     inCart = !inCart;
                   });

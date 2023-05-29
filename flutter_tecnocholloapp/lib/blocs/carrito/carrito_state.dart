@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import '../../models/carrito.dart';
+import '../../models/venta.dart';
 
 enum CarritoStatus { initial, success, failure, deleted, failDeleted, sold }
 
@@ -7,11 +7,11 @@ class CarritoState extends Equatable {
   const CarritoState({this.status = CarritoStatus.initial, this.carrito});
 
   final CarritoStatus status;
-  final Carrito? carrito;
+  final Venta? carrito;
 
   CarritoState copyWith({
     CarritoStatus? status,
-    Carrito? carrito,
+    Venta? carrito,
   }) {
     return CarritoState(
         status: status ?? this.status, carrito: carrito ?? this.carrito);

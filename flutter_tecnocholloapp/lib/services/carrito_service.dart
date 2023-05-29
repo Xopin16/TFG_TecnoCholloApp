@@ -2,7 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 
 import '../config/locator.dart';
-import '../models/carrito.dart';
+import '../models/venta.dart';
 import '../repositories/carrito_repository.dart';
 import 'localstorage_service.dart';
 
@@ -19,14 +19,14 @@ class CarritoService {
         .then((value) => _localStorageService = value);
   }
 
-  Future<Carrito> getCarrito() async {
+  Future<Venta> getCarrito() async {
     String? token = _localStorageService.getFromDisk("user_token");
-    Carrito carrito = await _carritoRepository.showCart();
+    Venta carrito = await _carritoRepository.showCart();
     return carrito;
   }
 
-  Future<Carrito> addProductToCart(int id) async {
-    Carrito carrito = await _carritoRepository.addToCart(id);
+  Future<Venta> addProductToCart(int id) async {
+    Venta carrito = await _carritoRepository.addToCart(id);
     return carrito;
   }
 

@@ -4,11 +4,12 @@ import 'package:flutter_tecnocholloapp/blocs/carrito/carrito_bloc.dart';
 import 'package:flutter_tecnocholloapp/blocs/carrito/carrito_event.dart';
 
 import '../../models/carrito.dart';
+import '../../models/venta.dart';
 
 class CarritoListItem extends StatelessWidget {
   const CarritoListItem({Key? key, required this.carrito}) : super(key: key);
 
-  final Carrito carrito;
+  final Venta carrito;
 
   @override
   Widget build(BuildContext context) {
@@ -36,18 +37,18 @@ class CarritoListItem extends StatelessWidget {
               ListView.separated(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
-                itemCount: carrito.productos!.length,
+                itemCount: carrito.lineasVenta!.length,
                 separatorBuilder: (context, index) => Divider(),
                 itemBuilder: (context, index) {
-                  final producto = carrito.productos![index];
+                  final lv = carrito.lineasVenta![index];
                   return ListTile(
-                    title: Text(producto.nombre),
-                    subtitle: Text('${producto.precio}€'),
+                    title: Text(lv.producto!.nombre),
+                    subtitle: Text('${lv.producto!.precio}€'),
                     trailing: IconButton(
                       icon: Icon(Icons.delete),
                       onPressed: () {
                         BlocProvider.of<CarritoBloc>(context)
-                          ..add(RemoveCarrito(producto.id));
+                          ..add(RemoveCarrito(lv.producto!.id));
                       },
                     ),
                   );
@@ -62,7 +63,7 @@ class CarritoListItem extends StatelessWidget {
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    '${carrito.total}€',
+                    '${carrito.precio}€',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],
