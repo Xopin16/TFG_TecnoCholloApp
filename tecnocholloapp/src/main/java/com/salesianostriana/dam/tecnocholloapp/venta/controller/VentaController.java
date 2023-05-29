@@ -1,8 +1,7 @@
 package com.salesianostriana.dam.tecnocholloapp.venta.controller;
 
-import com.salesianostriana.dam.tecnocholloapp.carrito.model.Carrito;
-import com.salesianostriana.dam.tecnocholloapp.carrito.service.CarritoService;
 import com.salesianostriana.dam.tecnocholloapp.producto.model.Product;
+import com.salesianostriana.dam.tecnocholloapp.producto.service.ProductoService;
 import com.salesianostriana.dam.tecnocholloapp.usuario.model.User;
 import com.salesianostriana.dam.tecnocholloapp.usuario.service.UsuarioService;
 import com.salesianostriana.dam.tecnocholloapp.venta.model.Venta;
@@ -25,21 +24,35 @@ public class VentaController {
 
     private final UsuarioService usuarioService;
 
-    @PostMapping("/usuario/checkout/")
-    public VentaDto finalizarCompra(@AuthenticationPrincipal User user){
+    private final ProductoService productoService;
+
+    @GetMapping("/usuario/cesta/")
+    public VentaDto mostrarCarrito(@AuthenticationPrincipal User user){
         User usuario = usuarioService.findUserProducts(user.getId());
-        Venta venta = ventaService.finalizarCompra(usuario);
-        return VentaDto.of(venta);
+        return ventaService.mostrarCarrito(usuario);
     }
 
     @GetMapping("/admin/historico/")
     public List<VentaDto> mostrarHistorico(@AuthenticationPrincipal User user) {
-        return ventaService.obtenerHistoricoVentas().stream().map(VentaDto::of).toList();
+        return ventaService.obtenerHistoricoVentas();
     }
 
     @GetMapping("/usuario/historico/")
     public List<VentaDto> mostrarVentasUsuario(@AuthenticationPrincipal User user) {
-        return ventaService.obtenerHistoricoUsuario(user).stream().map(VentaDto::of).toList();
+        return ventaService.obtenerHistoricoUsuario(user);
+    }
+
+    @PostMapping("/usuario/checkout/")
+    public VentaDto finalizarCompra(@AuthenticationPrincipal User user){
+        User usuario = usuarioService.findUserProducts(user.getId());
+        return ventaService.finalizarCompra(usuario);
+    }
+
+    @PostMapping("/usuario/cesta/producto/{idProducto}")
+    public VentaDto agregarProducto(@AuthenticationPrincipal User user, @PathVariable Long idProducto) {
+        Product product = productoService.findById(idProducto);
+        User usuario = usuarioService.findUserProducts(user.getId());
+        return ventaService.agregarProductoAlCarrito(usuario, product);
     }
 
     @DeleteMapping("/admin/venta/{id}")

@@ -10,6 +10,6 @@ import java.util.UUID;
 
 public interface VentaRepository extends JpaRepository<Venta, Long> {
 
-    @Query("select v from Venta v where v.user.id = :id")
+    @Query("select distinct u.ventas from User u join u.ventas where u.id = :id")
     public List<Venta> findVentasByUser(UUID id);
 }

@@ -17,7 +17,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -132,7 +131,7 @@ public class ProductoService {
 
     public ProductDto agregarFavorito(User user, Long idProducto){
         Product product = findById(idProducto);
-        product.setInFav(true);
+//        product.setInFav(true);
         user.addFavorito(product);
         productoRepository.save(product);
         usuarioService.save(user);
@@ -141,7 +140,7 @@ public class ProductoService {
 
     public void removeFavorito(Long id, User user) {
         Product product = findById(id);
-        product.setInFav(false);
+//        product.setInFav(false);
         user.deleteFavorito(product);
         productoRepository.save(product);
         usuarioService.save(user);

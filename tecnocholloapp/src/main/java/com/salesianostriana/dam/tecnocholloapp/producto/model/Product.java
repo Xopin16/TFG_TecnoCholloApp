@@ -1,6 +1,5 @@
 package com.salesianostriana.dam.tecnocholloapp.producto.model;
 
-import com.salesianostriana.dam.tecnocholloapp.carrito.model.Carrito;
 import com.salesianostriana.dam.tecnocholloapp.categoria.model.Category;
 import com.salesianostriana.dam.tecnocholloapp.usuario.model.User;
 import com.salesianostriana.dam.tecnocholloapp.venta.model.Venta;
@@ -36,11 +35,7 @@ public class Product {
     @Builder.Default
     private LocalDate fechaPublicacion = LocalDate.now();
 
-    @Column(name = "in_cart")
-    private boolean inCart = false;
-
-    @Column(name = "in_fav")
-    private boolean inFav = false;
+    private int cantidad;
 
     private boolean sent = false;
 
@@ -52,8 +47,6 @@ public class Product {
     @JoinColumn(name = "usuario_id", foreignKey = @ForeignKey(name ="FK_PRODUCTO_USUARIO"))
     private User user;
 
-    @ManyToOne
-    private Carrito carrito;
 
     @ManyToOne
     private Venta venta;

@@ -2,6 +2,7 @@ package com.salesianostriana.dam.tecnocholloapp.producto.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.salesianostriana.dam.tecnocholloapp.producto.model.Product;
+import com.salesianostriana.dam.tecnocholloapp.usuario.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -32,11 +33,11 @@ public class ProductDto {
 
     private String usuario;
 
-    private boolean inCart;
-
-    private boolean inFav;
+    private int cantidad;
 
     private boolean sent;
+
+    private boolean inFav;
 
     public static ProductDto fromProduct(Product p){
         return ProductDto
@@ -49,8 +50,7 @@ public class ProductDto {
                 .fechaPublicacion(p.getFechaPublicacion())
                 .categoria(p.getCategoria().getNombre())
                 .usuario(p.getUser().getUsername())
-                .inCart(p.isInCart())
-                .inFav(p.isInFav())
+                .cantidad(p.getCantidad())
                 .sent(p.isSent())
                 .build();
     }
