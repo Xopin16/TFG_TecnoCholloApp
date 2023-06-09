@@ -14,6 +14,8 @@ export class CreateProductDialogComponent implements OnInit{
 
   createProductForm: FormGroup;
   categories: Category[] = [];
+  // file: File | null = null;
+  idCategory: number = 0;
   
 
   constructor(private dialogRef: MatDialogRef<CreateProductDialogComponent>,
@@ -24,7 +26,7 @@ export class CreateProductDialogComponent implements OnInit{
         precio: ['', Validators.required],
         descripcion: ['', Validators.required],
         cantidad: ['', Validators.required],
-        idCategory: ['', Validators.required]  // Cambiar 'categoria' a 'idCategory'
+        idCategory: [this.idCategory, Validators.required]
       });
       
     }
@@ -35,6 +37,11 @@ export class CreateProductDialogComponent implements OnInit{
         console.log(resp)
       });
     }
+
+    // selectFile(event: any): void{
+    //   const file = event.target.files[0];
+    //   this.file = file;
+    // }
 
     get formControls() {
       return this.createProductForm.controls;
@@ -53,7 +60,7 @@ export class CreateProductDialogComponent implements OnInit{
         idCategory: this.formControls['idCategory'].value
       };
   
-      this.dialogRef.close(productData);
+      this.dialogRef.close(productData/*, file: this.file*/);
     }
   
     onCancel(): void {

@@ -1,5 +1,6 @@
 package com.salesianostriana.dam.tecnocholloapp.producto.service;
 
+import com.salesianostriana.dam.tecnocholloapp.categoria.model.Category;
 import com.salesianostriana.dam.tecnocholloapp.categoria.service.CategoriaService;
 import com.salesianostriana.dam.tecnocholloapp.exception.ProductNotFoundException;
 import com.salesianostriana.dam.tecnocholloapp.file.StorageService;
@@ -61,6 +62,25 @@ public class ProductoService {
         product.setCategoria(categoriaService.findById(idCategoria));
         product.setUser(user);
 //        product.setFechaPublicacion(productDto.getFechaPublicacion());
+        user.addProduct(product);
+        return productoRepository.save(product);
+    }
+
+    public Product saveProduct(UUID id, CreateProductDto productDto, Long idCategoria, MultipartFile file){
+        User user = usuarioService.findUserById(id);
+        Category category = categoriaService.findById(idCategoria);
+        String filename = storageService.store(file);
+        Product product = Product
+                .builder()
+                .nombre(productDto.getNombre())
+                .precio(productDto.getPrecio())
+                .descripcion(productDto.getDescripcion())
+                .cantidad(productDto.getCantidad())
+                .categoria(category)
+                .imagen(filename)
+                .user(user)
+                .fechaPublicacion(productDto.getFechaPublicacion())
+                .build();
         user.addProduct(product);
         return productoRepository.save(product);
     }

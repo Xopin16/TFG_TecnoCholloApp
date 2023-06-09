@@ -12,7 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
         import javax.persistence.EntityNotFoundException;
-        import java.time.LocalDate;
+import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -159,6 +160,8 @@ public class VentaService {
     public Optional<Venta> findById(Long id){
         return ventaRepository.findById(id);
     }
+
+    @Transactional
     public List<VentaDto> obtenerHistoricoUsuario(User usuario){
         List<Venta> historicoVentas = ventaRepository.findVentasByUser(usuario.getId()).stream().filter(v -> !v.getLineasVenta().isEmpty()).toList();
         return historicoVentas.stream().map(v-> VentaDto.of(v, usuario)).toList();

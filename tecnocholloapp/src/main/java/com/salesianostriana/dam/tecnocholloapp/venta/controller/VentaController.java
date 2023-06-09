@@ -40,7 +40,8 @@ public class VentaController {
 
     @GetMapping("/usuario/historico/")
     public List<VentaDto> mostrarVentasUsuario(@AuthenticationPrincipal User user) {
-        return ventaService.obtenerHistoricoUsuario(user);
+        User usuario = usuarioService.findUserProducts(user.getId());
+        return ventaService.obtenerHistoricoUsuario(usuario);
     }
 
     @PostMapping("/usuario/checkout/")

@@ -22,6 +22,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -286,7 +287,7 @@ public class ProductoController {
                                                 "fechaPublicacion": "2022-02-23",
                                                 "categoria": "Moviles",
                                                 "usuario": "mhoggins0"
-                                            }                               
+                                            }
                                             """
                             )}
                     )}),
@@ -298,6 +299,7 @@ public class ProductoController {
     public ResponseEntity<CreateProductDto> nuevoProducto(@AuthenticationPrincipal User user, @Valid @RequestBody CreateProductDto productDto, @PathVariable Long idCategoria) {
 
         Product created = productoService.save(user.getId(), productDto, idCategoria);
+
         URI createdURI = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
@@ -308,6 +310,29 @@ public class ProductoController {
                 .created(createdURI)
                 .body(CreateProductDto.fromProducto(created));
     }
+
+
+//    @PostMapping(value = "/usuario/producto/nuevo/{idCategoria}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    public ResponseEntity<CreateProductDto>crearProducto(
+//            @RequestPart("product") CreateProductDto productDto,
+//            @AuthenticationPrincipal User user,
+//            @PathVariable Long idCategoria,
+//            @RequestPart("file")MultipartFile file){
+//
+//
+//        Product created = productoService.saveProduct(user.getId(), productDto, idCategoria, file);
+//
+//
+//        URI createdURI = ServletUriComponentsBuilder
+//                .fromCurrentRequest()
+//                .path("/{id}")
+//                .buildAndExpand(created.getId()).toUri();
+//
+//        return ResponseEntity
+//                .created(createdURI)
+//                .body(CreateProductDto.fromProducto(created));
+//    }
+
 
     @Operation(summary = "Edita un producto del usuario en base a su ID")
     @ApiResponses(value = {

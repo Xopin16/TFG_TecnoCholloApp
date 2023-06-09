@@ -204,7 +204,7 @@ class ProfileScreen extends StatelessWidget {
       radius: isMobile ? 50 : 75,
       backgroundImage: NetworkImage(homePage.user.avatar == null
           ? "https://electronicssoftware.net/wp-content/uploads/user.png"
-          : "http://localhost:8080/download/${homePage.user.avatar}"),
+          : "http://10.0.2.2:8080/download/${homePage.user.avatar}"),
     );
 
     return SafeArea(

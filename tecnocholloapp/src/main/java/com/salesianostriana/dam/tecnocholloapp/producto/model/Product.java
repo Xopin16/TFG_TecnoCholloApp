@@ -66,7 +66,7 @@ public class Product {
         this.user.getFavoritos().remove(product);
     }
 
-    public Product(String nombre, double precio, String descripcion, String imagen, Category categoria) {
+    public Product(String nombre, double precio, String descripcion, String imagen, int cantidad, Category categoria) {
         this.nombre = nombre;
         this.precio = precio;
         this.descripcion = descripcion;
@@ -75,6 +75,7 @@ public class Product {
     }
 
     public Product(String nombre, double precio, String descripcion, String imagen, int cantidad) {
+        this.id = id;
         this.nombre = nombre;
         this.precio = precio;
         this.descripcion = descripcion;

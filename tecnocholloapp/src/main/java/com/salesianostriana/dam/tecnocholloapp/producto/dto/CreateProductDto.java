@@ -34,10 +34,10 @@ public class CreateProductDto {
 
     private String categoria;
 
-//    @JsonView({UserViews.Productos.class, UserViews.Favoritos.class})
-//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-//    @Builder.Default
-//    private LocalDate fechaPublicacion = LocalDate.now();
+    @JsonView({UserViews.Productos.class, UserViews.Favoritos.class})
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    @Builder.Default
+    private LocalDate fechaPublicacion = LocalDate.now();
 
     private String imagen;
 
@@ -51,7 +51,7 @@ public class CreateProductDto {
                 .descripcion(dto.descripcion)
                 .imagen(dto.imagen)
                 .cantidad(dto.cantidad)
-//                .fechaPublicacion(dto.getFechaPublicacion())
+                .fechaPublicacion(dto.getFechaPublicacion())
                 .build();
     }
 
@@ -62,12 +62,11 @@ public class CreateProductDto {
                 .nombre(p.getNombre())
                 .precio(p.getPrecio())
                 .descripcion(p.getDescripcion())
-                .imagen("teclado.jpg")
+                .imagen(p.getImagen())
                 .categoria(p.getCategoria().getNombre())
-//                .fechaPublicacion(p.getFechaPublicacion())
+                .fechaPublicacion(p.getFechaPublicacion())
                 .cantidad(p.getCantidad())
                 .build();
     }
-
 
 }

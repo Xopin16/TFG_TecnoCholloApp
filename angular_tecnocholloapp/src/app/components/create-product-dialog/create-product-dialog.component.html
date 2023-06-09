@@ -23,10 +23,14 @@
 
   <div class="form-group">
     <label for="idCategory">Categoría:</label>
-    <select formControlName="idCategory" class="form-control">
+    <select [(ngModel)]="idCategory" formControlName="idCategory" class="form-control">
       <option *ngFor="let category of categories" [value]="category.id">{{ category.nombre }}</option>
     </select>
   </div>
+<!-- 
+  <div class="form-group">
+    <input type="file" (change)="selectFile($event)">
+  </div> -->
 
   <div class="button-group">
     <button type="submit" [disabled]="createProductForm.invalid" class="btn btn-primary">Guardar</button>

@@ -30,7 +30,7 @@ public class Venta {
     private User usuario;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "venta_id")
+//    @JoinColumn(name = "venta_id")
     @Builder.Default
     private List<LineaVenta> lineasVenta = new ArrayList<>();
 

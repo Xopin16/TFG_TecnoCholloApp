@@ -113,115 +113,117 @@ class __SignInFormState extends State<_SignInForm> {
               child: CircularProgressIndicator(),
             );
           }
-          return Form(
-            key: _key,
-            autovalidateMode: _autoValidate
-                ? AutovalidateMode.always
-                : AutovalidateMode.disabled,
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  Image.network(
-                    'https://atodochollo.com/logo.png',
-                    height: 200,
-                    fit: BoxFit.contain,
-                  ),
-                  const SizedBox(
-                    height: 24,
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: 'Nombre de usuario',
-                      filled: true,
-                      isDense: true,
+          return SingleChildScrollView(
+            child: Form(
+              key: _key,
+              autovalidateMode: _autoValidate
+                  ? AutovalidateMode.always
+                  : AutovalidateMode.disabled,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Image.network(
+                      'https://atodochollo.com/logo.png',
+                      height: 200,
+                      fit: BoxFit.contain,
                     ),
-                    controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    autocorrect: false,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'El nombre de usuario es obligatorio.';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: 'Contraseña',
-                      filled: true,
-                      isDense: true,
+                    const SizedBox(
+                      height: 24,
                     ),
-                    obscureText: true,
-                    controller: _passwordController,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'La contraseña es obligatoria.';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(
-                    height: 24,
-                  ),
-                  ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(
-                          Color.fromARGB(211, 244, 67, 54)),
+                    TextFormField(
+                      decoration: InputDecoration(
+                        labelText: 'Nombre de usuario',
+                        filled: true,
+                        isDense: true,
+                      ),
+                      controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      autocorrect: false,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'El nombre de usuario es obligatorio.';
+                        }
+                        return null;
+                      },
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    TextFormField(
+                      decoration: InputDecoration(
+                        labelText: 'Contraseña',
+                        filled: true,
+                        isDense: true,
+                      ),
+                      obscureText: true,
+                      controller: _passwordController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'La contraseña es obligatoria.';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(
+                      height: 24,
+                    ),
+                    ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            Color.fromARGB(211, 244, 67, 54)),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        child: Text(
+                          'Iniciar sesión',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                      onPressed:
+                          state is LoginLoading ? () {} : _onLoginButtonPressed,
+                    ),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => RegisterForm(),
+                          ),
+                        );
+                      },
                       child: Text(
-                        'Iniciar sesión',
+                        '¿No tienes cuenta? Regístrate',
                         style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
+                          color: Colors.grey[800],
                         ),
                       ),
                     ),
-                    onPressed:
-                        state is LoginLoading ? () {} : _onLoginButtonPressed,
-                  ),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => RegisterForm(),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      '¿No tienes cuenta? Regístrate',
-                      style: TextStyle(
-                        color: Colors.grey[800],
-                      ),
-                    ),
-                  ),
-                  // TextButton(
-                  //   onPressed: () {
-                  //     Navigator.push(
-                  //       context,
-                  //       MaterialPageRoute(
-                  //         builder: (_) => RegisterAdminForm(),
-                  //       ),
-                  //     );
-                  //   },
-                  //   child: Text(
-                  //     'Regístrate como administrador.',
-                  //     style: TextStyle(
-                  //       color: Colors.grey[800],
-                  //     ),
-                  //   ),
-                  // )
-                ],
+                    // TextButton(
+                    //   onPressed: () {
+                    //     Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(
+                    //         builder: (_) => RegisterAdminForm(),
+                    //       ),
+                    //     );
+                    //   },
+                    //   child: Text(
+                    //     'Regístrate como administrador.',
+                    //     style: TextStyle(
+                    //       color: Colors.grey[800],
+                    //     ),
+                    //   ),
+                    // )
+                  ],
+                ),
               ),
             ),
           );

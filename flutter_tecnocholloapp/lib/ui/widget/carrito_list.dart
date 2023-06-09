@@ -7,7 +7,6 @@ import 'package:flutter_tecnocholloapp/models/models.dart';
 import 'package:flutter_tecnocholloapp/services/carrito_service.dart';
 import 'package:flutter_tecnocholloapp/services/venta_service.dart';
 import 'package:flutter_tecnocholloapp/ui/pages/carrito_sold_page.dart';
-import 'package:flutter_tecnocholloapp/ui/pages/delete_carrito_page.dart';
 import 'package:flutter_tecnocholloapp/ui/pages/no_cart_page.dart';
 import '../../blocs/carrito/carrito_state.dart';
 import 'carrito_list_item.dart';
