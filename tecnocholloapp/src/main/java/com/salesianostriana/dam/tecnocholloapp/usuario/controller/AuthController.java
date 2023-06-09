@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 @RestController
@@ -122,6 +123,7 @@ public class AuthController {
                     content = @Content),
     })
     @PostMapping("/auth/login")
+    @Transactional
     public ResponseEntity<UserDto> login(@Valid @RequestBody LoginUserDto loginUserDto) {
 
         Authentication authentication =
@@ -138,6 +140,7 @@ public class AuthController {
 
         User user = (User) authentication.getPrincipal();
 
+        refreshTokenService.deleteByUser(user);
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
 
 
@@ -146,6 +149,7 @@ public class AuthController {
 
     }
     @PostMapping("/refreshtoken/")
+    @Transactional
     public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
         String refreshToken = refreshTokenRequest.getRefreshToken();
 

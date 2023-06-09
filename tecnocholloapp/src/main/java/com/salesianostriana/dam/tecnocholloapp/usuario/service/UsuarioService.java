@@ -161,6 +161,10 @@ public class UsuarioService {
     }
 
     @Transactional
+    public User findUserVentas(UUID id){
+        return usuarioRepository.usuarioConVentas(id);
+    }
+    @Transactional
     public User findUserFavoritos(UUID id){
         return usuarioRepository.usuarioConFavoritos(id);
     }

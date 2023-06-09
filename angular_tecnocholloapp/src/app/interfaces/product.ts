@@ -17,4 +17,5 @@ export interface ProductResponse {
     categoria?: string
     usuario?: string
     idCategory?: number
+    cantidad: number
   }

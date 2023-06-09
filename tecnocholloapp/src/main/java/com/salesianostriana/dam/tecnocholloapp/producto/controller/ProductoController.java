@@ -103,10 +103,11 @@ public class ProductoController {
     @GetMapping("/producto/")
     public PageDto<ProductDto> obtenerTodos(
             @RequestParam(value = "s", defaultValue = "") String search,
-            @PageableDefault(size = 10, page = 0) Pageable pageable) {
-
+            @PageableDefault(size = 10, page = 0) Pageable pageable,
+            @AuthenticationPrincipal User user) {
+        User usuario = usuarioService.findUserProducts(user.getId());
         List<SearchCriteria> params = SearchCriteriaExtractor.extractSearchCriteriaList(search);
-        return productoService.search(params, pageable);
+        return productoService.search(params, pageable, usuario);
     }
 
 
@@ -136,9 +137,10 @@ public class ProductoController {
                     content = @Content),
     })
     @GetMapping("/producto/{id}")
-    public ProductDto obtenerUno(@Valid @PathVariable Long id) {
+    public ProductDto obtenerUno(@Valid @PathVariable Long id, @AuthenticationPrincipal User user) {
         Product product = productoService.findById(id);
-        return ProductDto.fromProduct(product);
+        User usuario = usuarioService.findUserProducts(user.getId());
+        return ProductDto.fromProduct(product, usuario);
     }
 
         @Operation(summary = "Obtiene una los productos publicados del usuario autenticado")
@@ -197,7 +199,7 @@ public class ProductoController {
     })
     @GetMapping("/usuario/producto/")
     public PageDto<ProductDto> mostrarMisChollos(
-            @PageableDefault(size = 5, page = 0) Pageable pageable,
+            @PageableDefault(size = 10, page = 0) Pageable pageable,
             @AuthenticationPrincipal User user){
         User usuario = usuarioService.findUserProducts(user.getId());
         return productoService.paginarChollos(usuario, pageable);
@@ -294,8 +296,8 @@ public class ProductoController {
     })
     @PostMapping("/usuario/producto/nuevo/{idCategoria}")
     public ResponseEntity<CreateProductDto> nuevoProducto(@AuthenticationPrincipal User user, @Valid @RequestBody CreateProductDto productDto, @PathVariable Long idCategoria) {
-        Product created = productoService.save(user.getId(), productDto, idCategoria);
 
+        Product created = productoService.save(user.getId(), productDto, idCategoria);
         URI createdURI = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
@@ -397,10 +399,12 @@ public class ProductoController {
     @PostMapping("/upload/imagen/{id}")
     public ProductDto create(
             @RequestPart("file") MultipartFile file,
-            @PathVariable Long id
+            @PathVariable Long id,
+            @AuthenticationPrincipal User user
     ) {
+        User usuario = usuarioService.findUserProducts(user.getId());
         Product product = productoService.saveFile(id,file);
-        return ProductDto.fromProduct(product);
+        return ProductDto.fromProduct(product, usuario);
     }
 
     @Operation(summary = "Elimina un producto del en base a su ID")

@@ -1,0 +1,35 @@
+<h2>Crear producto</h2>
+
+<form [formGroup]="createProductForm" (ngSubmit)="onSubmit()" class="product-form">
+  <div class="form-group">
+    <label for="nombre">Nombre:</label>
+    <input type="text" id="nombre" formControlName="nombre" class="form-control">
+  </div>
+
+  <div class="form-group">
+    <label for="precio">Precio:</label>
+    <input type="number" id="precio" formControlName="precio" class="form-control">
+  </div>
+
+  <div class="form-group">
+    <label for="descripcion">Descripción:</label>
+    <input type="text" id="descripcion" formControlName="descripcion" class="form-control">
+  </div>
+
+  <div class="form-group">
+    <label for="cantidad">Cantidad:</label>
+    <input type="number" id="cantidad" formControlName="cantidad" class="form-control">
+  </div>
+
+  <div class="form-group">
+    <label for="idCategory">Categoría:</label>
+    <select formControlName="idCategory" class="form-control">
+      <option *ngFor="let category of categories" [value]="category.id">{{ category.nombre }}</option>
+    </select>
+  </div>
+
+  <div class="button-group">
+    <button type="submit" [disabled]="createProductForm.invalid" class="btn btn-primary">Guardar</button>
+    <button type="button" (click)="onCancel()" class="btn btn-secondary">Cancelar</button>
+  </div>
+</form>

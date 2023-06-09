@@ -34,7 +34,8 @@ public class VentaController {
 
     @GetMapping("/admin/historico/")
     public List<VentaDto> mostrarHistorico(@AuthenticationPrincipal User user) {
-        return ventaService.obtenerHistoricoVentas();
+        User usuario = usuarioService.findUserProducts(user.getId());
+        return ventaService.obtenerHistoricoVentas(usuario);
     }
 
     @GetMapping("/usuario/historico/")
@@ -53,6 +54,12 @@ public class VentaController {
         Product product = productoService.findById(idProducto);
         User usuario = usuarioService.findUserProducts(user.getId());
         return ventaService.agregarProductoAlCarrito(usuario, product);
+    }
+
+    @DeleteMapping("/usuario/cesta/{id}")
+    public ResponseEntity<?> borrarDelCarrito(@AuthenticationPrincipal User user, @PathVariable Long id){
+        ventaService.borrarLineaVentaDelCarrito(user, id);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/admin/venta/{id}")

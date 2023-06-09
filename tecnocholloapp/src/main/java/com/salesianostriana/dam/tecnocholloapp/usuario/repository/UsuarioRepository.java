@@ -62,4 +62,11 @@ public interface UsuarioRepository extends JpaRepository<User, UUID>, JpaSpecifi
             """)
     User usuarioConFavoritos(UUID id);
 
+    @Query("""
+            select u from User u
+            left join fetch u.ventas
+            where u.id = :id
+            """)
+    User usuarioConVentas(UUID id);
+
 }

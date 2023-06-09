@@ -41,12 +41,16 @@ public class CreateProductDto {
 
     private String imagen;
 
+    private int cantidad;
+
     public static Product of(CreateProductDto dto){
         return Product
                 .builder()
                 .nombre(dto.nombre)
                 .precio(dto.precio)
                 .descripcion(dto.descripcion)
+                .imagen(dto.imagen)
+                .cantidad(dto.cantidad)
 //                .fechaPublicacion(dto.getFechaPublicacion())
                 .build();
     }
@@ -61,6 +65,7 @@ public class CreateProductDto {
                 .imagen("teclado.jpg")
                 .categoria(p.getCategoria().getNombre())
 //                .fechaPublicacion(p.getFechaPublicacion())
+                .cantidad(p.getCantidad())
                 .build();
     }
 

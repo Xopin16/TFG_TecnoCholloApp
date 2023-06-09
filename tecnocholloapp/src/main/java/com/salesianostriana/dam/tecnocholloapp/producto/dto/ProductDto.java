@@ -39,7 +39,7 @@ public class ProductDto {
 
     private boolean inFav;
 
-    public static ProductDto fromProduct(Product p){
+    public static ProductDto fromProduct(Product p, User user){
         return ProductDto
                 .builder()
                 .id(p.getId())
@@ -52,6 +52,7 @@ public class ProductDto {
                 .usuario(p.getUser().getUsername())
                 .cantidad(p.getCantidad())
                 .sent(p.isSent())
+                .inFav(user.getFavoritos().contains(p))
                 .build();
     }
 

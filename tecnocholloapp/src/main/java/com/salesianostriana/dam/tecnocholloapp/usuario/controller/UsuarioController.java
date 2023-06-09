@@ -5,6 +5,7 @@ import com.salesianostriana.dam.tecnocholloapp.file.StorageService;
 import com.salesianostriana.dam.tecnocholloapp.page.PageDto;
 import com.salesianostriana.dam.tecnocholloapp.search.util.SearchCriteria;
 import com.salesianostriana.dam.tecnocholloapp.search.util.SearchCriteriaExtractor;
+import com.salesianostriana.dam.tecnocholloapp.security.jwt.refresh.RefreshTokenService;
 import com.salesianostriana.dam.tecnocholloapp.usuario.dto.EditUserDto;
 import com.salesianostriana.dam.tecnocholloapp.usuario.dto.UserDto;
 import com.salesianostriana.dam.tecnocholloapp.usuario.dto.UserViews;
@@ -40,6 +41,8 @@ public class UsuarioController {
     private final UsuarioService usuarioService;
 
     private final StorageService storageService;
+
+    private final RefreshTokenService refreshTokenService;
 
     @Operation(summary = "Obtiene un listado de usuarios")
     @ApiResponses(value = {
@@ -204,6 +207,7 @@ public class UsuarioController {
     @DeleteMapping("/usuario/")
     public ResponseEntity<?> eliminarMiUsuario(@AuthenticationPrincipal User user) {
 
+        refreshTokenService.deleteByUser(user);
         usuarioService.delete(user.getId());
         return ResponseEntity.noContent().build();
     }

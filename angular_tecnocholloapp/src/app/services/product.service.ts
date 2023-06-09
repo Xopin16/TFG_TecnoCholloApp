@@ -15,11 +15,18 @@ const headers = new HttpHeaders({
 })
 export class ProductService {
 
-  constructor(private http: HttpClient, private datePipe: DatePipe) { }
+  constructor(private http: HttpClient) { }
 
-  getProducts(page: number): Observable<ProductResponse>{
-    return this.http.get<ProductResponse>(`http://localhost:8080/producto/?page=${page}`, {headers});
+  getProducts(page: number, nombre?: string): Observable<ProductResponse> {
+    let url = `http://localhost:8080/producto/?page=${page}`;
+  
+    if (nombre) {
+      url += `&s=nombre:${nombre}`;
+    }
+  
+    return this.http.get<ProductResponse>(url, { headers });
   }
+  
 
   getProductId(id: number): Observable<Product>{
     return this.http.get<Product>(`http://localhost:8080/producto/${id}`, {headers})

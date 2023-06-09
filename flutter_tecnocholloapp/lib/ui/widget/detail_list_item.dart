@@ -28,7 +28,7 @@ class _DetailsListItemState extends State<DetailsListItem> {
   void initState() {
     super.initState();
     // inCart = widget.details.inCart;
-    // inFav = widget.details.inFav;
+    inFav = widget.details.inFav;
   }
 
   void _toggleCart() {

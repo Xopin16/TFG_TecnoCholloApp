@@ -27,6 +27,19 @@ public class VentaService {
     private final UsuarioService usuarioService;
 
 
+    public VentaDto mostrarCarrito(User user){
+        Optional<Venta> carritoOptional = user.getVentas().stream()
+                .filter(Venta::isCart)
+                .findFirst();
+
+        if (carritoOptional.isPresent()) {
+            Venta carrito = carritoOptional.get();
+            return VentaDto.of(carrito, user);
+        }else{
+            throw new EntityNotFoundException("No hay carrito");
+        }
+    }
+
     public VentaDto finalizarCompra(User usuario) {
         List<Venta> ventas = usuario.getVentas();
 
@@ -54,21 +67,7 @@ public class VentaService {
         ventaRepository.save(venta);
         usuarioService.save(usuario);
 
-        return VentaDto.of(venta);
-    }
-
-
-    public VentaDto mostrarCarrito(User user){
-        Optional<Venta> carritoOptional = user.getVentas().stream()
-                .filter(Venta::isCart)
-                .findFirst();
-
-        if (carritoOptional.isPresent()) {
-            Venta carrito = carritoOptional.get();
-            return VentaDto.of(carrito);
-        }else{
-            throw new EntityNotFoundException("No hay carrito");
-        }
+        return VentaDto.of(venta, usuario);
     }
 
 
@@ -107,7 +106,7 @@ public class VentaService {
                     lineaVenta.getProducto().setSent(true);
                 }
             } else {
-                return VentaDto.of(carrito);
+                return VentaDto.of(carrito, usuario);
             }
         } else {
             LineaVenta lineaVenta = LineaVenta.builder()
@@ -125,10 +124,11 @@ public class VentaService {
         ventaRepository.save(carrito);
         usuarioService.save(usuario);
 
-        return VentaDto.of(carrito);
+        return VentaDto.of(carrito, usuario);
     }
 
-    public VentaDto borrarLineaVentaDelCarrito(User usuario, Long idProducto) {
+    public VentaDto borrarLineaVentaDelCarrito(User user, Long idProducto) {
+        User usuario = usuarioService.findUserVentas(user.getId());
         List<Venta> ventas = usuario.getVentas();
 
         Optional<Venta> carritoOptional = ventas.stream()
@@ -149,7 +149,7 @@ public class VentaService {
             carrito.getLineasVenta().remove(lineaVenta);
             ventaRepository.save(carrito);
             usuarioService.save(usuario);
-            return VentaDto.of(carrito);
+            return VentaDto.of(carrito, usuario);
         }else{
             throw new EntityNotFoundException("No se encontró la línea de venta en el carrito");
         }
@@ -160,14 +160,12 @@ public class VentaService {
         return ventaRepository.findById(id);
     }
     public List<VentaDto> obtenerHistoricoUsuario(User usuario){
-//        List<Venta> historicoVentas = ventaRepository.findVentasByUser(usuario.getId());
-//        return historicoVentas.stream().map(VentaDto::of).toList();
         List<Venta> historicoVentas = ventaRepository.findVentasByUser(usuario.getId()).stream().filter(v -> !v.getLineasVenta().isEmpty()).toList();
-        return historicoVentas.stream().map(VentaDto::of).toList();
+        return historicoVentas.stream().map(v-> VentaDto.of(v, usuario)).toList();
     }
 
-    public List<VentaDto> obtenerHistoricoVentas(){
-        return ventaRepository.findAll().stream().map(VentaDto::of).toList();
+    public List<VentaDto> obtenerHistoricoVentas(User usuario){
+        return ventaRepository.findAll().stream().filter(venta -> !venta.getLineasVenta().isEmpty()).map(v-> VentaDto.of(v, usuario)).toList();
     }
 
     public void borrarVenta(Venta venta){

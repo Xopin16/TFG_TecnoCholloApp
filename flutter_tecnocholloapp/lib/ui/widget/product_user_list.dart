@@ -41,11 +41,11 @@ class _ProductUserListState extends State<ProductUserList> {
               return NoProducts();
             }
             return Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(10.0),
               child: ListView.builder(
                 itemBuilder: (BuildContext context, int index) {
                   return index >= state.products.length
-                      ? const BottomLoader()
+                      ? Text("")
                       : ProductUserListItem(
                           product: state.products[index],
                           user: widget.user,

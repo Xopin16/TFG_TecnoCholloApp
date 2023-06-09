@@ -69,11 +69,11 @@ public class ProductoService {
         return productoRepository.save(CreateProductDto.of(createProductDto));
     }
 
-    public PageDto<ProductDto> search(List<SearchCriteria> params, Pageable pageable) {
+    public PageDto<ProductDto> search(List<SearchCriteria> params, Pageable pageable, User user) {
         ProductSpecificationBuilder productSpecificationBuilder =
                 new ProductSpecificationBuilder(params);
         Specification<Product> spec = productSpecificationBuilder.build();
-        Page<ProductDto> pageProductDto = productoRepository.findAll(spec, pageable).map(ProductDto::fromProduct);
+        Page<ProductDto> pageProductDto = productoRepository.findAll(spec, pageable).map(p-> ProductDto.fromProduct(p, user));
         if (!pageProductDto.isEmpty()) {
             return new PageDto<>(pageProductDto);
         } else {
@@ -96,6 +96,7 @@ public class ProductoService {
         product.setNombre(productDto.getNombre());
         product.setPrecio(productDto.getPrecio());
         product.setDescripcion(productDto.getDescripcion());
+        product.setCantidad(productDto.getCantidad());
         return productoRepository.save(product);
     }
 
@@ -120,7 +121,7 @@ public class ProductoService {
     }
 
     public PageDto<ProductDto> paginarProductos(User user, Pageable pageable) {
-        List<ProductDto> productos = user.getProducts().stream().map(ProductDto::fromProduct).toList();
+        List<ProductDto> productos = user.getProducts().stream().map(p-> ProductDto.fromProduct(p, user)).toList();
         if (!productos.isEmpty()) {
             Page<ProductDto> pageProduct = new PageImpl<>(productos, pageable, productos.size());
             return new PageDto<>(pageProduct);
@@ -135,7 +136,7 @@ public class ProductoService {
         user.addFavorito(product);
         productoRepository.save(product);
         usuarioService.save(user);
-        return ProductDto.fromProduct(product);
+        return ProductDto.fromProduct(product, user);
     }
 
     public void removeFavorito(Long id, User user) {
@@ -152,12 +153,12 @@ public class ProductoService {
     }
     public PageDto<ProductDto> paginarFavoritos(User user, Pageable pageable) {
 //        List<ProductDto> favoritos = user.getFavoritos().stream().map(ProductDto::fromProduct).toList();
-        Page<ProductDto> pageFavoritos = productoRepository.favoritosDeUnUsuario(user.getId(), pageable).map(ProductDto::fromProduct);
+        Page<ProductDto> pageFavoritos = productoRepository.favoritosDeUnUsuario(user.getId(), pageable).map(p-> ProductDto.fromProduct(p, user));
         return new PageDto<>(pageFavoritos);
     }
 
     public PageDto<ProductDto> paginarChollos(User user, Pageable pageable) {
-        Page<ProductDto> pageFavoritos = productoRepository.productConUser(user.getId(), pageable).map(ProductDto::fromProduct);
+        Page<ProductDto> pageFavoritos = productoRepository.productConUser(user.getId(), pageable).map(p-> ProductDto.fromProduct(p, user));
         return new PageDto<>(pageFavoritos);
     }
 
@@ -171,8 +172,8 @@ public class ProductoService {
     }
 
     @Transactional
-    public PageDto<ProductDto> findProductsCategory(Long id, Pageable pageable) {
-        Page<ProductDto> pageProductsCategory = productoRepository.productosDeCategoria(id, pageable).map(ProductDto::fromProduct);
+    public PageDto<ProductDto> findProductsCategory(Long id, Pageable pageable, User user) {
+        Page<ProductDto> pageProductsCategory = productoRepository.productosDeCategoria(id, pageable).map(p-> ProductDto.fromProduct(p, user));
         return new PageDto<>(pageProductsCategory);
     }
 

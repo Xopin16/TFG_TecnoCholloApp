@@ -1,0 +1,12 @@
+<h2>Crear categoria</h2>
+<form [formGroup]="createCategoryForm" (ngSubmit)="onSubmit()" class="product-form">
+  <div class="form-group">
+    <label for="nombre">Nombre:</label>
+    <input type="text" id="nombre" formControlName="nombre" class="form-control">
+  </div>
+
+  <div class="button-group">
+    <button type="submit" [disabled]="createCategoryForm.invalid" class="btn btn-primary">Guardar</button>
+    <button type="button" (click)="onCancel()" class="btn btn-secondary">Cancelar</button>
+  </div>
+</form>
