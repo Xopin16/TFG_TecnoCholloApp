@@ -14,6 +14,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -51,10 +52,17 @@ public class CategoriaService {
 //        if (repository.existsById(id))
         if(repository.existsById(id)){
             Category category = findById(id);
-            Category otros = repository.findByNombre("Otros");
-            category.getProducts().forEach(p-> p.setCategoria(otros));
-            repository.deleteById(id);
+            Optional<Category> otrosOptional = repository.findByNombre("Otros");
+            if (otrosOptional.isPresent()){
+                Category otros = otrosOptional.get();
+                category.getProducts().forEach(p-> p.setCategoria(otros));
+                repository.deleteById(id);
+            }
         }
+    }
+
+    public Optional<Category> findByNombre(String nombre){
+        return repository.findByNombre(nombre);
     }
 
     public PageDto<CategoryDto> search(List<SearchCriteria> params, Pageable pageable) {

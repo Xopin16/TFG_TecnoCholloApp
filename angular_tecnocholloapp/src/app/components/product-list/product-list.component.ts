@@ -22,7 +22,7 @@ export class ProductListComponent implements OnInit {
   products: Product[] = [];
   categories: Category[] = [];
   idCategoria: number = 0;
-  newProduct: Product = {nombre: '', precio: 0, descripcion: '', cantidad: 0, idCategory: 0};
+  // newProduct: Product = {nombre: '', precio: 0, descripcion: '', cantidad: 0, categoria: ''};
   displayedColumns: string[] = ['imagen', 'nombre', 'precio', 'descripcion', 'acciones'];
   isLoggedIn = false;
   username?: string; 
@@ -80,20 +80,22 @@ export class ProductListComponent implements OnInit {
 
   openCreateProductDialog(): void {
     const dialogRef = this.dialog.open(CreateProductDialogComponent, {
-      width: '300px',
-      data: this.newProduct
+      width: '400px',
     });
   
     dialogRef.afterClosed().subscribe((result: any) => {
+      console.log(result)
+      const newProduct = result.body;
+      const file = result.file;
+      console.log(newProduct)
+      console.log(file)
       if (result) {
-        this.productService.postProduct(result, result.idCategory).subscribe(() => {
-          this.idCategoria = result.idCategory;
-          this.newProduct = result;
+        this.productService.postProduct(newProduct, file).subscribe((resp) => {
+          console.log(resp)
         });
       }
     });
   }
-  
 
   openEditProductDialog(id: number): void {
     this.productService.getProductId(id).subscribe((product: Product) => {
@@ -104,7 +106,9 @@ export class ProductListComponent implements OnInit {
   
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
-          this.productService.putProduct(result, id).subscribe(() => {
+          const updateProduct = result.body;
+          const file = result.file;
+          this.productService.putProduct(updateProduct, id, file).subscribe(() => {
             window.location.reload()
           });
         }

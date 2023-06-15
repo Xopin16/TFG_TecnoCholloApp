@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter_tecnocholloapp/config/locator.dart';
 import 'package:flutter_tecnocholloapp/models/createproduct.dart';
 import 'package:injectable/injectable.dart';
@@ -59,22 +60,25 @@ class ProductRepository {
   }
 
   Future<Product> newProduct(
-      int idCategoria, String nombre, double precio, String descripcion) async {
-    String url = "/usuario/producto/nuevo/$idCategoria";
-    var jsonResponse = await _client.post(
-        url,
-        CreateProduct(
-            nombre: nombre, precio: precio, descripcion: descripcion));
+      CreateProduct body, PlatformFile file, String token) async {
+    String url = "/product";
+    var jsonResponse = await _client.postMultiPart(url, body, file, token);
     return Product.fromJson(jsonDecode(jsonResponse));
   }
 
   Future<Product> editProduct(
-      int id, String nombre, double precio, String descripcion) async {
-    String url = "/usuario/producto/$id";
-    var jsonResponse = await _client.put(
-        url,
-        CreateProduct(
-            id: id, nombre: nombre, precio: precio, descripcion: descripcion));
+      /*int id, String nombre, double precio, String descripcion*/
+      int id,
+      CreateProduct body,
+      PlatformFile file,
+      String token) async {
+    String url = "/usuario/product/$id";
+    var jsonResponse = await _client.putMultiPart(url, body, file, token);
+    // CreateProduct(
+    //     /*id: id, */
+    //     nombre: nombre,
+    //     precio: precio,
+    //     descripcion: descripcion));
     return Product.fromJson(jsonDecode(jsonResponse));
   }
 

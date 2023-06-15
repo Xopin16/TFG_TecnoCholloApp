@@ -24,6 +24,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -166,10 +167,14 @@ public class UsuarioController {
                     description = "Error en los datos del usuario",
                     content = @Content),
     })
-    @PutMapping("/usuario/")
-    public UserDto modificarDatosPersonales(@Valid @RequestBody EditUserDto editUserDto, @AuthenticationPrincipal User user){
+    @JsonView({UserViews.Login.class})
+    @PutMapping(value = "/usuario/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public UserDto modificarDatosPersonales(
+            @Valid @RequestPart("body") EditUserDto editUserDto,
+            @AuthenticationPrincipal User user,
+            @RequestPart("file") MultipartFile file){
         User usuario = usuarioService.findUserProducts(user.getId());
-        User created = usuarioService.edit(usuario.getId(), editUserDto);
+        User created = usuarioService.edit(usuario.getId(), editUserDto, file);
         return UserDto.fromUser(created);
     }
 
@@ -213,37 +218,38 @@ public class UsuarioController {
     }
 
     //ADMIN
-    @Operation(summary = "Edita como administrador los datos personales de un usuario en base a su ID ")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
-                    description = "Se ha editado el usuario correctamente",
-                    content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = UserDto.class),
-                            examples = {@ExampleObject(
-                                    value = """
-                                            {
-                                                    "username": "user1",
-                                                    "avatar": http://avatar.com/user1,
-                                                    "fullName": "Luismi López",
-                                                    "createdAt": "27/09/2021 00:00:00"
-                                                }  
-                                            """
-                            )}
-                    )}),
-            @ApiResponse(responseCode = "401",
-                    description = "No hay autenticación para editar el usuario",
-                    content = @Content),
-            @ApiResponse(responseCode = "400",
-                    description = "Error en los datos del usuario",
-                    content = @Content),
-    })
-    @JsonView({UserViews.Login.class})
-    @PutMapping("/admin/usuario/{id}")
-    public UserDto modificarDatosAdmin(@Valid @RequestBody EditUserDto editUserDto, @PathVariable UUID id){
-        User user = usuarioService.findUserById(id);
-        usuarioService.edit(user.getId(), editUserDto);
-        return UserDto.fromUser(user);
-    }
+//    @Operation(summary = "Edita como administrador los datos personales de un usuario en base a su ID ")
+//    @ApiResponses(value = {
+//            @ApiResponse(responseCode = "200",
+//                    description = "Se ha editado el usuario correctamente",
+//                    content = {@Content(mediaType = "application/json",
+//                            schema = @Schema(implementation = UserDto.class),
+//                            examples = {@ExampleObject(
+//                                    value = """
+//                                            {
+//                                                    "username": "user1",
+//                                                    "avatar": http://avatar.com/user1,
+//                                                    "fullName": "Luismi López",
+//                                                    "createdAt": "27/09/2021 00:00:00"
+//                                                }
+//                                            """
+//                            )}
+//                    )}),
+//            @ApiResponse(responseCode = "401",
+//                    description = "No hay autenticación para editar el usuario",
+//                    content = @Content),
+//            @ApiResponse(responseCode = "400",
+//                    description = "Error en los datos del usuario",
+//                    content = @Content),
+//    })
+//    @JsonView({UserViews.Login.class})
+//    @PutMapping(value = "/admin/usuario/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    public UserDto modificarDatosAdmin(@Valid @RequestPart("body") EditUserDto editUserDto, @PathVariable UUID id){
+////        User user = usuarioService.findUserById(id);
+//        User usuario = usuarioService.findUserProducts(id);
+//        usuarioService.edit(usuario.getId(), editUserDto);
+//        return UserDto.fromUser(usuario);
+//    }
 
 
     @Operation(summary = "Como administrador, elimina un usuario en base a su ID")

@@ -3,16 +3,19 @@ class CreateProduct {
   String? nombre;
   double? precio;
   String? descripcion;
-  // String? categoria;
+  String? categoria;
+  int? cantidad;
   // String? fechaPublicacion;
+  String? imagen;
 
   CreateProduct({
     this.id,
     this.nombre,
     this.precio,
     this.descripcion,
-    /*this.categoria,
-      this.fechaPublicacion*/
+    this.categoria,
+    this.cantidad,
+    /*this.fechaPublicacion*/
   });
 
   CreateProduct.fromJson(Map<String, dynamic> json) {
@@ -20,7 +23,8 @@ class CreateProduct {
     nombre = json['nombre'];
     precio = json['precio'];
     descripcion = json['descripcion'];
-    // categoria = json['categoria'];
+    categoria = json['categoria'];
+    cantidad = json['cantidad'];
     // fechaPublicacion = json['fechaPublicacion'];
   }
 
@@ -30,7 +34,8 @@ class CreateProduct {
     data['nombre'] = this.nombre;
     data['precio'] = this.precio;
     data['descripcion'] = this.descripcion;
-    // data['categoria'] = this.categoria;
+    data['categoria'] = this.categoria;
+    data['cantidad'] = this.cantidad;
     // data['fechaPublicacion'] = this.fechaPublicacion;
     return data;
   }

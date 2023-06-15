@@ -2,6 +2,7 @@ package com.salesianostriana.dam.tecnocholloapp.producto.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.salesianostriana.dam.tecnocholloapp.categoria.model.Category;
 import com.salesianostriana.dam.tecnocholloapp.producto.model.Product;
 import com.salesianostriana.dam.tecnocholloapp.usuario.dto.UserViews;
 import lombok.AllArgsConstructor;
@@ -43,15 +44,17 @@ public class CreateProductDto {
 
     private int cantidad;
 
-    public static Product of(CreateProductDto dto){
+    public static Product of(Category category, CreateProductDto dto, String img){
         return Product
                 .builder()
                 .nombre(dto.nombre)
                 .precio(dto.precio)
                 .descripcion(dto.descripcion)
-                .imagen(dto.imagen)
+                .imagen(img)
                 .cantidad(dto.cantidad)
                 .fechaPublicacion(dto.getFechaPublicacion())
+                .sent(false)
+                .categoria(category)
                 .build();
     }
 
@@ -68,5 +71,6 @@ public class CreateProductDto {
                 .cantidad(p.getCantidad())
                 .build();
     }
+
 
 }

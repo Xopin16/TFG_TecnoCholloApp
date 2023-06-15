@@ -270,68 +270,26 @@ public class ProductoController {
         return productoService.paginarChollos(usuario, pageable);
     }
 
-    @Operation(summary = "Agrega un nuevo producto")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201",
-                    description = "Se ha agregado el producto",
-                    content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Product.class),
-                            examples = {@ExampleObject(
-                                    value = """
-                                           {
-                                                "id": 11,
-                                                "nombre": "Samsung Galaxy S21",
-                                                "precio": 799.99,
-                                                "descripcion": "El nuevo modelo de Samsung",
-                                                "imagen": "movil.jpg",
-                                                "fechaPublicacion": "2022-02-23",
-                                                "categoria": "Moviles",
-                                                "usuario": "mhoggins0"
-                                            }
-                                            """
-                            )}
-                    )}),
-            @ApiResponse(responseCode = "400",
-                    description = "No se ha agregado",
-                    content = @Content),
-    })
-    @PostMapping("/usuario/producto/nuevo/{idCategoria}")
-    public ResponseEntity<CreateProductDto> nuevoProducto(@AuthenticationPrincipal User user, @Valid @RequestBody CreateProductDto productDto, @PathVariable Long idCategoria) {
 
-        Product created = productoService.save(user.getId(), productDto, idCategoria);
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping(value = "/product", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ProductDto>crearProducto(
+            @RequestPart("body") CreateProductDto productDto,
+            @AuthenticationPrincipal User user,
+            @RequestPart("file")MultipartFile file){
+
+        Product created = productoService.saveProduct(user.getId(), productDto, file);
+        User usuario = usuarioService.findUserProducts(user.getId());
 
         URI createdURI = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(created.getId()).toUri();
 
-
         return ResponseEntity
                 .created(createdURI)
-                .body(CreateProductDto.fromProducto(created));
+                .body(ProductDto.fromProduct(created, usuario));
     }
-
-
-//    @PostMapping(value = "/usuario/producto/nuevo/{idCategoria}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//    public ResponseEntity<CreateProductDto>crearProducto(
-//            @RequestPart("product") CreateProductDto productDto,
-//            @AuthenticationPrincipal User user,
-//            @PathVariable Long idCategoria,
-//            @RequestPart("file")MultipartFile file){
-//
-//
-//        Product created = productoService.saveProduct(user.getId(), productDto, idCategoria, file);
-//
-//
-//        URI createdURI = ServletUriComponentsBuilder
-//                .fromCurrentRequest()
-//                .path("/{id}")
-//                .buildAndExpand(created.getId()).toUri();
-//
-//        return ResponseEntity
-//                .created(createdURI)
-//                .body(CreateProductDto.fromProducto(created));
-//    }
 
 
     @Operation(summary = "Edita un producto del usuario en base a su ID")
@@ -363,10 +321,14 @@ public class ProductoController {
                     content = @Content),
     })
     @PreAuthorize("isAuthenticated()")
-    @PutMapping("/usuario/producto/{id}")
-    public CreateProductDto editarProducto(@Valid @RequestBody CreateProductDto productDto, @AuthenticationPrincipal User user , @PathVariable Long id) {
+    @PutMapping(value = "/usuario/product/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public CreateProductDto editarProducto(
+            @Valid @RequestPart("body") CreateProductDto productDto,
+            @AuthenticationPrincipal User user ,
+            @PathVariable Long id,
+            @RequestPart("file")MultipartFile file) {
         User usuario = usuarioService.findUserProducts(user.getId());
-        Product edit = productoService.editMiProduct(id, productDto, usuario);
+        Product edit = productoService.editMiProduct(id, productDto, usuario, file);
         return CreateProductDto.fromProducto(edit);
     }
 

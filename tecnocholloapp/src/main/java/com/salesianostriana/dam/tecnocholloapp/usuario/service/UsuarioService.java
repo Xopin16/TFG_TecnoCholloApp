@@ -91,13 +91,16 @@ public class UsuarioService {
         return usuarioRepository.findFirstByUsername(username);
     }
 
-    public User edit(UUID id, EditUserDto dto) {
-        return usuarioRepository.findById(id)
-                .map(u -> {
-                    u.setAvatar(dto.getAvatar());
-                    u.setFullName(dto.getFullName());
-                    return usuarioRepository.save(u);
-                }).orElseThrow(UserNotFoundException::new);
+    public User edit(UUID id, EditUserDto dto, MultipartFile file) {
+        String filename = storageService.store(file);
+        return usuarioRepository.findById(id).map(u-> {
+            if(dto.getEmail().equals(dto.getVerifyEmail())){
+                u.setEmail(dto.getEmail());
+                u.setAvatar(filename);
+            }
+            return usuarioRepository.save(u);
+        }).orElseThrow(UserNotFoundException::new);
+
     }
 
     public boolean passwordMatch(User user, String clearPassword) {

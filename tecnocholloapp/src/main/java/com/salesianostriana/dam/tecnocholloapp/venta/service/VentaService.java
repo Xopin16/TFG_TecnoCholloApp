@@ -163,12 +163,12 @@ public class VentaService {
 
     @Transactional
     public List<VentaDto> obtenerHistoricoUsuario(User usuario){
-        List<Venta> historicoVentas = ventaRepository.findVentasByUser(usuario.getId()).stream().filter(v -> !v.getLineasVenta().isEmpty()).toList();
+        List<Venta> historicoVentas = ventaRepository.findVentasByUser(usuario.getId()).stream().filter(v -> !v.getLineasVenta().isEmpty() && !v.isCart()).toList();
         return historicoVentas.stream().map(v-> VentaDto.of(v, usuario)).toList();
     }
 
     public List<VentaDto> obtenerHistoricoVentas(User usuario){
-        return ventaRepository.findAll().stream().filter(venta -> !venta.getLineasVenta().isEmpty()).map(v-> VentaDto.of(v, usuario)).toList();
+        return ventaRepository.findAll().stream().filter(venta -> !venta.getLineasVenta().isEmpty() && !venta.isCart()).map(v-> VentaDto.of(v, usuario)).toList();
     }
 
     public void borrarVenta(Venta venta){

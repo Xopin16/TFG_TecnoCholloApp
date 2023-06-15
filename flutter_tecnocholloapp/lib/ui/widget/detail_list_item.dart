@@ -70,6 +70,7 @@ class _DetailsListItemState extends State<DetailsListItem> {
                 widget.details.imagen == null
                     ? "https://m.media-amazon.com/images/I/71uwa0mHA8L._AC_SY450_.jpg"
                     : "http://10.0.2.2:8080/download/${widget.details.imagen}",
+                // : "http://localhost:8080/download/${widget.details.imagen}",
                 fit: BoxFit.cover,
                 // width: imageWidth,
                 // height: imageWidth,

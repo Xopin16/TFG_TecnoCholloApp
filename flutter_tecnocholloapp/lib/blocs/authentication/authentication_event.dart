@@ -25,6 +25,8 @@ class UserLoggedIn extends AuthenticationEvent {
 // Fired when the user has logged out
 class UserLoggedOut extends AuthenticationEvent {}
 
+class UserEdited extends AuthenticationEvent {}
+
 // Se emite cuando la sesión ha expirado
 class SessionExpiredEvent extends AuthenticationEvent {}
 

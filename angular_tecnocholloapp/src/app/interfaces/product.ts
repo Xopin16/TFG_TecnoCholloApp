@@ -16,6 +16,8 @@ export interface ProductResponse {
     fechaPublicacion?: Date
     categoria?: string
     usuario?: string
-    idCategory?: number
+    // idCategory?: number
     cantidad: number
+    sent?: boolean
+    inFav?: boolean
   }

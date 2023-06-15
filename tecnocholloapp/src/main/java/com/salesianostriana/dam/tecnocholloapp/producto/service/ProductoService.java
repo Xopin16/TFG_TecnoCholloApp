@@ -2,6 +2,7 @@ package com.salesianostriana.dam.tecnocholloapp.producto.service;
 
 import com.salesianostriana.dam.tecnocholloapp.categoria.model.Category;
 import com.salesianostriana.dam.tecnocholloapp.categoria.service.CategoriaService;
+import com.salesianostriana.dam.tecnocholloapp.exception.CategoryNotFoundException;
 import com.salesianostriana.dam.tecnocholloapp.exception.ProductNotFoundException;
 import com.salesianostriana.dam.tecnocholloapp.file.StorageService;
 import com.salesianostriana.dam.tecnocholloapp.page.PageDto;
@@ -23,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -56,38 +58,34 @@ public class ProductoService {
                 .orElseThrow(() -> new ProductNotFoundException(id));
     }
 
-    public Product save(UUID id, CreateProductDto productDto, Long idCategoria) {
-        User user = usuarioService.findUserById(id);
-        Product product = CreateProductDto.of(productDto);
-        product.setCategoria(categoriaService.findById(idCategoria));
-        product.setUser(user);
-//        product.setFechaPublicacion(productDto.getFechaPublicacion());
-        user.addProduct(product);
-        return productoRepository.save(product);
-    }
+//    public Product save(UUID id, CreateProductDto productDto) {
+//        User user = usuarioService.findUserById(id);
+//        Product product = CreateProductDto.of(productDto);
+//        product.setCategoria(categoriaService.findById(idCategoria));
+//        product.setUser(user);
+////        product.setFechaPublicacion(productDto.getFechaPublicacion());
+//        user.addProduct(product);
+//        return productoRepository.save(product);
+//    }
 
-    public Product saveProduct(UUID id, CreateProductDto productDto, Long idCategoria, MultipartFile file){
+    @Transactional
+    public Product saveProduct(UUID id, CreateProductDto productDto, MultipartFile file){
         User user = usuarioService.findUserById(id);
-        Category category = categoriaService.findById(idCategoria);
         String filename = storageService.store(file);
-        Product product = Product
-                .builder()
-                .nombre(productDto.getNombre())
-                .precio(productDto.getPrecio())
-                .descripcion(productDto.getDescripcion())
-                .cantidad(productDto.getCantidad())
-                .categoria(category)
-                .imagen(filename)
-                .user(user)
-                .fechaPublicacion(productDto.getFechaPublicacion())
-                .build();
-        user.addProduct(product);
-        return productoRepository.save(product);
+        Optional<Category> categoryOptional = categoriaService.findByNombre(productDto.getCategoria());
+        if(categoryOptional.isPresent()){
+            Category category = categoryOptional.get();
+            Product product = CreateProductDto.of(category, productDto, filename);
+            product.setUser(user);
+            user.addProduct(product);
+            return productoRepository.save(product);
+        }
+        throw new CategoryNotFoundException();
     }
 
-    public Product add(CreateProductDto createProductDto) {
-        return productoRepository.save(CreateProductDto.of(createProductDto));
-    }
+//    public Product add(CreateProductDto createProductDto) {
+//        return productoRepository.save(CreateProductDto.of(createProductDto));
+//    }
 
     public PageDto<ProductDto> search(List<SearchCriteria> params, Pageable pageable, User user) {
         ProductSpecificationBuilder productSpecificationBuilder =
@@ -111,13 +109,19 @@ public class ProductoService {
                 }).orElseThrow(ProductNotFoundException::new);
     }
 
-    public Product editMiProduct(Long id, CreateProductDto productDto, User user) {
+    public Product editMiProduct(Long id, CreateProductDto productDto, User user, MultipartFile file) {
+        String filename = storageService.store(file);
         Product product = findById(id);
-        product.setNombre(productDto.getNombre());
-        product.setPrecio(productDto.getPrecio());
-        product.setDescripcion(productDto.getDescripcion());
-        product.setCantidad(productDto.getCantidad());
-        return productoRepository.save(product);
+        if(user.getProducts().contains(product)){
+            product.setNombre(productDto.getNombre());
+            product.setPrecio(productDto.getPrecio());
+            product.setDescripcion(productDto.getDescripcion());
+            product.setCantidad(productDto.getCantidad());
+            product.setImagen(filename);
+            return productoRepository.save(product);
+        }else{
+            throw new ProductNotFoundException();
+        }
     }
 
 

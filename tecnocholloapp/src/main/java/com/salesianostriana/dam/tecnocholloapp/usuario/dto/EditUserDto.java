@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 
 @Data
@@ -14,16 +15,22 @@ import javax.validation.constraints.NotEmpty;
 @Builder
 public class EditUserDto {
 
-    @NotEmpty
-    private String fullName;
+    @NotEmpty(message = "{createUserDto.email.notempty}")
+    @Email(message = "{createUserDto.email.email}")
+    private String email;
+
+    @NotEmpty(message = "{createUserDto.email.notempty}")
+    @Email(message = "{createUserDto.email.email}")
+    private String verifyEmail;
 
     private String avatar;
 
-    public static EditUserDto fromUser(User user){
-        return EditUserDto
-                .builder()
-                .fullName(user.getFullName())
-                .avatar(user.getAvatar())
-                .build();
-    }
+//    public static EditUserDto fromUser(User user){
+//        return EditUserDto
+//                .builder()
+//                .email(user.getEmail())
+//                .verifyEmail()
+//                .avatar(user.getAvatar())
+//                .build();
+//    }
 }

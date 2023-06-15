@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.Optional;
+
 public interface CategoriaRepository extends JpaRepository<Category, Long>, JpaSpecificationExecutor<Category> {
 
     @Query("""
@@ -16,7 +18,7 @@ public interface CategoriaRepository extends JpaRepository<Category, Long>, JpaS
     )
     CategoryDto nuevaCategoriaDto(Long id);
 
-    Category findByNombre(String nombre);
+    Optional<Category> findByNombre(String nombre);
     boolean existsByNombre(String nombre);
 
 }

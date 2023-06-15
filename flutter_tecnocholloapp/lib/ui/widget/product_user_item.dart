@@ -79,6 +79,7 @@ class ProductUserListItem extends StatelessWidget {
                         product.imagen == null
                             ? "https://m.media-amazon.com/images/I/71uwa0mHA8L._AC_SY450_.jpg"
                             : "http://10.0.2.2:8080/download/${product.imagen}",
+                        // : "http://localhost:8080/download/${product.imagen}",
                         fit: BoxFit.cover,
                         // width: imageWidth,
                         // height: imageWidth,

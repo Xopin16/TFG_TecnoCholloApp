@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../../models/models.dart';
 import '../pages/details_page.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 
 class ProductListItem extends StatelessWidget {
   final Product product;
@@ -38,6 +37,7 @@ class ProductListItem extends StatelessWidget {
                   product.imagen == null
                       ? "https://m.media-amazon.com/images/I/71uwa0mHA8L._AC_SY450_.jpg"
                       : "http://10.0.2.2:8080/download/${product.imagen}",
+                  // : "http://localhost:8080/download/${product.imagen}",
                   fit: BoxFit.cover,
                   // width: imageWidth,
                   // height: imageWidth,

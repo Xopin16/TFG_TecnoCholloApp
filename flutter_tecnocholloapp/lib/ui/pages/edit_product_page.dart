@@ -1,32 +1,53 @@
 import 'dart:async';
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tecnocholloapp/models/models.dart';
 import 'package:flutter_tecnocholloapp/services/product_service.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../config/locator.dart';
 import 'home_page.dart';
 
 class EditProductBloc extends FormBloc<String, String> {
   late final ProductService _productService;
   final int id;
-  final nombre = TextFieldBloc();
-  final precio = TextFieldBloc();
-  final descripcion = TextFieldBloc();
-  // final showSuccessResponse = BooleanFieldBloc();
+  final nombre = TextFieldBloc(validators: [FieldBlocValidators.required]);
+  final precio = TextFieldBloc(validators: [FieldBlocValidators.required]);
+  final descripcion = TextFieldBloc(validators: [FieldBlocValidators.required]);
+  final cantidad = TextFieldBloc();
+  late PlatformFile file;
+
+  Validator<String> _minValue(
+    TextFieldBloc newProductBloc,
+  ) {
+    return (String? precio) {
+      if (double.parse(precio!) >= 0) {
+        return null;
+      }
+      return 'La cantidad y el precio deben ser mayor que 0';
+    };
+  }
 
   EditProductBloc(this.id, Product product) {
     _productService = getIt<ProductService>();
     nombre.updateValue(product.nombre);
     precio.updateValue(product.precio.toString());
     descripcion.updateValue(product.descripcion);
+    cantidad.updateValue(product.cantidad.toString());
     addFieldBlocs(
       fieldBlocs: [
         nombre,
         precio,
         descripcion,
+        cantidad,
       ],
     );
+
+    precio..addValidators([_minValue(precio)]);
+    cantidad..addValidators([_minValue(cantidad)]);
   }
 
   @override
@@ -34,25 +55,50 @@ class EditProductBloc extends FormBloc<String, String> {
     // await Future<void>.delayed(const Duration(seconds: 1));
     try {
       final result = await _productService.editProduct(
-          id, nombre.value, double.parse(precio.value), descripcion.value);
+          this.id,
+          CreateProduct(
+              nombre: nombre.value,
+              precio: double.parse(precio.value),
+              descripcion: descripcion.value,
+              cantidad: int.parse(cantidad.value)),
+          file);
       emitSuccess();
     } on Exception catch (_) {
       emitFailure();
     }
   }
+
+  void saveImage(PlatformFile newFile) {
+    file = newFile;
+  }
 }
 
-class EditProductForm extends StatelessWidget {
-  const EditProductForm(
-      {super.key, required this.id, required this.user, required this.product});
-  final int id;
-  final User user;
-  final Product product;
+class EditProductForm extends StatefulWidget {
+  EditProductForm(
+      {Key? key, required this.id, required this.user, required this.product})
+      : super(key: key);
+  late final int id;
+  late final User user;
+  late final Product product;
+
+  @override
+  _EditProductFormState createState() => _EditProductFormState();
+}
+
+class _EditProductFormState extends State<EditProductForm> {
+  final picker = ImagePicker();
+  FilePickerResult? result;
+  bool imagen = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => EditProductBloc(id, product),
+      create: (context) => EditProductBloc(widget.id, widget.product),
       child: Builder(
         builder: (context) {
           final editProductBloc = context.read<EditProductBloc>();
@@ -75,7 +121,7 @@ class EditProductForm extends StatelessWidget {
 
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
                   builder: (_) => SuccessScreen(
-                    user: user,
+                    user: widget.user,
                   ),
                 ));
               },
@@ -184,9 +230,61 @@ class EditProductForm extends StatelessWidget {
                           ),
                         ],
                       ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(32, 2, 2, 0),
+                            child: Text(
+                              "Cantidad",
+                              style: TextStyle(
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Container(
+                            padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                            child: TextFieldBlocBuilder(
+                              textFieldBloc: editProductBloc.cantidad,
+                              keyboardType: TextInputType.number,
+                              inputFormatters: <TextInputFormatter>[
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(36),
+                                  borderSide: BorderSide(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      ElevatedButton(
+                          onPressed: () async {
+                            result = await FilePicker.platform.pickFiles(
+                              withData: true,
+                              allowMultiple: false,
+                              type: FileType.custom,
+                              allowedExtensions: ['jpg', 'png'],
+                            );
+                            setState(() {
+                              imagen = result != null;
+                            });
+                            if (imagen)
+                              editProductBloc.saveImage(result!.files[0]);
+                          },
+                          child: Text("Seleccione una imagen")),
+                      if (imagen) Text(editProductBloc.file.name),
+                      SizedBox(
+                        height: 10,
+                      ),
                       Center(
                         child: ElevatedButton(
-                          onPressed: editProductBloc.submit,
+                          onPressed: imagen ? editProductBloc.submit : null,
                           child: const Text('EDITAR'),
                           style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all<Color>(

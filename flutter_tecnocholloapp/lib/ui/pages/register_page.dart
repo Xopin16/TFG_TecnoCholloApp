@@ -6,13 +6,25 @@ import '../../services/authentication_service.dart';
 
 class LoginFormBloc extends FormBloc<String, String> {
   late final AuthenticationService _authenticationService;
-  final username = TextFieldBloc();
-  final password = TextFieldBloc();
-  final verifyPassword = TextFieldBloc();
-  final email = TextFieldBloc();
-  final verifyEmail = TextFieldBloc();
-  final fullName = TextFieldBloc();
+  final username = TextFieldBloc(validators: [FieldBlocValidators.required]);
+  final password = TextFieldBloc(validators: [FieldBlocValidators.required]);
+  final verifyPassword =
+      TextFieldBloc(validators: [FieldBlocValidators.required]);
+  final email = TextFieldBloc(validators: [FieldBlocValidators.required]);
+  final verifyEmail = TextFieldBloc(validators: [FieldBlocValidators.required]);
+  final fullName = TextFieldBloc(validators: [FieldBlocValidators.required]);
   // final showSuccessResponse = BooleanFieldBloc();
+
+  Validator<String> _equalsPasswordsEmail(
+    TextFieldBloc registerFormBloc,
+  ) {
+    return (String? password) {
+      if (password == registerFormBloc.value) {
+        return null;
+      }
+      return 'Las contraseñas y emails deben ser iguales';
+    };
+  }
 
   LoginFormBloc() {
     _authenticationService = getIt<JwtAuthenticationService>();
@@ -26,6 +38,13 @@ class LoginFormBloc extends FormBloc<String, String> {
         fullName,
       ],
     );
+
+    password
+      ..addValidators([_equalsPasswordsEmail(verifyPassword)])
+      ..subscribeToFieldBlocs([verifyPassword]);
+    email
+      ..addValidators([_equalsPasswordsEmail(verifyEmail)])
+      ..subscribeToFieldBlocs([verifyEmail]);
   }
 
   @override

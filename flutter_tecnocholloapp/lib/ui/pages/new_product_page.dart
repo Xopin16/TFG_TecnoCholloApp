@@ -1,8 +1,14 @@
+import 'dart:async';
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_tecnocholloapp/models/createproduct.dart';
 import 'package:flutter_tecnocholloapp/services/category_service.dart';
 import 'package:flutter_tecnocholloapp/services/product_service.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../config/locator.dart';
 import '../../models/category.dart';
 
@@ -10,32 +16,54 @@ class NewProductBloc extends FormBloc<String, String> {
   late final ProductService _productService;
   final id = InputFieldBloc<int, Object>(
       initialValue: 1, validators: [FieldBlocValidators.required]);
-  final nombre = TextFieldBloc();
-  final precio = TextFieldBloc();
-  final descripcion = TextFieldBloc();
-  // final showSuccessResponse = BooleanFieldBloc();
+  final nombre = TextFieldBloc(validators: [FieldBlocValidators.required]);
+  final precio = TextFieldBloc(validators: [FieldBlocValidators.required]);
+  final descripcion = TextFieldBloc(validators: [FieldBlocValidators.required]);
+  final cantidad = TextFieldBloc(validators: [FieldBlocValidators.required]);
+  final categoria = TextFieldBloc(validators: [FieldBlocValidators.required]);
+  late PlatformFile file;
+
+  Validator<String> _minValue(
+    TextFieldBloc newProductBloc,
+  ) {
+    return (String? precio) {
+      if (double.parse(precio!) >= 0) {
+        return null;
+      }
+      return 'La cantidad y el precio deben ser mayor que 0';
+    };
+  }
 
   NewProductBloc() {
     _productService = getIt<ProductService>();
     addFieldBlocs(
-      fieldBlocs: [
-        nombre,
-        precio,
-        descripcion,
-      ],
+      fieldBlocs: [nombre, precio, descripcion, cantidad, categoria],
     );
+
+    precio..addValidators([_minValue(precio)]);
+    cantidad..addValidators([_minValue(cantidad)]);
   }
 
   @override
   void onSubmitting() async {
     // await Future<void>.delayed(const Duration(seconds: 1));
     try {
-      final result = await _productService.newProduct(id.value.toInt(),
-          nombre.value, double.parse(precio.value), descripcion.value);
+      final result = await _productService.newProduct(
+          CreateProduct(
+              nombre: nombre.value,
+              precio: double.parse(precio.value),
+              descripcion: descripcion.value,
+              categoria: categoria.value,
+              cantidad: int.parse(cantidad.value)),
+          file);
       emitSuccess();
     } on Exception catch (_) {
       emitFailure();
     }
+  }
+
+  void saveImage(PlatformFile newFile) {
+    file = newFile;
   }
 }
 
@@ -57,7 +85,10 @@ class _NewProductFormState extends State<NewProductForm> {
       first: false,
       totalPages: 0,
       totalElements: 0);
-  int selectedCategoryId = 0;
+  String selectedCategoryNombre = '';
+  final picker = ImagePicker();
+  FilePickerResult? result;
+  bool imagen = false;
 
   @override
   void initState() {
@@ -70,8 +101,8 @@ class _NewProductFormState extends State<NewProductForm> {
     try {
       _categories = await categoryService.getAllCategories(0);
       setState(() {
-        selectedCategoryId = (_categories.category.isNotEmpty
-            ? _categories.category[0].id
+        selectedCategoryNombre = (_categories.category.isNotEmpty
+            ? _categories.category[0].nombre
             : null)!;
       });
     } catch (e) {
@@ -85,33 +116,6 @@ class _NewProductFormState extends State<NewProductForm> {
       create: (context) => _newFormBloc,
       child: Builder(builder: (context) {
         final newProductBloc = context.read<NewProductBloc>();
-/*
-          return Scaffold(
-            resizeToAvoidBottomInset: false,
-            appBar: AppBar(
-              title: const Text('Crear chollo'),
-              backgroundColor: Color.fromARGB(211, 244, 67, 54),
-            ),
-            body: FormBlocListener<NewProductBloc, String, String>(
-              onSubmitting: (context, state) {
-                LoadingDialog.show(context);
-              },
-              onSubmissionFailed: (context, state) {
-                LoadingDialog.hide(context);
-              },
-              onSuccess: (context, state) {
-                LoadingDialog.hide(context);
-
-                Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (_) => const SuccessScreen()));
-              },
-              onFailure: (context, state) {
-                LoadingDialog.hide(context);
-
-                ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(state.failureResponse!)));
-              },
-*/
         return Scaffold(
             resizeToAvoidBottomInset: false,
             appBar: AppBar(
@@ -204,13 +208,41 @@ class _NewProductFormState extends State<NewProductForm> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 4),
                     Container(
                       padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
                       child: TextFieldBlocBuilder(
                         textFieldBloc: newProductBloc.descripcion,
                         keyboardType: TextInputType.multiline,
                         maxLines: null,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(36),
+                            borderSide: BorderSide(
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(32, 2, 2, 0),
+                      child: Text(
+                        'Cantidad',
+                        style: TextStyle(
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                      child: TextFieldBlocBuilder(
+                        textFieldBloc: newProductBloc.cantidad,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(36),
@@ -233,18 +265,18 @@ class _NewProductFormState extends State<NewProductForm> {
                     SizedBox(height: 4),
                     Container(
                       padding: EdgeInsets.fromLTRB(16, 0, 16, 8),
-                      child: DropdownButtonFormField<int>(
-                        value: selectedCategoryId,
+                      child: DropdownButtonFormField<String>(
+                        value: selectedCategoryNombre,
                         items: _categories.category.map((category) {
-                          return DropdownMenuItem<int>(
-                            value: category.id,
+                          return DropdownMenuItem<String>(
+                            value: category.nombre,
                             child: Text(category.nombre),
                           );
                         }).toList(),
                         onChanged: (value) {
                           setState(() {
-                            selectedCategoryId = value!;
-                            _newFormBloc.id.updateValue(value);
+                            selectedCategoryNombre = value!;
+                            newProductBloc.categoria.updateValue(value);
                           });
                         },
                         decoration: InputDecoration(
@@ -259,7 +291,28 @@ class _NewProductFormState extends State<NewProductForm> {
                     ),
                     Center(
                       child: ElevatedButton(
-                        onPressed: newProductBloc.submit,
+                          onPressed: () async {
+                            result = await FilePicker.platform.pickFiles(
+                              withData: true,
+                              allowMultiple: false,
+                              type: FileType.custom,
+                              allowedExtensions: ['jpg', 'png'],
+                            );
+                            setState(() {
+                              imagen = result != null;
+                            });
+                            if (imagen)
+                              newProductBloc.saveImage(result!.files[0]);
+                          },
+                          child: Text("Seleccione una imagen")),
+                    ),
+                    if (imagen) Center(child: Text(newProductBloc.file.name)),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Center(
+                      child: ElevatedButton(
+                        onPressed: imagen ? newProductBloc.submit : null,
                         child: const Text('AGREGAR'),
                         style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all<Color>(
@@ -332,12 +385,7 @@ class SuccessScreen extends StatelessWidget {
             const SizedBox(height: 10),
             ElevatedButton(
               onPressed: () => Navigator.pop(context),
-              child: Text(
-                  "Volver") /*.pushReplacement(
-                  MaterialPageRoute(builder: (_) => const CategoryForm())),
-              icon: const Icon(Icons.replay),
-              label: const Text('AGAIN')*/
-              ,
+              child: Text("Volver"),
             ),
           ],
         ),

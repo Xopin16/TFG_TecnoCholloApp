@@ -80,6 +80,7 @@ public class SecurityConfig {
                                 .antMatchers("/admin/**").hasRole("ADMIN")
                                 .antMatchers("/user/**").authenticated()
                                 .antMatchers("/auth/register/admin").hasRole("ADMIN")
+                                .antMatchers("/product").hasAnyRole("ADMIN", "USER")
                                 .anyRequest().authenticated();
 
 

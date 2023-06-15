@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tecnocholloapp/main.dart';
 import 'package:flutter_tecnocholloapp/services/localstorage_service.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http_interceptor/http_interceptor.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:injectable/injectable.dart';
 import 'package:http/http.dart' as http;
 
@@ -29,13 +31,13 @@ class HeadersApiInterceptor implements InterceptorContract {
 
   @override
   Future<ResponseData> interceptResponse({required ResponseData data}) async {
-    late LocalStorageService _localStorageService;
+    late LocalStorageService _localStorageService = LocalStorageService();
 
     interceptResponse() {
       //_localStorageService = getIt<LocalStorageService>();
-      GetIt.I
-          .getAsync<LocalStorageService>()
-          .then((value) => _localStorageService = value);
+      // GetIt.I
+      //     .getAsync<LocalStorageService>()
+      //     .then((value) => _localStorageService = value);
     }
 
     if (data.statusCode == 401 || data.statusCode == 403) {
@@ -44,7 +46,7 @@ class HeadersApiInterceptor implements InterceptorContract {
       // });
       var refreshToken = _localStorageService.getFromDisk("user_refresh_token");
       final response = await http.post(
-          Uri.parse(ApiConstants.baseUrl + "/user/refreshtoken"),
+          Uri.parse(ApiConstants.baseUrl + "/refreshtoken/"),
           body: jsonEncode({"refreshToken": refreshToken}),
           headers: {
             "Content-Type": "application/json",
@@ -120,6 +122,66 @@ class RestClient {
     }
   }
 
+  Future<dynamic> postMultiPart(
+      String url, dynamic body, PlatformFile file, String token) async {
+    try {
+      Uri uri = Uri.parse(ApiConstants.baseUrl + url);
+
+      Map<String, String> headers = Map();
+      headers.addAll({
+        'Content-Type': 'multipart/form-data',
+        'Authorization': 'Bearer ${token}',
+      });
+      var bodyPart;
+      var request = new http.MultipartRequest('POST', uri);
+      final httpImage = http.MultipartFile.fromBytes('file', file.bytes!,
+          contentType: MediaType('file', file.extension!), filename: file.name);
+      request.files.add(httpImage);
+      request.headers.addAll(headers);
+      if (body != null) {
+        bodyPart = http.MultipartFile.fromString('body', jsonEncode(body),
+            contentType: MediaType('application', 'json'));
+        request.files.add(bodyPart);
+      }
+
+      final response = await _httpClient!.send(request);
+      var responseJson = response.stream.bytesToString();
+      return responseJson;
+    } on SocketException catch (ex) {
+      throw Exception('No internet connection: ${ex.message}');
+    }
+  }
+
+  Future<dynamic> putMultiPart(
+      String url, dynamic body, PlatformFile file, String token) async {
+    try {
+      Uri uri = Uri.parse(ApiConstants.baseUrl + url);
+
+      Map<String, String> headers = Map();
+      headers.addAll({
+        'Content-Type': 'multipart/form-data',
+        'Authorization': 'Bearer ${token}',
+      });
+      var bodyPart;
+      var request = new http.MultipartRequest('PUT', uri);
+      final httpImage = http.MultipartFile.fromBytes('file', file.bytes!,
+          contentType: MediaType('file', file.extension!), filename: file.name);
+      request.files.add(httpImage);
+      request.headers.addAll(headers);
+      if (body != null) {
+        bodyPart = http.MultipartFile.fromString('body', jsonEncode(body),
+            contentType: MediaType('application', 'json'));
+        request.files.add(bodyPart);
+      }
+
+      final response = await _httpClient!.send(request);
+      var responseJson = response.stream.bytesToString();
+      return responseJson;
+    } on SocketException catch (ex) {
+      throw Exception('No internet connection: ${ex.message}');
+    }
+  }
+
   Future<dynamic> put(String url, dynamic body) async {
     try {
       Uri uri = Uri.parse(ApiConstants.baseUrl + url);
@@ -159,11 +221,6 @@ class RestClient {
       case 400:
         throw BadRequestException(utf8.decode(response.bodyBytes));
       case 401:
-        // Así sacamos el mensaje del JSON devuelto por el API
-        //String message = jsonDecode(utf8.decode(response.bodyBytes))['message'];
-        //throw AuthenticationException(message);
-
-        // Así devolvemos un mensaje "genérico"
         throw AuthenticationException(
             "You have entered an invalid username or password");
       case 403:

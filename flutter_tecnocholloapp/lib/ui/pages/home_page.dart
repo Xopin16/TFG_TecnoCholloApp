@@ -7,6 +7,7 @@ import 'package:flutter_tecnocholloapp/repositories/repositories.dart';
 import 'package:flutter_tecnocholloapp/services/category_service.dart';
 import 'package:flutter_tecnocholloapp/services/product_service.dart';
 import 'package:flutter_tecnocholloapp/services/venta_service.dart';
+import 'package:flutter_tecnocholloapp/ui/pages/edit_user_page.dart';
 import 'package:flutter_tecnocholloapp/ui/pages/login_page.dart';
 import 'package:flutter_tecnocholloapp/ui/widget/carrito_list.dart';
 import 'package:flutter_tecnocholloapp/ui/widget/venta_list.dart';
@@ -60,7 +61,7 @@ class _HomePageState extends State<HomePage> {
       body: SafeArea(
         minimum: const EdgeInsets.all(10),
         child: _pages(context)[_currentIndex],
-      ),  
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         backgroundColor: Color.fromARGB(104, 86, 159, 192),
@@ -169,8 +170,8 @@ class CarritoScreen extends StatelessWidget {
   const CarritoScreen({super.key, required this.homePage});
   @override
   Widget build(BuildContext context) {
-    return  CarritoList(
-        user: homePage.user,
+    return CarritoList(
+      user: homePage.user,
     );
   }
 }
@@ -205,6 +206,7 @@ class ProfileScreen extends StatelessWidget {
       backgroundImage: NetworkImage(homePage.user.avatar == null
           ? "https://electronicssoftware.net/wp-content/uploads/user.png"
           : "http://10.0.2.2:8080/download/${homePage.user.avatar}"),
+      // : "http://localhost:8080/download/${homePage.user.avatar}"),
     );
 
     return SafeArea(

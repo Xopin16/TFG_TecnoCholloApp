@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Category } from 'src/app/interfaces/category';
+import { CreateProduct } from 'src/app/interfaces/createProduct';
 import { Product } from 'src/app/interfaces/product';
 import { CategoryService } from 'src/app/services/category.service';
 
@@ -12,22 +13,29 @@ import { CategoryService } from 'src/app/services/category.service';
 })
 export class CreateProductDialogComponent implements OnInit{
 
-  createProductForm: FormGroup;
+  // createProductForm: FormGroup;
+  body: CreateProduct = {
+    nombre: '',
+    precio: 0,
+    descripcion: '',
+    cantidad: 0,
+    categoria: ''
+  }
   categories: Category[] = [];
-  // file: File | null = null;
-  idCategory: number = 0;
+  categoria: string = "";
+  file: File | null = null;
   
 
   constructor(private dialogRef: MatDialogRef<CreateProductDialogComponent>,
     private formBuilder: FormBuilder, private categoryService: CategoryService,
-    @Inject(MAT_DIALOG_DATA) public data: Product) { 
-      this.createProductForm = this.formBuilder.group({
-        nombre: ['', Validators.required],
-        precio: ['', Validators.required],
-        descripcion: ['', Validators.required],
-        cantidad: ['', Validators.required],
-        idCategory: [this.idCategory, Validators.required]
-      });
+    @Inject(MAT_DIALOG_DATA) public data: CreateProduct) { 
+      // this.createProductForm = this.formBuilder.group({
+      //   nombre: ['', Validators.required],
+      //   precio: ['', Validators.required],
+      //   descripcion: ['', Validators.required],
+      //   cantidad: ['', Validators.required],
+      //   categoria: ['', Validators.required]
+      // });
       
     }
     
@@ -38,29 +46,29 @@ export class CreateProductDialogComponent implements OnInit{
       });
     }
 
-    // selectFile(event: any): void{
-    //   const file = event.target.files[0];
-    //   this.file = file;
-    // }
-
-    get formControls() {
-      return this.createProductForm.controls;
+    selectFile(event: any): void{
+      const file = event.target.files[0];
+      this.file = file;
     }
+
+    // get formControls() {
+    //   return this.createProductForm.controls;
+    // }
   
     onSubmit(): void {
-      if (this.createProductForm.invalid) {
-        return;
-      }
-  
-      const productData: Product = {
-        nombre: this.formControls['nombre'].value,
-        precio: this.formControls['precio'].value,
-        descripcion: this.formControls['descripcion'].value,
-        cantidad: this.formControls['cantidad'].value,
-        idCategory: this.formControls['idCategory'].value
+      // if (this.createProductForm.invalid) {
+      //   return;
+      // }
+
+      const productData: CreateProduct = {
+        nombre: this.body.nombre,
+        precio: this.body.precio,
+        descripcion: this.body.descripcion,
+        cantidad: this.body.cantidad,
+        categoria: this.body.categoria
       };
   
-      this.dialogRef.close(productData/*, file: this.file*/);
+      this.dialogRef.close({body: productData, file: this.file});
     }
   
     onCancel(): void {
