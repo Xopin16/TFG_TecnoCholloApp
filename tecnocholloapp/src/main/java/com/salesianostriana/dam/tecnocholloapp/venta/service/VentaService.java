@@ -3,7 +3,8 @@ package com.salesianostriana.dam.tecnocholloapp.venta.service;
 //import com.salesianostriana.dam.tecnocholloapp.carrito.service.CarritoService;
 import com.salesianostriana.dam.tecnocholloapp.lineaVenta.model.LineaVenta;
 import com.salesianostriana.dam.tecnocholloapp.producto.model.Product;
-        import com.salesianostriana.dam.tecnocholloapp.usuario.model.User;
+import com.salesianostriana.dam.tecnocholloapp.producto.service.ProductoService;
+import com.salesianostriana.dam.tecnocholloapp.usuario.model.User;
 import com.salesianostriana.dam.tecnocholloapp.usuario.service.UsuarioService;
 import com.salesianostriana.dam.tecnocholloapp.venta.model.Venta;
 import com.salesianostriana.dam.tecnocholloapp.venta.model.dto.VentaDto;
@@ -26,6 +27,8 @@ public class VentaService {
     private final VentaRepository ventaRepository;
 
     private final UsuarioService usuarioService;
+
+    private final ProductoService productoService;
 
 
     public VentaDto mostrarCarrito(User user){
@@ -100,26 +103,27 @@ public class VentaService {
             int cantidadDisponible = producto.getCantidad();
             int cantidadActual = lineaVenta.getCantidad();
 
-            if (cantidadActual < cantidadDisponible && !producto.isSent()) {
+            if (!producto.isSent() && cantidadDisponible > 0) {
                 lineaVenta.setCantidad(cantidadActual + 1);
                 producto.setCantidad(cantidadDisponible - 1);
-                if (cantidadActual + 1 == cantidadDisponible){
+                if (producto.getCantidad() == 0){
                     lineaVenta.getProducto().setSent(true);
                 }
             } else {
-                return VentaDto.of(carrito, usuario);
+                throw new EntityNotFoundException("Este producto ya no está a la venta");
             }
         } else {
+            if(producto.isSent())
+                throw new EntityNotFoundException("Este producto ya no está a la venta");
             LineaVenta lineaVenta = LineaVenta.builder()
                     .producto(producto)
                     .venta(carrito)
                     .cantidad(1)
                     .build();
             carrito.getLineasVenta().add(lineaVenta);
-            if(producto.getCantidad() == 1){
+            producto.setCantidad(producto.getCantidad()-1);
+            if(producto.getCantidad()==0)
                 producto.setSent(true);
-                producto.setCantidad(0);
-            }
         }
 
         ventaRepository.save(carrito);
@@ -128,7 +132,7 @@ public class VentaService {
         return VentaDto.of(carrito, usuario);
     }
 
-    public VentaDto borrarLineaVentaDelCarrito(User user, Long idProducto) {
+    public void borrarLineaVentaDelCarrito(User user, Long idProducto) {
         User usuario = usuarioService.findUserVentas(user.getId());
         List<Venta> ventas = usuario.getVentas();
 
@@ -150,7 +154,7 @@ public class VentaService {
             carrito.getLineasVenta().remove(lineaVenta);
             ventaRepository.save(carrito);
             usuarioService.save(usuario);
-            return VentaDto.of(carrito, usuario);
+            VentaDto.of(carrito, usuario);
         }else{
             throw new EntityNotFoundException("No se encontró la línea de venta en el carrito");
         }

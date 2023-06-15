@@ -17,6 +17,7 @@ export class LoginComponent implements OnInit {
   isLoginFailed = false;
   registrationComplete = false;
   errorMessage = '';
+  isAuthorized = true;
   roles: string[] = [];
 
   constructor(private authService: AuthService, private tokenStorage: TokenStorageService, private router: Router) { }
@@ -37,9 +38,15 @@ export class LoginComponent implements OnInit {
         this.isLoginFailed = false;
         this.isLoggedIn = true;
         this.registrationComplete = true;
-        this.router.navigate(['/product']).then(() => {
-          window.location.reload();
-        });
+        console.log(data);
+        if(data.role == 'USER'){
+          this.isAuthorized = false;
+          this.isLoggedIn = false;
+        }else{
+          this.router.navigate(['/product']).then(() => {
+            window.location.reload();
+          });
+        }
       },
       error: err => {
         this.errorMessage = err.error.message;

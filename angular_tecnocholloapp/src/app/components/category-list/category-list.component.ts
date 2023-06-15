@@ -82,7 +82,7 @@ export class CategoryListComponent implements OnInit {
       dialogRef.afterClosed().subscribe(result => {
       if(result){
         this.categoryService.putCategory(result, id).subscribe(() => {
-          window.location.reload()
+          this.getCategories(0);
         })
       }
       })

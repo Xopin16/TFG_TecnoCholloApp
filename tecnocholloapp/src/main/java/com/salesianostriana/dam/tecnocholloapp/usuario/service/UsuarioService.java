@@ -84,7 +84,7 @@ public class UsuarioService {
 
     public User findUserById(UUID id) {
         return usuarioRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(id));
+                .orElseThrow(() -> new EntityNotFoundException("No se ha encontrado el usuario con el id: " + id.toString()));
     }
 
     public Optional<User> findByUsername(String username) {

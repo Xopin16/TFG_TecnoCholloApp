@@ -73,6 +73,12 @@ public class UsuarioController {
             @ApiResponse(responseCode = "404",
                     description = "No se ha encontrado el listado de usuarios",
                     content = @Content),
+            @ApiResponse(responseCode = "401",
+                    description = "El usuario no está loggeado",
+                    content = @Content),
+            @ApiResponse(responseCode = "403",
+                    description = "Sesión expirada o acceso restringido",
+                    content = @Content),
     })
     @JsonView(UserViews.Master.class)
     @GetMapping("/usuario/")
@@ -106,6 +112,12 @@ public class UsuarioController {
             @ApiResponse(responseCode = "404",
                     description = "No se ha encontrado el usuario por el ID",
                     content = @Content),
+            @ApiResponse(responseCode = "401",
+                    description = "El usuario no está loggeado",
+                    content = @Content),
+            @ApiResponse(responseCode = "403",
+                    description = "Sesión expirada o acceso restringido",
+                    content = @Content),
     })
     @JsonView(UserViews.Master.class)
     @GetMapping("/usuario/{id}")
@@ -132,7 +144,10 @@ public class UsuarioController {
                             )}
                     )}),
             @ApiResponse(responseCode = "401",
-                    description = "No hay autenticación para ver al usuario",
+                    description = "El usuario no está loggeado",
+                    content = @Content),
+            @ApiResponse(responseCode = "403",
+                    description = "Sesión expirada o acceso restringido",
                     content = @Content),
     })
     @PreAuthorize("isAuthenticated()")
@@ -161,7 +176,10 @@ public class UsuarioController {
                             )}
                     )}),
             @ApiResponse(responseCode = "401",
-                    description = "No hay autenticación para editar el usuario",
+                    description = "El usuario no está loggeado",
+                    content = @Content),
+            @ApiResponse(responseCode = "403",
+                    description = "Sesión expirada o acceso restringido",
                     content = @Content),
             @ApiResponse(responseCode = "400",
                     description = "Error en los datos del usuario",
@@ -177,17 +195,16 @@ public class UsuarioController {
         User created = usuarioService.edit(usuario.getId(), editUserDto, file);
         return UserDto.fromUser(created);
     }
-
-    @PostMapping("/upload/avatar")
-    public UserDto create(
-            @RequestPart("file") MultipartFile file,
-            @AuthenticationPrincipal User user
-    ) {
-        User usuario = usuarioService.findUserProducts(user.getId());
-        usuarioService.saveFile(usuario, file);
-        return UserDto.fromUser(usuario);
-    }
-
+    @Operation(summary = "Muestra la imagen guardada")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Se ha encontrado la imagen",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = UserDto.class))}),
+            @ApiResponse(responseCode = "404",
+                    description = "No se ha encontrado la imagen",
+                    content = @Content),
+    })
     @GetMapping("/download/{filename:.+}")
     public ResponseEntity<Resource> getFile(@PathVariable String filename){
         MediaTypeUrlResource resource =
@@ -217,41 +234,6 @@ public class UsuarioController {
         return ResponseEntity.noContent().build();
     }
 
-    //ADMIN
-//    @Operation(summary = "Edita como administrador los datos personales de un usuario en base a su ID ")
-//    @ApiResponses(value = {
-//            @ApiResponse(responseCode = "200",
-//                    description = "Se ha editado el usuario correctamente",
-//                    content = {@Content(mediaType = "application/json",
-//                            schema = @Schema(implementation = UserDto.class),
-//                            examples = {@ExampleObject(
-//                                    value = """
-//                                            {
-//                                                    "username": "user1",
-//                                                    "avatar": http://avatar.com/user1,
-//                                                    "fullName": "Luismi López",
-//                                                    "createdAt": "27/09/2021 00:00:00"
-//                                                }
-//                                            """
-//                            )}
-//                    )}),
-//            @ApiResponse(responseCode = "401",
-//                    description = "No hay autenticación para editar el usuario",
-//                    content = @Content),
-//            @ApiResponse(responseCode = "400",
-//                    description = "Error en los datos del usuario",
-//                    content = @Content),
-//    })
-//    @JsonView({UserViews.Login.class})
-//    @PutMapping(value = "/admin/usuario/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//    public UserDto modificarDatosAdmin(@Valid @RequestPart("body") EditUserDto editUserDto, @PathVariable UUID id){
-////        User user = usuarioService.findUserById(id);
-//        User usuario = usuarioService.findUserProducts(id);
-//        usuarioService.edit(usuario.getId(), editUserDto);
-//        return UserDto.fromUser(usuario);
-//    }
-
-
     @Operation(summary = "Como administrador, elimina un usuario en base a su ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204",
@@ -260,6 +242,12 @@ public class UsuarioController {
                             schema = @Schema(implementation = User.class))}),
             @ApiResponse(responseCode = "404",
                     description = "No se encuentra un usuario con este ID",
+                    content = @Content),
+            @ApiResponse(responseCode = "401",
+                    description = "El usuario no está loggeado",
+                    content = @Content),
+            @ApiResponse(responseCode = "403",
+                    description = "Sesión expirada o acceso restringido",
                     content = @Content),
     })
     @DeleteMapping("/admin/usuario/{id}")

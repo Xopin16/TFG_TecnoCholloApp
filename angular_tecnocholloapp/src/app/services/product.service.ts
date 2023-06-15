@@ -44,13 +44,8 @@ export class ProductService {
     return this.http.post<Product>(`http://localhost:8080/product`, formData, {headers})
   }
 
-  putProduct(body: CreateProduct, id: number, file: File): Observable<Product>{
-    let formData = new FormData();
-    formData.append('body', new Blob([JSON.stringify(body)], {
-      type: "application/json",
-    }));
-    formData.append('file', file, file.name);
-    return this.http.put<Product>(`http://localhost:8080/usuario/product/${id}`, formData, {headers})
+  putProduct(product: CreateProduct, id: number): Observable<Product>{
+    return this.http.put<Product>(`http://localhost:8080/admin/producto/${id}`, product, {headers})
   }
 
   deleteProduct(id: number): Observable<void>{

@@ -48,7 +48,13 @@ class VentaListItem extends StatelessWidget {
                 final lv = venta.lineasVenta?[index];
                 return ListTile(
                   title: Text(lv!.producto!.nombre),
-                  subtitle: Text('Precio: ${lv.producto!.precio}€'),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Precio: ${lv.producto!.precio}€'),
+                      Text('Cantidad: ${lv.cantidad}'),
+                    ],
+                  ),
                 );
               },
             ),

@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Category } from 'src/app/interfaces/category';
 
 @Component({
@@ -15,7 +16,8 @@ export class EditCategoryDialogComponent {
   })
 
   constructor(private dialogRef: MatDialogRef<EditCategoryDialogComponent>, 
-    @Inject(MAT_DIALOG_DATA) public data: Category) { 
+    @Inject(MAT_DIALOG_DATA) public data: Category,
+    private snackBar: MatSnackBar) { 
       this.editCategoryForm.patchValue(data);
     }
 
@@ -24,10 +26,18 @@ export class EditCategoryDialogComponent {
         nombre: this.editCategoryForm.value.nombre
       }
       this.dialogRef.close(updateCategory);
+      this.showSuccessMessage('Categoría guardada con éxito');
     }
   
     onCancel(): void {
       this.dialogRef.close();
+    }
+  
+    showSuccessMessage(message: string): void {
+      this.snackBar.open(message, 'Cerrar', {
+        duration: 3000,
+        panelClass: 'success-snackbar'
+      });
     }
   
 

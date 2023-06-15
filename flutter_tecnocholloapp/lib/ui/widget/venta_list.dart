@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tecnocholloapp/blocs/venta/venta_bloc.dart';
+import 'package:flutter_tecnocholloapp/blocs/venta/venta_event.dart';
 import 'package:flutter_tecnocholloapp/blocs/venta/venta_state.dart';
 import 'package:flutter_tecnocholloapp/ui/pages/no_ventas_page.dart';
 import 'package:flutter_tecnocholloapp/ui/widget/venta_list_item.dart';
@@ -37,7 +38,7 @@ class _VentaListState extends State<VentaList> {
             return ListView.builder(
               itemBuilder: (BuildContext context, int index) {
                 return index >= state.ventas.length
-                    ? Text("")
+                    ? null
                     : VentaListItem(
                         venta: state.ventas[index],
                       );
@@ -59,7 +60,7 @@ class _VentaListState extends State<VentaList> {
   }
 
   void _onScroll() {
-    if (_isBottom) context.read<CategoryBloc>().add(CategoryFetched());
+    if (_isBottom) context.read<VentaBloc>().add(VentaFetched());
   }
 
   bool get _isBottom {

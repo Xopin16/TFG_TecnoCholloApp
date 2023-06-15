@@ -81,6 +81,12 @@ public class CategoriaController {
             @ApiResponse(responseCode = "404",
                     description = "No se ha encontrado el listado de categorias",
                     content = @Content),
+            @ApiResponse(responseCode = "401",
+                    description = "El usuario no está loggeado",
+                    content = @Content),
+            @ApiResponse(responseCode = "403",
+                    description = "Sesión expirada o acceso restringido",
+                    content = @Content),
     })
     @GetMapping("/categoria/")
     public PageDto<CategoryDto> obtenerTodos(
@@ -135,6 +141,12 @@ public class CategoriaController {
             @ApiResponse(responseCode = "404",
                     description = "No se ha encontrado el listado de productos",
                     content = @Content),
+            @ApiResponse(responseCode = "401",
+                    description = "El usuario no está loggeado",
+                    content = @Content),
+            @ApiResponse(responseCode = "403",
+                    description = "Sesión expirada o acceso restringido",
+                    content = @Content),
     })
     @GetMapping("/categoria/producto/{id}")
     public PageDto<ProductDto> obtenerProductosCategoria(
@@ -165,6 +177,12 @@ public class CategoriaController {
             @ApiResponse(responseCode = "404",
                     description = "No se ha encontrado una categoria con este ID",
                     content = @Content),
+            @ApiResponse(responseCode = "401",
+                    description = "El usuario no está loggeado",
+                    content = @Content),
+            @ApiResponse(responseCode = "403",
+                    description = "Sesión expirada o acceso restringido",
+                    content = @Content),
     })
     @GetMapping("/categoria/{id}")
     public CategoryDto obtenerUno(@Valid @PathVariable Long id) {
@@ -191,6 +209,12 @@ public class CategoriaController {
                     )}),
             @ApiResponse(responseCode = "400",
                     description = "Error en los datos de la categoria",
+                    content = @Content),
+            @ApiResponse(responseCode = "401",
+                    description = "El usuario no está loggeado",
+                    content = @Content),
+            @ApiResponse(responseCode = "403",
+                    description = "Sesión expirada o acceso restringido",
                     content = @Content),
     })
     @PostMapping("/admin/categoria/")
@@ -229,6 +253,12 @@ public class CategoriaController {
             @ApiResponse(responseCode = "404",
                     description = "Error en los datos de la categoria",
                     content = @Content),
+            @ApiResponse(responseCode = "401",
+                    description = "El usuario no está loggeado",
+                    content = @Content),
+            @ApiResponse(responseCode = "403",
+                    description = "Sesión expirada o acceso restringido",
+                    content = @Content),
     })
     @PutMapping("/admin/categoria/{id}")
     public CategoryDto editarCategoria(@Valid @RequestBody CategoryDto categoryDto, @PathVariable Long id) {
@@ -245,6 +275,12 @@ public class CategoriaController {
                             schema = @Schema(implementation = Category.class))}),
             @ApiResponse(responseCode = "404",
                     description = "No se encuentra una categoria con este ID",
+                    content = @Content),
+            @ApiResponse(responseCode = "401",
+                    description = "El usuario no está loggeado",
+                    content = @Content),
+            @ApiResponse(responseCode = "403",
+                    description = "Sesión expirada o acceso restringido",
                     content = @Content),
     })
     @DeleteMapping("/admin/categoria/{id}")

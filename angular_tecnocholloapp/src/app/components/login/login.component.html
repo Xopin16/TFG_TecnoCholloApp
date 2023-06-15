@@ -68,6 +68,11 @@
           >
             Login failed: {{ errorMessage }}
           </div>
+          <div class="alert alert-danger"
+          role="alert" 
+          *ngIf="!isAuthorized">
+              No está autorizado para entrar a la web
+          </div>
         </div>
       </form>
     </div>

@@ -45,21 +45,7 @@ class _DetailsListItemState extends State<DetailsListItem> {
       appBar: AppBar(
         title: Text('DETALLES'),
         backgroundColor: Color.fromARGB(211, 244, 67, 54),
-        // actions: [
-        //   IconButton(
-        //     icon: const Icon(Icons.shopping_basket),
-        //     tooltip: 'Show Snackbar',
-        //     onPressed: () {
-        //       ScaffoldMessenger.of(context).showSnackBar(
-        //           const SnackBar(content: Text('This is a snackbar')));
-        //     },
-        //   ),
-        // ],
       ),
-      floatingActionButton: FloatingActionButton(
-          onPressed: () {},
-          backgroundColor: Colors.green,
-          child: const Icon(Icons.favorite)),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -140,20 +126,34 @@ class _DetailsListItemState extends State<DetailsListItem> {
               "${widget.details.precio}" + "€",
               style: textTheme.bodySmall,
             ),
-            // SizedBox(
-            //   height: 16.0,
-            // ),
-            // Text(
-            //   "Fecha de publicación:",
-            //   style: textTheme.titleSmall,
-            // ),
-            // SizedBox(
-            //   height: 8.0,
-            // ),
-            // Text(
-            //   "${details.fechaPublicacion}",
-            //   style: textTheme.bodySmall,
-            // ),
+            SizedBox(
+              height: 16.0,
+            ),
+            Text(
+              "Fecha de publicación:",
+              style: textTheme.titleSmall,
+            ),
+            SizedBox(
+              height: 8.0,
+            ),
+            Text(
+              "${widget.details.fechaPublicacion}",
+              style: textTheme.bodySmall,
+            ),
+            SizedBox(
+              height: 16.0,
+            ),
+            Text(
+              "Cantidad:",
+              style: textTheme.titleSmall,
+            ),
+            SizedBox(
+              height: 8.0,
+            ),
+            Text(
+              "${widget.details.cantidad}",
+              style: textTheme.bodySmall,
+            ),
             SizedBox(
               height: 16.0,
             ),

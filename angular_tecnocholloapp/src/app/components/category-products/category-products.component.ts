@@ -75,9 +75,8 @@ export class CategoryProductsComponent implements OnInit {
   
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
-          const body = result.body;
-          const file = result.file;
-          this.productService.putProduct(body, id, file).subscribe(() => {
+          const product = result;
+          this.productService.putProduct(product, id).subscribe(() => {
             window.location.reload()
           });
         }

@@ -192,22 +192,6 @@ class __SignInFormState extends State<_SignInForm> {
                         ),
                       ),
                     ),
-                    // TextButton(
-                    //   onPressed: () {
-                    //     Navigator.push(
-                    //       context,
-                    //       MaterialPageRoute(
-                    //         builder: (_) => RegisterAdminForm(),
-                    //       ),
-                    //     );
-                    //   },
-                    //   child: Text(
-                    //     'Regístrate como administrador.',
-                    //     style: TextStyle(
-                    //       color: Colors.grey[800],
-                    //     ),
-                    //   ),
-                    // )
                   ],
                 ),
               ),

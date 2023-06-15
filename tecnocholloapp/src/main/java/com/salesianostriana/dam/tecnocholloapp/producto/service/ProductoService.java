@@ -105,6 +105,7 @@ public class ProductoService {
                     producto.setNombre(productDto.getNombre());
                     producto.setPrecio(productDto.getPrecio());
                     producto.setDescripcion(productDto.getDescripcion());
+                    producto.setCantidad(productDto.getCantidad());
                     return productoRepository.save(producto);
                 }).orElseThrow(ProductNotFoundException::new);
     }
@@ -165,15 +166,14 @@ public class ProductoService {
 
     public void removeFavorito(Long id, User user) {
         Product product = findById(id);
-//        product.setInFav(false);
-        user.deleteFavorito(product);
-        productoRepository.save(product);
-        usuarioService.save(user);
-//        if (productoRepository.existsById(id)) {
-//            user.deleteFavorito(product);
-//        } else {
-//            throw new ProductNotFoundException(id);
-//        }
+        if(user.getFavoritos().contains(product)){
+            user.deleteFavorito(product);
+            productoRepository.save(product);
+            usuarioService.save(user);
+        }else{
+            throw new ProductNotFoundException(id);
+        }
+
     }
     public PageDto<ProductDto> paginarFavoritos(User user, Pageable pageable) {
 //        List<ProductDto> favoritos = user.getFavoritos().stream().map(ProductDto::fromProduct).toList();

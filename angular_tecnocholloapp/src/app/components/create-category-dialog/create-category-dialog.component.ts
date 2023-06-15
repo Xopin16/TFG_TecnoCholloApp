@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Category } from 'src/app/interfaces/category';
 import { CategoryService } from 'src/app/services/category.service';
 
@@ -15,7 +16,8 @@ export class CreateCategoryDialogComponent {
 
   constructor(private dialogRef: MatDialogRef<CreateCategoryDialogComponent>,
     private formBuilder: FormBuilder, private categoryService: CategoryService,
-    @Inject(MAT_DIALOG_DATA) public data: Category) {
+    @Inject(MAT_DIALOG_DATA) public data: Category,
+    private snackBar: MatSnackBar) {
       this.createCategoryForm = this.formBuilder.group({
         nombre: ['', Validators.required]
       });
@@ -35,10 +37,18 @@ export class CreateCategoryDialogComponent {
       };
   
       this.dialogRef.close(categoryData);
+      this.showSuccessMessage('Producto guardado con éxito');
     }
   
     onCancel(): void {
       this.dialogRef.close();
+    }
+  
+    showSuccessMessage(message: string): void {
+      this.snackBar.open(message, 'Cerrar', {
+        duration: 3000,
+        panelClass: 'success-snackbar'
+      });
     }
 
 

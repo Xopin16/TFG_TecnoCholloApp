@@ -43,7 +43,7 @@ public class Venta {
             precio += precioUnitario * cantidad;
         }
 
-        return precio;
+        return Math.round(precio * 100.0) / 100.0;
     }
 
 }

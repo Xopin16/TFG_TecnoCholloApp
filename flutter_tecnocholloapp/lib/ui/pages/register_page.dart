@@ -26,6 +26,22 @@ class LoginFormBloc extends FormBloc<String, String> {
     };
   }
 
+  Validator<String> _passwordValidator() {
+    return (String? password) {
+      if (password == null || password.isEmpty) {
+        return 'La contraseña es requerida';
+      }
+      bool hasUppercase = password.contains(RegExp(r'[A-Z]'));
+      bool hasSymbol = password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
+
+      if (!hasUppercase || !hasSymbol) {
+        return 'La contraseña debe contener al menos una letra mayúscula, un número y un símbolo';
+      }
+
+      return null;
+    };
+  }
+
   LoginFormBloc() {
     _authenticationService = getIt<JwtAuthenticationService>();
     addFieldBlocs(
@@ -38,6 +54,10 @@ class LoginFormBloc extends FormBloc<String, String> {
         fullName,
       ],
     );
+
+    password..addValidators([_passwordValidator()]);
+
+    verifyPassword..addValidators([_passwordValidator()]);
 
     password
       ..addValidators([_equalsPasswordsEmail(verifyPassword)])
@@ -158,8 +178,9 @@ class RegisterForm extends StatelessWidget {
                           Container(
                             padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
                             child: TextFieldBlocBuilder(
+                              obscureText: true,
                               textFieldBloc: registerFormBloc.password,
-                              keyboardType: TextInputType.emailAddress,
+                              keyboardType: TextInputType.visiblePassword,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(36),
@@ -191,8 +212,9 @@ class RegisterForm extends StatelessWidget {
                           Container(
                             padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
                             child: TextFieldBlocBuilder(
+                              obscureText: true,
                               textFieldBloc: registerFormBloc.verifyPassword,
-                              keyboardType: TextInputType.emailAddress,
+                              // keyboardType: TextInputType.visiblePassword,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(36),

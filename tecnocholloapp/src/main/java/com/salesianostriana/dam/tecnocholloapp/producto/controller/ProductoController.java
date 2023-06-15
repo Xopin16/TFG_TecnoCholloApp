@@ -52,7 +52,7 @@ public class ProductoController {
             @ApiResponse(responseCode = "200",
                     description = "Se ha encontrado un listado de productos",
                     content = {@Content(mediaType = "application/json",
-                            array = @ArraySchema(schema = @Schema(implementation = Product.class)),
+                            array = @ArraySchema(schema = @Schema(implementation = ProductDto.class)),
                             examples = {@ExampleObject(
                                     value = """                                                                                      
                                               {
@@ -100,6 +100,12 @@ public class ProductoController {
             @ApiResponse(responseCode = "404",
                     description = "No se ha encontrado el listado de productos",
                     content = @Content),
+            @ApiResponse(responseCode = "401",
+                    description = "El usuario no está loggeado",
+                    content = @Content),
+            @ApiResponse(responseCode = "403",
+                    description = "Sesión expirada o acceso restringido",
+                    content = @Content),
     })
     @GetMapping("/producto/")
     public PageDto<ProductDto> obtenerTodos(
@@ -117,7 +123,7 @@ public class ProductoController {
             @ApiResponse(responseCode = "200",
                     description = "Se ha encontrado el producto",
                     content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Product.class),
+                            schema = @Schema(implementation = ProductDto.class),
                             examples = {@ExampleObject(
                                     value = """
                                             {
@@ -135,6 +141,12 @@ public class ProductoController {
                     )}),
             @ApiResponse(responseCode = "404",
                     description = "No se ha encontrado el producto por el ID",
+                    content = @Content),
+            @ApiResponse(responseCode = "401",
+                    description = "El usuario no está loggeado",
+                    content = @Content),
+            @ApiResponse(responseCode = "403",
+                    description = "Sesión expirada o acceso restringido",
                     content = @Content),
     })
     @GetMapping("/producto/{id}")
@@ -197,6 +209,12 @@ public class ProductoController {
             @ApiResponse(responseCode = "401",
                     description = "No hay autenticación para ver los productos del usuario",
                     content = @Content),
+            @ApiResponse(responseCode = "401",
+                    description = "El usuario no está loggeado",
+                    content = @Content),
+            @ApiResponse(responseCode = "403",
+                    description = "Sesión expirada o acceso restringido",
+                    content = @Content),
     })
     @GetMapping("/usuario/producto/")
     public PageDto<ProductDto> mostrarMisChollos(
@@ -212,7 +230,7 @@ public class ProductoController {
             @ApiResponse(responseCode = "200",
                     description = "Se ha obtenido el usuario y sus publicaciones",
                     content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = UserDto.class),
+                            schema = @Schema(implementation = ProductDto.class),
                             examples = {@ExampleObject(
                                     value = """
                               {
@@ -260,8 +278,13 @@ public class ProductoController {
             @ApiResponse(responseCode = "401",
                     description = "No hay autenticación para ver los productos del usuario",
                     content = @Content),
+            @ApiResponse(responseCode = "401",
+                    description = "El usuario no está loggeado",
+                    content = @Content),
+            @ApiResponse(responseCode = "403",
+                    description = "Sesión expirada o acceso restringido",
+                    content = @Content),
     })
-//    @JsonView(UserViews.Productos.class)
     @GetMapping("/usuario/{id}/producto/")
     public PageDto<ProductDto> mostrarPublicaciones(
             @PageableDefault(size = 5, page = 0) Pageable pageable,
@@ -271,6 +294,37 @@ public class ProductoController {
     }
 
 
+    @Operation(summary = "Crea un nuevo producto")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201",
+                    description = "Se ha creado el producto",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ProductDto.class),
+                            examples = {@ExampleObject(
+                                    value = """
+                                            {
+                                                "id": 11,
+                                                "nombre": "Samsung Galaxy S21",
+                                                "precio": 799.99,
+                                                "descripcion": "El nuevo modelo de Samsung",
+                                                "imagen": "movil.jpg",
+                                                "fechaPublicacion": "2022-02-23",
+                                                "categoria": "Moviles",
+                                                "usuario": "mhoggins0"
+                                            }                                 
+                                            """
+                            )}
+                    )}),
+            @ApiResponse(responseCode = "400",
+                    description = "Error en los datos del producto",
+                    content = @Content),
+            @ApiResponse(responseCode = "401",
+                    description = "El usuario no está loggeado",
+                    content = @Content),
+            @ApiResponse(responseCode = "403",
+                    description = "Sesión expirada o acceso restringido",
+                    content = @Content),
+    })
     @PreAuthorize("isAuthenticated()")
     @PostMapping(value = "/product", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ProductDto>crearProducto(
@@ -297,7 +351,7 @@ public class ProductoController {
             @ApiResponse(responseCode = "201",
                     description = "Se ha editado el producto",
                     content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Product.class),
+                            schema = @Schema(implementation = ProductDto.class),
                             examples = {@ExampleObject(
                                     value = """
                                            {
@@ -319,6 +373,12 @@ public class ProductoController {
             @ApiResponse(responseCode = "404",
                     description = "No se ha podido encontrar el producto por su ID",
                     content = @Content),
+            @ApiResponse(responseCode = "401",
+                    description = "El usuario no está loggeado",
+                    content = @Content),
+            @ApiResponse(responseCode = "403",
+                    description = "Sesión expirada o acceso restringido",
+                    content = @Content),
     })
     @PreAuthorize("isAuthenticated()")
     @PutMapping(value = "/usuario/product/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -337,7 +397,7 @@ public class ProductoController {
             @ApiResponse(responseCode = "201",
                     description = "Se ha editado el producto",
                     content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Product.class),
+                            schema = @Schema(implementation = ProductDto.class),
                             examples = {@ExampleObject(
                                     value = """
                                             {
@@ -359,6 +419,12 @@ public class ProductoController {
             @ApiResponse(responseCode = "404",
                     description = "No se ha podido encontrar el producto por su ID",
                     content = @Content),
+            @ApiResponse(responseCode = "401",
+                    description = "El usuario no está loggeado",
+                    content = @Content),
+            @ApiResponse(responseCode = "403",
+                    description = "Sesión expirada o acceso restringido",
+                    content = @Content),
     })
     @PutMapping("/admin/producto/{id}")
     public CreateProductDto editarProductoAdmin(@Valid @RequestBody CreateProductDto productDto, @PathVariable Long id) {
@@ -371,9 +437,15 @@ public class ProductoController {
             @ApiResponse(responseCode = "204",
                     description = "El producto ha sido eliminado correctamente",
                     content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Product.class))}),
+                            schema = @Schema(implementation = ProductDto.class))}),
             @ApiResponse(responseCode = "404",
                     description = "No se encuentra un producto con este ID",
+                    content = @Content),
+            @ApiResponse(responseCode = "401",
+                    description = "El usuario no está loggeado",
+                    content = @Content),
+            @ApiResponse(responseCode = "403",
+                    description = "Sesión expirada o acceso restringido",
                     content = @Content),
     })
     @DeleteMapping("/admin/producto/{id}")
@@ -383,25 +455,20 @@ public class ProductoController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/upload/imagen/{id}")
-    public ProductDto create(
-            @RequestPart("file") MultipartFile file,
-            @PathVariable Long id,
-            @AuthenticationPrincipal User user
-    ) {
-        User usuario = usuarioService.findUserProducts(user.getId());
-        Product product = productoService.saveFile(id,file);
-        return ProductDto.fromProduct(product, usuario);
-    }
-
     @Operation(summary = "Elimina un producto del en base a su ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204",
                     description = "El producto ha sido eliminado correctamente",
                     content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Product.class))}),
+                            schema = @Schema(implementation = ProductDto.class))}),
             @ApiResponse(responseCode = "404",
                     description = "No se encuentra un producto con este ID",
+                    content = @Content),
+            @ApiResponse(responseCode = "401",
+                    description = "El usuario no está loggeado",
+                    content = @Content),
+            @ApiResponse(responseCode = "403",
+                    description = "Sesión expirada o acceso restringido",
                     content = @Content),
     })
     @DeleteMapping("/usuario/producto/{id}")
@@ -417,7 +484,7 @@ public class ProductoController {
             @ApiResponse(responseCode = "200",
                     description = "Se ha agregado el producto",
                     content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Product.class),
+                            schema = @Schema(implementation = ProductDto.class),
                             examples = {@ExampleObject(
                                     value = """
                                                                              
@@ -426,6 +493,12 @@ public class ProductoController {
                     )}),
             @ApiResponse(responseCode = "404",
                     description = "No se ha encontrado el producto por su ID",
+                    content = @Content),
+            @ApiResponse(responseCode = "401",
+                    description = "El usuario no está loggeado",
+                    content = @Content),
+            @ApiResponse(responseCode = "403",
+                    description = "Sesión expirada o acceso restringido",
                     content = @Content),
     })
     @PostMapping("/usuario/producto/{id}")
@@ -439,7 +512,7 @@ public class ProductoController {
             @ApiResponse(responseCode = "200",
                     description = "Se ha obtenido el usuario y sus favoritos",
                     content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = UserDto.class),
+                            schema = @Schema(implementation = ProductDto.class),
                             examples = {@ExampleObject(
                                     value = """
                                             {
@@ -478,17 +551,18 @@ public class ProductoController {
                             )}
                     )}),
             @ApiResponse(responseCode = "401",
-                    description = "No hay autenticación para ver los favoritos del usuario",
+                    description = "El usuario no está loggeado",
+                    content = @Content),
+            @ApiResponse(responseCode = "403",
+                    description = "Sesión expirada o acceso restringido",
                     content = @Content),
     })
-//    @JsonView(UserViews.Favoritos.class)
     @GetMapping("/usuario/favorito/")
     public PageDto<ProductDto> mostrarFavoritos(
             @PageableDefault(size = 5, page = 0) Pageable pageable,
             @AuthenticationPrincipal User user){
         User usuario = usuarioService.findUserFavoritos(user.getId());
         return productoService.paginarFavoritos(usuario, pageable);
-//        return usuario.getFavoritos().stream().map(ProductDto::fromProduct).toList();
     }
 
     @Operation(summary = "Elimina un favorito del en base a su ID")
@@ -496,9 +570,15 @@ public class ProductoController {
             @ApiResponse(responseCode = "204",
                     description = "El producto ha sido eliminado correctamente",
                     content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Product.class))}),
+                            schema = @Schema(implementation = ProductDto.class))}),
             @ApiResponse(responseCode = "404",
                     description = "No se encuentra un producto con este ID",
+                    content = @Content),
+            @ApiResponse(responseCode = "401",
+                    description = "El usuario no está loggeado",
+                    content = @Content),
+            @ApiResponse(responseCode = "403",
+                    description = "Sesión expirada o acceso restringido",
                     content = @Content),
     })
     @DeleteMapping("/usuario/favorito/{id}")

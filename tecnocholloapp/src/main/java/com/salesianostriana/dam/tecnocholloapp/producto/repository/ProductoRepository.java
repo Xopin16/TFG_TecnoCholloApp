@@ -31,6 +31,7 @@ public interface ProductoRepository extends JpaRepository<Product, Long>, JpaSpe
             select distinct p
             from Category c join c.products p
             where c.id = :id
+            and p.sent = false
             """)
     Page<Product> productosDeCategoria(Long id, Pageable pageable);
 

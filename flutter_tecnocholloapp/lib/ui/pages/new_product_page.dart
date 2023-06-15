@@ -27,7 +27,7 @@ class NewProductBloc extends FormBloc<String, String> {
     TextFieldBloc newProductBloc,
   ) {
     return (String? precio) {
-      if (double.parse(precio!) >= 0) {
+      if (double.parse(precio!) >= 1) {
         return null;
       }
       return 'La cantidad y el precio deben ser mayor que 0';

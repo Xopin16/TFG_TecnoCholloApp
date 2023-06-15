@@ -45,10 +45,9 @@ export class ProductDetailComponent implements OnInit {
       });
   
       dialogRef.afterClosed().subscribe(result => {
-        const updateProduct = result.body;
-        const file = result.file;
         if (result) {
-          this.productService.putProduct(updateProduct, id, file).subscribe(() => {
+          const product = result;
+          this.productService.putProduct(product, id).subscribe(() => {
             window.location.reload()
           });
         }
