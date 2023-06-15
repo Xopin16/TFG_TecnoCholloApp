@@ -1,0 +1,35 @@
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+}
+
+.venta-card {
+  margin: 16px;
+}
+
+.venta-title {
+  margin-bottom: 8px;
+}
+
+.venta-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 16px;
+}
+
+.column {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.column:first-child {
+  width: 40%;
+}
+
+.precio-final {
+  font-weight: bold;
+  margin-top: 16px;
+}

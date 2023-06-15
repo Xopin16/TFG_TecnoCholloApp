@@ -1,0 +1,10 @@
+<div class="container">
+  <img [src]="'http://localhost:8080/download/' + user.avatar" alt="Imagen de producto" height="200px">
+  <h1>{{user.fullName}}</h1>
+  <h2>{{user.username}}</h2>
+  <h4>Email: {{user.email}}</h4>
+  <h4>Fecha de creación: {{user.createdAt}}</h4>
+  <h4>Rol: {{user.role}}</h4>
+  <button mat-button mat-button (click)="openChangePasswordDialog()" style="background-color: lightgray; margin-bottom: 12px; border-radius: 2cap; border-color: black;">CAMBIAR CONTRASEÑA</button>
+  <button mat-button (click)="openDeleteAccountDialog()" style="background-color: red; border-radius: 2cap; border-color: black;">BORRAR CUENTA</button>
+</div>

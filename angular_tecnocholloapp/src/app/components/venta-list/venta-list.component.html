@@ -1,0 +1,29 @@
+<div class="container">
+  <mat-card *ngFor="let venta of historicoVentas" class="venta-card">
+    <h2 class="venta-title">VENTA</h2>
+    <div class="venta-info">
+      <h3>Usuario: {{ venta.usuario }}</h3>
+      <table class="venta-table">
+        <thead>
+          <tr>
+            <th class="column">Nombre</th>
+            <th class="column">Precio Unitario</th>
+            <th class="column">Cantidad</th>
+            <th class="column">Precio de Línea</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let lineaVenta of venta.lineasVenta">
+            <td class="column">{{ lineaVenta.producto.nombre }}</td>
+            <td class="column">{{ lineaVenta.producto.precio }}€</td>
+            <td class="column">{{ lineaVenta.cantidad }}</td>
+            <td class="column">{{ lineaVenta.producto.precio * lineaVenta.cantidad }}€</td>
+          </tr>
+        </tbody>
+      </table>
+      <h4 class="precio-final">Precio Final: {{ calcularPrecioFinal(venta.lineasVenta) }}€</h4>
+    </div>
+  </mat-card>
+</div>
+
+

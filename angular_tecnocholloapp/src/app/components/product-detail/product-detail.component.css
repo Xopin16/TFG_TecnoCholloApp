@@ -1,0 +1,48 @@
+.container {
+  display: flex;
+  margin-top: 64px;
+  margin-left: 100px;
+}
+
+/* .container > div {
+  flex: ;
+} */
+
+.container img {
+  height: 400px;
+  object-fit: contain;
+}
+
+.details {
+  margin-left: 100px;
+}
+
+h1 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+h3 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+p {
+  font-size: 16px;
+  margin-bottom: 16px;
+}
+
+.additional-info {
+  margin-top: 24px;
+}
+
+h4 {
+  font-size: 16px;
+  color: grey;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+  

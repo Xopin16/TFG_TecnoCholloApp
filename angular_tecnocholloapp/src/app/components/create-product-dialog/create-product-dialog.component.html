@@ -1,0 +1,39 @@
+<h2>Crear producto</h2>
+
+<form class="product-form">
+  <div class="form-group">
+    <label for="nombre">Nombre:</label>
+    <input type="text" name="nombre" [(ngModel)]="body.nombre" class="form-control">
+  </div>
+
+  <div class="form-group">
+    <label for="precio">Precio:</label>
+    <input type="number" name="precio" [(ngModel)]="body.precio" class="form-control">
+  </div>
+
+  <div class="form-group">
+    <label for="descripcion">Descripción:</label>
+    <input type="text" name="descripcion" [(ngModel)]="body.descripcion" class="form-control">
+  </div>
+
+  <div class="form-group">
+    <label for="cantidad">Cantidad:</label>
+    <input type="number" name="cantidad" [(ngModel)]="body.cantidad" class="form-control">
+  </div>
+
+  <div class="form-group">
+    <label>Categoría:</label>
+    <select [(ngModel)]="body.categoria" name="categoria" class="form-control">
+      <option *ngFor="let category of categories" [value]="category.nombre">{{ category.nombre }}</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <input type="file" (change)="selectFile($event)">
+  </div>
+
+  <div class="button-group">
+    <button type="submit" [disabled]="!body.nombre" (click)="onSubmit()" class="btn btn-primary">Guardar</button>
+    <button type="button" (click)="onCancel()" class="btn btn-secondary">Cancelar</button>
+  </div>
+</form>

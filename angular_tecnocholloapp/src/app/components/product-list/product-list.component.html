@@ -1,0 +1,64 @@
+<div class="table-container">
+  <div style="display: flex; flex-direction: row;">
+    <button mat-button class="add-product-button" (click)="openCreateProductDialog()">
+      AGREGAR PRODUCTO
+    </button>    
+    <form class="search-form" (ngSubmit)="searchProducts()" [formGroup]="searchForm">
+      <input type="text" placeholder="Buscar producto..." formControlName="searchTerm">
+      <button type="submit">Buscar</button>
+    </form>
+    
+  </div>
+  <table mat-table class="mat-elevation-z8" [dataSource]="products">
+    <ng-container matColumnDef="imagen">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let element" style="width: 100px;">
+        <img [src]="'http://localhost:8080/download/' + element.imagen" alt="Imagen de producto" style="width: 40px; height: 40px;">
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="nombre">
+      <th mat-header-cell *matHeaderCellDef> Nombre </th>
+      <td mat-cell *matCellDef="let element"> {{element.nombre}} </td>
+    </ng-container>
+    <ng-container matColumnDef="precio">
+      <th mat-header-cell *matHeaderCellDef> Precio </th>
+      <td mat-cell *matCellDef="let element"> {{element.precio}}€ </td>
+    </ng-container>
+    <ng-container matColumnDef="descripcion">
+      <th mat-header-cell *matHeaderCellDef> Descripcion </th>
+      <td mat-cell *matCellDef="let element"> {{element.descripcion }} </td>
+    </ng-container>
+    <ng-container matColumnDef="acciones">
+      <th mat-header-cell *matHeaderCellDef> Acciones </th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-icon-button (click)="openDeleteProductDialog(element.id)">
+          <mat-icon>delete</mat-icon>
+        </button>
+        <button mat-icon-button route (click)="openEditProductDialog(element.id)">
+          <mat-icon>edit</mat-icon>
+        </button>            
+        <button mat-icon-button route [routerLink]="['/product', element.id]">
+          <mat-icon>visibility</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+  <div class="contenido">
+    <button mat-raised-button (click)="getPage(currentPage - 1)">
+      <mat-icon aria-hidden="false" aria-label="Example thumbs up SVG icon"
+        >navigate_before</mat-icon
+      ></button
+    >&nbsp;
+    <div>
+      <button mat-raised-button>{{currentPage+1}}</button
+      >&nbsp;
+    </div>
+    <button mat-raised-button (click)="getPage(currentPage + 1)">
+      <mat-icon aria-hidden="false" aria-label="Example thumbs up SVG icon"
+        >navigate_next</mat-icon
+      ></button
+    >&nbsp;
+  </div>
+</div>
