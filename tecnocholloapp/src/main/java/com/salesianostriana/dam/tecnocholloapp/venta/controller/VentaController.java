@@ -1,8 +1,7 @@
 package com.salesianostriana.dam.tecnocholloapp.venta.controller;
 
-import com.salesianostriana.dam.tecnocholloapp.carrito.model.Carrito;
-import com.salesianostriana.dam.tecnocholloapp.carrito.service.CarritoService;
 import com.salesianostriana.dam.tecnocholloapp.producto.model.Product;
+import com.salesianostriana.dam.tecnocholloapp.producto.service.ProductoService;
 import com.salesianostriana.dam.tecnocholloapp.usuario.model.User;
 import com.salesianostriana.dam.tecnocholloapp.usuario.service.UsuarioService;
 import com.salesianostriana.dam.tecnocholloapp.venta.model.Venta;
@@ -25,27 +24,53 @@ public class VentaController {
 
     private final UsuarioService usuarioService;
 
+    private final ProductoService productoService;
+
+    @GetMapping("/usuario/cesta/")
+    public VentaDto mostrarCarrito(@AuthenticationPrincipal User user){
+        User usuario = usuarioService.findUserProducts(user.getId());
+        return ventaService.mostrarCarrito(usuario);
+    }
+
+    @GetMapping("/admin/historico/")
+    public List<VentaDto> mostrarHistorico(@AuthenticationPrincipal User user) {
+        User usuario = usuarioService.findUserProducts(user.getId());
+        return ventaService.obtenerHistoricoVentas(usuario);
+    }
+
+    @GetMapping("/usuario/historico/")
+    public List<VentaDto> mostrarVentasUsuario(@AuthenticationPrincipal User user) {
+        User usuario = usuarioService.findUserProducts(user.getId());
+        return ventaService.obtenerHistoricoUsuario(usuario);
+    }
+
     @PostMapping("/usuario/checkout/")
     public VentaDto finalizarCompra(@AuthenticationPrincipal User user){
         User usuario = usuarioService.findUserProducts(user.getId());
-        Venta venta = ventaService.finalizarCompra(usuario);
-        return VentaDto.of(venta);
+        return ventaService.finalizarCompra(usuario);
     }
 
-//    @GetMapping("/admin/historico/")
-//    public List<VentaDto> mostrarHistorico() {
-//        return ventaService.mostrarHistorico();
-//    }
-//
-//    @GetMapping("/usuario/historico/")
-//    public List<VentaDto> mostrarVentasUsuario(@AuthenticationPrincipal User user) {
-//        return ventaService.mostrarVentasUsuario(user);
-//    }
-//
-////    @GetMapping("/usuario/detalles/{id}")
-////    public VentaDto mostrarDetallesVenta(@PathVariable("id") Long id) {
-////        return ventaService.findById(id);
-////    }
-//
+    @PostMapping("/usuario/cesta/producto/{idProducto}")
+    public VentaDto agregarProducto(@AuthenticationPrincipal User user, @PathVariable Long idProducto) {
+        Product product = productoService.findById(idProducto);
+        User usuario = usuarioService.findUserProducts(user.getId());
+        return ventaService.agregarProductoAlCarrito(usuario, product);
+    }
+
+    @DeleteMapping("/usuario/cesta/{id}")
+    public ResponseEntity<?> borrarDelCarrito(@AuthenticationPrincipal User user, @PathVariable Long id){
+        ventaService.borrarLineaVentaDelCarrito(user, id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/admin/venta/{id}")
+    public ResponseEntity<?> borrarVentaDelHistorico(@AuthenticationPrincipal User user, @PathVariable Long id){
+        Optional<Venta> ventaOptional = ventaService.findById(id);
+        if(ventaOptional.isPresent()){
+            Venta venta = ventaOptional.get();
+            ventaService.borrarVenta(venta);
+        }
+        return ResponseEntity.noContent().build();
+    }
 
 }

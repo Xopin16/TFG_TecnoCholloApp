@@ -1,6 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../blocs/favorito/favorito_bloc.dart';
+import '../../blocs/favorito/favorito_event.dart';
 import '../../models/models.dart';
 
 class FavouriteListItem extends StatelessWidget {
@@ -15,7 +18,7 @@ class FavouriteListItem extends StatelessWidget {
     final imageSize = Size(imageWidth, imageWidth);
 
     return Card(
-      margin: const EdgeInsets.all(10),
+      margin: const EdgeInsets.all(30),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -27,7 +30,8 @@ class FavouriteListItem extends StatelessWidget {
               child: Image.network(
                 product.imagen == null
                     ? "https://m.media-amazon.com/images/I/71uwa0mHA8L._AC_SY450_.jpg"
-                    : "http://localhost:8080/download/${product.imagen}",
+                    : "http://10.0.2.2:8080/download/${product.imagen}",
+                // : "http://localhost:8080/download/${product.imagen}",
                 fit: BoxFit.cover,
                 width: imageWidth,
                 height: imageWidth,
@@ -58,12 +62,8 @@ class FavouriteListItem extends StatelessWidget {
             children: [
               IconButton(
                 onPressed: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (_) => DetailPage(id: product.id),
-                  //   ),
-                  // );
+                  BlocProvider.of<FavouriteBloc>(context)
+                    ..add(RemoveFavorite(product.id));
                 },
                 icon: Icon(Icons.delete),
               ),

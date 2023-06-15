@@ -1,9 +1,7 @@
 import 'package:bloc/bloc.dart';
 import '../../services/product_service.dart';
-import '../../services/services.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
-import '../product/product.dart';
 import 'favourite.dart';
 
 var contador = 0;
@@ -26,9 +24,9 @@ class FavouriteBloc extends Bloc<FavouriteEvent, FavouriteState> {
       _onFavouriteFetched,
       transformer: throttleDroppable(throttleDuration),
     );
-    // on<RemoveProduct>(
-    //   _onRemoveProduct,
-    // );
+    on<RemoveFavorite>(
+      _onRemoveFavorite,
+    );
   }
 
   Future<void> _onFavouriteFetched(
@@ -59,6 +57,18 @@ class FavouriteBloc extends Bloc<FavouriteEvent, FavouriteState> {
       ));
     } catch (_) {
       emit(state.copyWith(status: FavouriteStatus.failure));
+    }
+  }
+
+  void _onRemoveFavorite(
+    RemoveFavorite event,
+    Emitter<FavouriteState> emit,
+  ) async {
+    try {
+      await _productService.deleteFavorite(event.id);
+      emit(state.copyWith(status: FavouriteStatus.deleted));
+    } catch (_) {
+      emit(state.copyWith(status: FavouriteStatus.failDeleted));
     }
   }
 }

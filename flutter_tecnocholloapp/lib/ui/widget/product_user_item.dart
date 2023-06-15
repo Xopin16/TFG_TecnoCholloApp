@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_tecnocholloapp/blocs/productUser/product_user_event.dart';
 import '../../blocs/productUser/product_user.dart';
 import '../../models/models.dart';
 import '../pages/details_page.dart';
 import '../pages/edit_product_page.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class ProductUserListItem extends StatelessWidget {
   final Product product;
@@ -20,85 +20,96 @@ class ProductUserListItem extends StatelessWidget {
     final imageWidth = isMobile ? 60.0 : 100.0;
     final imageSize = Size(imageWidth, imageWidth);
 
-    return Card(
-      margin: const EdgeInsets.all(10),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(4.0),
-            child: SizedBox(
-              width: imageWidth,
-              height: imageWidth,
-              child: Image.network(
-                product.imagen == null
-                    ? "https://m.media-amazon.com/images/I/71uwa0mHA8L._AC_SY450_.jpg"
-                    : "http://localhost:8080/download/${product.imagen}",
-                fit: BoxFit.cover,
-                // width: imageWidth,
-                // height: imageWidth,
-              ),
+    return GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => DetailPage(id: product.id),
             ),
+          );
+        },
+        child: Slidable(
+          key: Key(product.id.toString()),
+          endActionPane: ActionPane(
+            motion: ScrollMotion(),
+            children: [
+              SlidableAction(
+                onPressed: (context) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => EditProductForm(
+                        id: product.id,
+                        user: user,
+                        product: product,
+                      ),
+                    ),
+                  );
+                },
+                backgroundColor: Color.fromARGB(255, 73, 121, 254),
+                foregroundColor: Colors.white,
+                icon: Icons.edit,
+                label: 'Editar',
+              ),
+              SlidableAction(
+                onPressed: (_) {
+                  dialog(context, product);
+                },
+                backgroundColor: Color.fromARGB(255, 189, 18, 18),
+                foregroundColor: Colors.white,
+                icon: Icons.delete,
+                label: 'Borrar',
+              ),
+            ],
           ),
-          SizedBox(width: 8),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          child: Card(
+            margin: const EdgeInsets.all(10),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
-                  "${utf8.decode(product.nombre.codeUnits)}",
-                  style: textTheme.titleLarge,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(4.0),
+                    child: SizedBox(
+                      width: imageWidth,
+                      height: imageWidth,
+                      child: Image.network(
+                        product.imagen == null
+                            ? "https://m.media-amazon.com/images/I/71uwa0mHA8L._AC_SY450_.jpg"
+                            : "http://10.0.2.2:8080/download/${product.imagen}",
+                        // : "http://localhost:8080/download/${product.imagen}",
+                        fit: BoxFit.cover,
+                        // width: imageWidth,
+                        // height: imageWidth,
+                      ),
+                    ),
+                  ),
                 ),
-                SizedBox(height: 4),
-                Text(
-                  "${product.precio}€",
-                  style: textTheme.titleMedium,
-                ),
-                SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        dialog(context, product);
-                      },
-                      icon: Icon(Icons.delete),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => DetailPage(id: product.id),
-                          ),
-                        );
-                      },
-                      icon: Icon(Icons.visibility),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => EditProductForm(
-                              id: product.id,
-                              user: user,
-                            ),
-                          ),
-                        );
-                      },
-                      icon: Icon(Icons.edit),
-                    ),
-                  ],
+                SizedBox(width: 8),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "${utf8.decode(product.nombre.codeUnits)}",
+                        style: textTheme.titleLarge,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        "${product.precio}€",
+                        style: textTheme.titleMedium,
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
           ),
-        ],
-      ),
-    );
+        ));
   }
 
   Future<void> dialog(BuildContext contexto, Product product) {

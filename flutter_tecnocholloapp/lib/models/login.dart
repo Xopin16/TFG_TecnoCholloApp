@@ -7,7 +7,7 @@ class LoginResponse {
   String? token;
   String? role;
   String? email;
-  // String? refreshToken;
+  String? refreshToken;
 
   LoginResponse(
       {this.id,
@@ -16,7 +16,7 @@ class LoginResponse {
       this.createdAt,
       this.avatar,
       this.token,
-      // this.refreshToken,
+      this.refreshToken,
       this.role,
       this.email});
 
@@ -27,7 +27,7 @@ class LoginResponse {
     createdAt = json['createdAt'];
     avatar = json['avatar'];
     token = json['token'];
-    // refreshToken = json['refreshToken'];
+    refreshToken = json['refreshToken'];
     role = json['role'];
     email = json['email'];
   }
@@ -40,7 +40,7 @@ class LoginResponse {
     data['createAt'] = createdAt;
     data['token'] = token;
     data['avatar'] = avatar;
-    // data['refreshToken'] = refreshToken;
+    data['refreshToken'] = refreshToken;
     data['email'] = email;
     data['roile'] = role;
     return data;

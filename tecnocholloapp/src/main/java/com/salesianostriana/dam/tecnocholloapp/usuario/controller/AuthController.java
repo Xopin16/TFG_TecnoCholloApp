@@ -2,6 +2,9 @@ package com.salesianostriana.dam.tecnocholloapp.usuario.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.salesianostriana.dam.tecnocholloapp.security.jwt.access.JwtProvider;
+import com.salesianostriana.dam.tecnocholloapp.security.jwt.refresh.RefreshToken;
+import com.salesianostriana.dam.tecnocholloapp.security.jwt.refresh.RefreshTokenRequest;
+import com.salesianostriana.dam.tecnocholloapp.security.jwt.refresh.RefreshTokenService;
 import com.salesianostriana.dam.tecnocholloapp.usuario.dto.*;
 import com.salesianostriana.dam.tecnocholloapp.usuario.model.User;
 import com.salesianostriana.dam.tecnocholloapp.usuario.service.UsuarioService;
@@ -24,6 +27,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 @RestController
@@ -33,6 +37,8 @@ public class AuthController {
     private final UsuarioService userService;
     private final AuthenticationManager authManager;
     private final JwtProvider jwtProvider;
+
+    private final RefreshTokenService refreshTokenService;
 
 
     @Operation(summary = "Registra un nuevo usuario en la aplicacion")
@@ -117,6 +123,7 @@ public class AuthController {
                     content = @Content),
     })
     @PostMapping("/auth/login")
+    @Transactional
     public ResponseEntity<UserDto> login(@Valid @RequestBody LoginUserDto loginUserDto) {
 
         Authentication authentication =
@@ -133,9 +140,30 @@ public class AuthController {
 
         User user = (User) authentication.getPrincipal();
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(UserDto.fromUserToJwt(user, token));
+        refreshTokenService.deleteByUser(user);
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
 
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(UserDto.fromUserToJwt(user, token, refreshToken.getToken()));
+
+    }
+    @PostMapping("/refreshtoken/")
+    @Transactional
+    public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
+        String refreshToken = refreshTokenRequest.getRefreshToken();
+
+        return refreshTokenService.findByToken(refreshToken)
+                .map(refreshTokenService::verify)
+                .map(RefreshToken::getUser)
+                .map(user -> {
+                    String token = jwtProvider.generateToken(user);
+                    refreshTokenService.deleteByUser(user);
+                    RefreshToken refreshToken2 = refreshTokenService.createRefreshToken(user);
+                    return ResponseEntity.status(HttpStatus.CREATED)
+                            .body(UserDto.fromUserToJwt(user, token, refreshToken2.getToken()));
+                })
+                .orElseThrow(() -> new RuntimeException("Refresh token not found"));
     }
 
     @Operation(summary = "Cambia la contraseña de un usuario")
@@ -163,10 +191,7 @@ public class AuthController {
     @PutMapping("/user/changePassword")
     public UserDto changePassword(@Valid @RequestBody UserPasswordDto userPasswordDto,
                                                   @AuthenticationPrincipal User loggedUser) {
-
-//        User modified = userService.editPassword(loggedUser.getId(), userPasswordDto.getNewPassword());
         return UserDto.fromUser(userService.editPassword(loggedUser, userPasswordDto));
-//        return ResponseEntity.ok(UserDto.fromUser(modified));
     }
 
 }

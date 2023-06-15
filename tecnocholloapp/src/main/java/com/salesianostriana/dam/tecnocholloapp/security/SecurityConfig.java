@@ -80,6 +80,7 @@ public class SecurityConfig {
                                 .antMatchers("/admin/**").hasRole("ADMIN")
                                 .antMatchers("/user/**").authenticated()
                                 .antMatchers("/auth/register/admin").hasRole("ADMIN")
+                                .antMatchers("/product").hasAnyRole("ADMIN", "USER")
                                 .anyRequest().authenticated();
 
 
@@ -94,7 +95,7 @@ public class SecurityConfig {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web -> web.ignoring().antMatchers("/h2-console/**", "/auth/register", "/auth/login", "/swagger-ui/**","/v3/api-docs/**","/download/**"));
+        return (web -> web.ignoring().antMatchers("/h2-console/**", "/auth/register", "/auth/register/admin", "/auth/login", "/swagger-ui/**","/v3/api-docs/**","/download/**"));
     }
 
 

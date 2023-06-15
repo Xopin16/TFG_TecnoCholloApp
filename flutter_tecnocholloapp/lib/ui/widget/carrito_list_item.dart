@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tecnocholloapp/config/locator.dart';
-import 'package:flutter_tecnocholloapp/services/venta_service.dart';
-import 'package:flutter_tecnocholloapp/ui/pages/home_page.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_tecnocholloapp/blocs/carrito/carrito_bloc.dart';
+import 'package:flutter_tecnocholloapp/blocs/carrito/carrito_event.dart';
 
 import '../../models/carrito.dart';
+import '../../models/venta.dart';
 
 class CarritoListItem extends StatelessWidget {
-  const CarritoListItem({super.key, required this.carrito});
-  final Carrito carrito;
+  const CarritoListItem({Key? key, required this.carrito}) : super(key: key);
+
+  final Venta carrito;
 
   @override
   Widget build(BuildContext context) {
@@ -18,128 +20,84 @@ class CarritoListItem extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Text(
-                'CESTA',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18.0,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Text(
+                  'CESTA',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18.0,
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: 16.0),
-            Table(
-              columnWidths: {
-                0: FlexColumnWidth(1),
-                1: FlexColumnWidth(2),
-                2: FlexColumnWidth(1),
-              },
-              children: [
-                TableRow(
-                  children: [
-                    TableCell(
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 16.0),
-                        child: Text(
-                          'Producto',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
+              SizedBox(height: 16.0),
+              ListView.separated(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: carrito.lineasVenta!.length,
+                separatorBuilder: (context, index) => Divider(),
+                itemBuilder: (context, index) {
+                  final lv = carrito.lineasVenta![index];
+                  return ListTile(
+                    title: Text(lv.producto!.nombre),
+                    subtitle: Text('${lv.producto!.precio}€'),
+                    trailing: IconButton(
+                      icon: Icon(Icons.delete),
+                      onPressed: () {
+                        BlocProvider.of<CarritoBloc>(context)
+                          ..add(RemoveCarrito(lv.producto!.id));
+                      },
                     ),
-                    TableCell(
-                      child: Padding(
-                        padding:
-                            const EdgeInsets.only(left: 40.0, bottom: 16.0),
-                        child: Text(
-                          'Precio',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                ...carrito.productos!.map((producto) {
-                  return TableRow(
-                    children: [
-                      TableCell(
-                        child: Text(producto.nombre),
-                      ),
-                      TableCell(
-                          child: Padding(
-                              padding: const EdgeInsets.only(left: 40.0),
-                              child: Text('${producto.precio}€'))),
-                    ],
                   );
-                }),
-              ],
-            ),
-            SizedBox(height: 16.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'TOTAL:',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                },
+              ),
+              SizedBox(height: 16.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'TOTAL:',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    '${carrito.precio}€',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: () {
+                  // final _ventaService = getIt<VentaService>();
+                  // _ventaService.checkout();
+                  BlocProvider.of<CarritoBloc>(context)..add(CarritoSold());
+                },
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(36.0),
+                  ),
+                  backgroundColor: Colors.lightGreen,
                 ),
-                Text(
-                  '1000€',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-            SizedBox(height: 16.0),
-            Padding(
-                padding: EdgeInsets.only(top: 48),
-                child: Center(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // final _ventaService = getIt<VentaService>();
-                      // _ventaService.checkout();
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (_) => VentasScreen(),
-                      //   ),
-                      // );
-                    },
-                    style: ButtonStyle(
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(36.0),
-                        ),
-                      ),
-                      backgroundColor: MaterialStateProperty.all<Color>(
-                        Colors.lightGreen,
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 4.0,
-                        horizontal: 8.0,
-                      ),
-                      child: Text(
-                        'FINALIZAR COMPRA',
-                        style: TextStyle(fontSize: 12.0, color: Colors.black),
-                      ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8.0,
+                    horizontal: 12.0,
+                  ),
+                  child: Center(
+                    child: Text(
+                      'FINALIZAR COMPRA',
+                      style: TextStyle(fontSize: 12.0, color: Colors.black),
                     ),
                   ),
-                )),
-          ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
-
-
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Center(
-  //     child: Text("${carrito.id}"),
-  //   );
-  // }
-

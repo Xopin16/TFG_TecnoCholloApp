@@ -51,6 +51,8 @@ public class UserDto {
     @JsonView(UserViews.Login.class)
     private String token;
 
+    private String refreshToken;
+
     public static UserDto fromUser(User user) {
 
         return UserDto.builder()
@@ -89,7 +91,7 @@ public class UserDto {
                 .build();
     }
 
-    public static UserDto fromUserToJwt(User user, String token){
+    public static UserDto fromUserToJwt(User user, String token, String refreshToken){
 
         return UserDto
                 .builder()
@@ -101,6 +103,7 @@ public class UserDto {
                 .role(user.getRoles().toString().replace("[", "").replace("]", ""))
                 .email(user.getEmail())
                 .token(token)
+                .refreshToken(refreshToken)
                 .build();
     }
 

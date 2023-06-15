@@ -22,6 +22,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -103,10 +104,11 @@ public class ProductoController {
     @GetMapping("/producto/")
     public PageDto<ProductDto> obtenerTodos(
             @RequestParam(value = "s", defaultValue = "") String search,
-            @PageableDefault(size = 10, page = 0) Pageable pageable) {
-
+            @PageableDefault(size = 10, page = 0) Pageable pageable,
+            @AuthenticationPrincipal User user) {
+        User usuario = usuarioService.findUserProducts(user.getId());
         List<SearchCriteria> params = SearchCriteriaExtractor.extractSearchCriteriaList(search);
-        return productoService.search(params, pageable);
+        return productoService.search(params, pageable, usuario);
     }
 
 
@@ -136,9 +138,10 @@ public class ProductoController {
                     content = @Content),
     })
     @GetMapping("/producto/{id}")
-    public ProductDto obtenerUno(@Valid @PathVariable Long id) {
+    public ProductDto obtenerUno(@Valid @PathVariable Long id, @AuthenticationPrincipal User user) {
         Product product = productoService.findById(id);
-        return ProductDto.fromProduct(product);
+        User usuario = usuarioService.findUserProducts(user.getId());
+        return ProductDto.fromProduct(product, usuario);
     }
 
         @Operation(summary = "Obtiene una los productos publicados del usuario autenticado")
@@ -197,7 +200,7 @@ public class ProductoController {
     })
     @GetMapping("/usuario/producto/")
     public PageDto<ProductDto> mostrarMisChollos(
-            @PageableDefault(size = 5, page = 0) Pageable pageable,
+            @PageableDefault(size = 10, page = 0) Pageable pageable,
             @AuthenticationPrincipal User user){
         User usuario = usuarioService.findUserProducts(user.getId());
         return productoService.paginarChollos(usuario, pageable);
@@ -267,45 +270,27 @@ public class ProductoController {
         return productoService.paginarChollos(usuario, pageable);
     }
 
-    @Operation(summary = "Agrega un nuevo producto")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201",
-                    description = "Se ha agregado el producto",
-                    content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Product.class),
-                            examples = {@ExampleObject(
-                                    value = """
-                                           {
-                                                "id": 11,
-                                                "nombre": "Samsung Galaxy S21",
-                                                "precio": 799.99,
-                                                "descripcion": "El nuevo modelo de Samsung",
-                                                "imagen": "movil.jpg",
-                                                "fechaPublicacion": "2022-02-23",
-                                                "categoria": "Moviles",
-                                                "usuario": "mhoggins0"
-                                            }                               
-                                            """
-                            )}
-                    )}),
-            @ApiResponse(responseCode = "400",
-                    description = "No se ha agregado",
-                    content = @Content),
-    })
-    @PostMapping("/usuario/producto/nuevo/{idCategoria}")
-    public ResponseEntity<CreateProductDto> nuevoProducto(@AuthenticationPrincipal User user, @Valid @RequestBody CreateProductDto productDto, @PathVariable Long idCategoria) {
-        Product created = productoService.save(user.getId(), productDto, idCategoria);
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping(value = "/product", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ProductDto>crearProducto(
+            @RequestPart("body") CreateProductDto productDto,
+            @AuthenticationPrincipal User user,
+            @RequestPart("file")MultipartFile file){
+
+        Product created = productoService.saveProduct(user.getId(), productDto, file);
+        User usuario = usuarioService.findUserProducts(user.getId());
 
         URI createdURI = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(created.getId()).toUri();
 
-
         return ResponseEntity
                 .created(createdURI)
-                .body(CreateProductDto.fromProducto(created));
+                .body(ProductDto.fromProduct(created, usuario));
     }
+
 
     @Operation(summary = "Edita un producto del usuario en base a su ID")
     @ApiResponses(value = {
@@ -336,10 +321,14 @@ public class ProductoController {
                     content = @Content),
     })
     @PreAuthorize("isAuthenticated()")
-    @PutMapping("/usuario/producto/{id}")
-    public CreateProductDto editarProducto(@Valid @RequestBody CreateProductDto productDto, @AuthenticationPrincipal User user , @PathVariable Long id) {
+    @PutMapping(value = "/usuario/product/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public CreateProductDto editarProducto(
+            @Valid @RequestPart("body") CreateProductDto productDto,
+            @AuthenticationPrincipal User user ,
+            @PathVariable Long id,
+            @RequestPart("file")MultipartFile file) {
         User usuario = usuarioService.findUserProducts(user.getId());
-        Product edit = productoService.editMiProduct(id, productDto, usuario);
+        Product edit = productoService.editMiProduct(id, productDto, usuario, file);
         return CreateProductDto.fromProducto(edit);
     }
 
@@ -397,10 +386,12 @@ public class ProductoController {
     @PostMapping("/upload/imagen/{id}")
     public ProductDto create(
             @RequestPart("file") MultipartFile file,
-            @PathVariable Long id
+            @PathVariable Long id,
+            @AuthenticationPrincipal User user
     ) {
+        User usuario = usuarioService.findUserProducts(user.getId());
         Product product = productoService.saveFile(id,file);
-        return ProductDto.fromProduct(product);
+        return ProductDto.fromProduct(product, usuario);
     }
 
     @Operation(summary = "Elimina un producto del en base a su ID")
@@ -440,14 +431,7 @@ public class ProductoController {
     @PostMapping("/usuario/producto/{id}")
     public ProductDto agregarFavoritos(@AuthenticationPrincipal User user, @PathVariable Long id){
         User usuario = usuarioService.findUserFavoritos(user.getId());
-        Product product = productoService.findById(id);
-//        product.addFavorito(product);
-        usuario.addFavorito(product);
-        productoRepository.save(product);
-        usuarioService.save(user);
-//        CreateProductDto dto = CreateProductDto.fromProducto(product);
-        //        productoService.add(productDto);
-        return ProductDto.fromProduct(product);
+        return productoService.agregarFavorito(usuario, id);
     }
 
     @Operation(summary = "Obtiene los productos favoritos del usuario autenticado")

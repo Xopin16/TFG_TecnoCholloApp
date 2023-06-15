@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Product } from 'src/app/interfaces/product';
 import { ProductService } from 'src/app/services/product.service';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
+import { EditProductDialogComponent } from '../edit-product-dialog/edit-product-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { DeleteProductDialogComponent } from '../delete-product-dialog/delete-product-dialog.component';
 
 @Component({
   selector: 'app-product-detail',
@@ -16,7 +19,8 @@ export class ProductDetailComponent implements OnInit {
   isLoggedIn = false;
   username?: string; 
 
-  constructor(private productService: ProductService, private route: ActivatedRoute, private tokenStorageService: TokenStorageService) { }
+  constructor(private productService: ProductService, private route: ActivatedRoute, 
+    private tokenStorageService: TokenStorageService, private dialog: MatDialog, private router: Router) { }
 
   ngOnInit(): void {
     this.isLoggedIn = !!this.tokenStorageService.getToken();
@@ -32,6 +36,48 @@ export class ProductDetailComponent implements OnInit {
       this.product = resp;
     })
   }
+
+  openEditProductDialog(id: number): void {
+    this.productService.getProductId(id).subscribe((product: Product) => {
+      const dialogRef = this.dialog.open(EditProductDialogComponent, {
+        width: '300px',
+        data: product
+      });
+  
+      dialogRef.afterClosed().subscribe(result => {
+        const updateProduct = result.body;
+        const file = result.file;
+        if (result) {
+          this.productService.putProduct(updateProduct, id, file).subscribe(() => {
+            window.location.reload()
+          });
+        }
+      });
+    });
+  }
+
+  openDeleteProductDialog(id: number): void{
+    const dialogRef = this.dialog.open(DeleteProductDialogComponent, {
+      width:'250px',
+      data: { id: id }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.productService.deleteProduct(result).subscribe(() => {
+          this.router.navigate(['/product']);
+        })
+      }
+    })
+  }
+  
+
+  // deleteProduct(id: number){
+  //   this.productService.deleteProduct(id).subscribe(() => {
+  //     this.products = this.products.filter((p) => p.id !== id);
+  //     window.location.reload();
+  //   })
+  // }
 
   logout(): void {
     this.tokenStorageService.signOut();

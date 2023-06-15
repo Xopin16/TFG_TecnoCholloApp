@@ -6,7 +6,7 @@ import '../../config/locator.dart';
 
 class NewCategoryBloc extends FormBloc<String, String> {
   late final CategoryService _categoryService;
-  final nombre = TextFieldBloc();
+  final nombre = TextFieldBloc(validators: [FieldBlocValidators.required]);
 
   // final showSuccessResponse = BooleanFieldBloc();
 

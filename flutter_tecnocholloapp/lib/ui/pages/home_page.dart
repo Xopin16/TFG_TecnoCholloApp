@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_tecnocholloapp/blocs/carrito/carrito_event.dart';
+import 'package:flutter_tecnocholloapp/blocs/venta/venta_bloc.dart';
+import 'package:flutter_tecnocholloapp/blocs/venta/venta_event.dart';
 import 'package:flutter_tecnocholloapp/config/locator.dart';
 import 'package:flutter_tecnocholloapp/repositories/repositories.dart';
-import 'package:flutter_tecnocholloapp/services/carrito_service.dart';
 import 'package:flutter_tecnocholloapp/services/category_service.dart';
 import 'package:flutter_tecnocholloapp/services/product_service.dart';
+import 'package:flutter_tecnocholloapp/services/venta_service.dart';
+import 'package:flutter_tecnocholloapp/ui/pages/edit_user_page.dart';
 import 'package:flutter_tecnocholloapp/ui/pages/login_page.dart';
 import 'package:flutter_tecnocholloapp/ui/widget/carrito_list.dart';
+import 'package:flutter_tecnocholloapp/ui/widget/venta_list.dart';
 import '../../blocs/blocs.dart';
-import '../../blocs/carrito/carrito_bloc.dart';
 import '../../blocs/category/category.dart';
-import '../../blocs/productUser/product_user.dart';
 import '../../models/user.dart';
 import '../widget/widget.dart';
+import 'change_password_page.dart';
 
 class HomePage extends StatefulWidget {
   final User user;
@@ -27,16 +29,22 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
   late final ProductRepository productRepository = ProductRepository();
-  late final int id;
+  late final int id = 0;
+  late final TextEditingController textEditingController =
+      TextEditingController();
 
   List<Widget> _pages(BuildContext context) => [
-        ChollosScreen(),
-        HomeScreen(
+        ChollosScreen(
+            id: id,
+            textEditingController: textEditingController,
+            homePage: this.widget),
+        // HomeScreen(
+        //   homePage: this.widget,
+        // ),
+        CategoryScreen(homePage: this.widget),
+        CarritoScreen(
           homePage: this.widget,
         ),
-        // FavouriteScreen(),
-        CategoryScreen(homePage: this.widget),
-        CarritoScreen(),
         VentasScreen(),
         ProfileScreen(
           homePage: this.widget,
@@ -47,11 +55,11 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('TECNOCHOLLOAPP'),
+        title: Center(child: Text('TECNOCHOLLOAPP')),
         backgroundColor: Color.fromARGB(211, 244, 67, 54),
       ),
       body: SafeArea(
-        minimum: const EdgeInsets.all(50),
+        minimum: const EdgeInsets.all(10),
         child: _pages(context)[_currentIndex],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -67,15 +75,11 @@ class _HomePageState extends State<HomePage> {
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: 'Chollos',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.local_mall),
-            label: 'Publicaciones',
+            label: 'Home',
           ),
           // BottomNavigationBarItem(
-          //   icon: Icon(Icons.favorite),
-          //   label: 'Favoritos',
+          //   icon: Icon(Icons.local_mall),
+          //   label: 'Publicaciones',
           // ),
           BottomNavigationBarItem(
             icon: Icon(Icons.category),
@@ -99,30 +103,36 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class HomeScreen extends StatelessWidget {
-  final HomePage homePage;
-  HomeScreen({super.key, required this.homePage});
+// class HomeScreen extends StatelessWidget {
+//   final HomePage homePage;
+//   HomeScreen({super.key, required this.homePage});
 
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return BlocProvider(
-          create: (context) {
-            final productService = getIt<ProductService>();
-            return ProductUserBloc(productService)..add(ProductUserFetched());
-          },
-          child: ProductUserList(
-            user: homePage.user,
-          ),
-        );
-      },
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return LayoutBuilder(
+//       builder: (context, constraints) {
+//         return BlocProvider(
+//           create: (context) {
+//             final productService = getIt<ProductService>();
+//             return ProductUserBloc(productService)..add(ProductUserFetched());
+//           },
+//           child: ProductUserList(
+//             user: homePage.user,
+//           ),
+//         );
+//       },
+//     );
+//   }
+// }
 
 class ChollosScreen extends StatelessWidget {
-  ChollosScreen();
+  final int id;
+  final TextEditingController textEditingController;
+  final HomePage homePage;
+  ChollosScreen(
+      {required this.id,
+      required this.textEditingController,
+      required this.homePage});
 
   @override
   Widget build(BuildContext context) {
@@ -131,23 +141,12 @@ class ChollosScreen extends StatelessWidget {
         final productService = getIt<ProductService>();
         return ProductBloc(productService)..add(ProductFetched());
       },
-      child: ProductList(),
+      child: ProductList(
+        homePage: this.homePage,
+      ),
     );
   }
 }
-
-// class FavouriteScreen extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return BlocProvider(
-//       create: (context) {
-//         final productService = getIt<ProductService>();
-//         return FavouriteBloc(productService)..add(FavouriteFetched());
-//       },
-//       child: FavouriteList(),
-//     );
-//   }
-// }
 
 class CategoryScreen extends StatelessWidget {
   final HomePage homePage;
@@ -167,14 +166,12 @@ class CategoryScreen extends StatelessWidget {
 }
 
 class CarritoScreen extends StatelessWidget {
+  final HomePage homePage;
+  const CarritoScreen({super.key, required this.homePage});
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) {
-        final carritoService = getIt<CarritoService>();
-        return CarritoBloc(carritoService)..add(CarritoFetched());
-      },
-      child: const CarritoList(),
+    return CarritoList(
+      user: homePage.user,
     );
   }
 }
@@ -182,7 +179,13 @@ class CarritoScreen extends StatelessWidget {
 class VentasScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text("AQUI VA EL HISTORICO DE VENTAS DEL USUARIO"));
+    return BlocProvider(
+      create: (context) {
+        final ventaService = getIt<VentaService>();
+        return VentaBloc(ventaService)..add(VentaFetched());
+      },
+      child: const VentaList(),
+    );
   }
 }
 
@@ -202,7 +205,8 @@ class ProfileScreen extends StatelessWidget {
       radius: isMobile ? 50 : 75,
       backgroundImage: NetworkImage(homePage.user.avatar == null
           ? "https://electronicssoftware.net/wp-content/uploads/user.png"
-          : "http://localhost:8080/download/${homePage.user.avatar}"),
+          : "http://10.0.2.2:8080/download/${homePage.user.avatar}"),
+      // : "http://localhost:8080/download/${homePage.user.avatar}"),
     );
 
     return SafeArea(
@@ -266,35 +270,35 @@ class ProfileScreen extends StatelessWidget {
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // SizedBox(
-                  //   height: isMobile ? 40 : 50,
-                  //   width: isMobile ? double.infinity : 150,
-                  //   child: ElevatedButton(
-                  //     style: ButtonStyle(
-                  //       backgroundColor: MaterialStateProperty.all<Color>(
-                  //           Color.fromARGB(210, 228, 222, 222)),
-                  //       shape:
-                  //           MaterialStateProperty.all<RoundedRectangleBorder>(
-                  //         RoundedRectangleBorder(
-                  //             borderRadius: BorderRadius.circular(20),
-                  //             side: BorderSide(color: Colors.black)),
-                  //       ),
-                  //     ),
-                  //     onPressed: () {
-                  //       Navigator.push(
-                  //         context,
-                  //         MaterialPageRoute(
-                  //           builder: (context) => PasswordPage(),
-                  //         ),
-                  //       );
-                  //     },
-                  //     child: Text(
-                  //       'Cambiar contraseña',
-                  //       style: TextStyle(fontSize: 16, color: Colors.black),
-                  //     ),
-                  //   ),
-                  // ),
-                  // SizedBox(height: isMobile ? 16 : 32),
+                  SizedBox(
+                    height: isMobile ? 40 : 50,
+                    width: isMobile ? double.infinity : 150,
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            Color.fromARGB(210, 228, 222, 222)),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                              side: BorderSide(color: Colors.black)),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PasswordPage(),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        'Cambiar contraseña',
+                        style: TextStyle(fontSize: 16, color: Colors.black),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: isMobile ? 16 : 32),
                   SizedBox(
                     height: isMobile ? 40 : 50,
                     width: isMobile ? double.infinity : 150,

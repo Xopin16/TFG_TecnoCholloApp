@@ -1,7 +1,9 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter_tecnocholloapp/services/localstorage_service.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import '../config/locator.dart';
+import '../models/edit_user.dart';
 import '../models/models.dart';
 import '../repositories/repositories.dart';
 
@@ -14,6 +16,7 @@ abstract class AuthenticationService {
   Future<LoginResponse> registerAdmin(String username, String password,
       String verifyPassword, String email, String verifyEmail, String fullName);
   Future<LoginResponse> changePassWord(UserPassword userPassword);
+  Future<LoginResponse> editUser(EditUser body, PlatformFile file);
   Future<void> deleteUser();
 }
 
@@ -22,15 +25,12 @@ abstract class AuthenticationService {
 @singleton
 class JwtAuthenticationService extends AuthenticationService {
   late AuthenticationRepository _authenticationRepository;
-  late LocalStorageService _localStorageService;
+  LocalStorageService _localStorageService = LocalStorageService();
   late UserRepository _userRepository;
 
   JwtAuthenticationService() {
     _authenticationRepository = getIt<AuthenticationRepository>();
     _userRepository = getIt<UserRepository>();
-    GetIt.I
-        .getAsync<LocalStorageService>()
-        .then((value) => _localStorageService = value);
   }
 
   @override
@@ -42,6 +42,13 @@ class JwtAuthenticationService extends AuthenticationService {
       return response;
     }
     return null;
+  }
+
+  @override
+  Future<LoginResponse> editUser(EditUser body, PlatformFile file) async {
+    String? token = _localStorageService.getFromDisk("user_token");
+    LoginResponse response = await _userRepository.editUser(body, file, token!);
+    return response;
   }
 
   @override
@@ -81,7 +88,6 @@ class JwtAuthenticationService extends AuthenticationService {
 
   @override
   Future<void> signOut() async {
-    print("borrando token");
     await _localStorageService.deleteFromDisk("user_token");
   }
 

@@ -1,51 +1,48 @@
-.sidenav-container {
-    height: 100%;
-  }
-  
-  .spacer {
-    flex: 1 1 auto;
-  }
-  
-  .username {
-    margin-left: 8px;
-  }
-  
-  .menu a{
-    font-weight: bold;
-    font-size: 8pt;
-  }
-  
-  .menu a .mat-icon{
-    color: grey;
-  }
-  
-  .search-field {
-    width: 120px;
-    font-size: 8pt;
-    border-radius: 20px;
-    margin-right: 64px;
-  }
-  
-  .mat-toolbar-row {
-    display: flex;
-    align-items: center;
-  }
-  
-  .mat-icon {
-    margin-right: 8px;
-  }
-  
-  .username {
-    margin-right: 8px;
-  }
-  
-  .container{
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 64px;
+.container {
+  display: flex;
+  margin-top: 64px;
+  margin-left: 100px;
 }
-  
+
+/* .container > div {
+  flex: ;
+} */
+
+.container img {
+  height: 400px;
+  object-fit: contain;
+}
+
+.details {
+  margin-left: 100px;
+}
+
+h1 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+h3 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+p {
+  font-size: 16px;
+  margin-bottom: 16px;
+}
+
+.additional-info {
+  margin-top: 24px;
+}
+
+h4 {
+  font-size: 16px;
+  color: grey;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
   

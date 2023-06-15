@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import '../../services/product_service.dart';
 import 'details.dart';
-import '../../services/services.dart';
 
 class DetailsBloc extends Bloc<DetailEvent, DetailState> {
   late ProductService _productService;

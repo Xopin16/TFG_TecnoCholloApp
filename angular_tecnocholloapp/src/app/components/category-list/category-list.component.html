@@ -1,104 +1,55 @@
-<mat-sidenav-container class="sidenav-container">
-  <mat-sidenav #sidenav mode="side" opened>
-    <mat-toolbar>
-      <img src="{{'assets/images/logotecnocholloapp.PNG'}}" alt="logo de la empresa" height="50px">
-    </mat-toolbar>
-    <mat-nav-list class="menu">
-      <a mat-list-item routerLink="/product">
-        <mat-icon>shopping_cart</mat-icon>
-        PRODUCTOS
-      </a>
-      <a mat-list-item routerLink="/category">
-        <mat-icon>category</mat-icon>
-        CATEGORIA
-      </a>
-      <!-- <a mat-list-item routerLink="/cart">
-        <mat-icon>shopping_basket</mat-icon>
-        CARRITO
-      </a> -->
-      <a mat-list-item routerLink="/user">
-        <mat-icon>account_circle</mat-icon>
-        USUARIOS
-      </a>
-      <a mat-list-item routerLink="/venta">
-        <mat-icon>monetization_on</mat-icon>
-        VENTAS
-      </a>
-      <a mat-list-item routerLink="/profile">
-        <mat-icon>account_circle</mat-icon>
-        PROFILE
-    </a>
-    </mat-nav-list>
-  </mat-sidenav>
-  <mat-sidenav-content>
-    <mat-toolbar color="warn">
-      <mat-toolbar-row>
-        <span class="spacer"></span>
-        <mat-form-field class="search-field">
-          <mat-icon matPrefix>search</mat-icon>
-          <input matInput placeholder="Buscar">
-        </mat-form-field>
-        <span *ngIf="isLoggedIn" class="username">{{username}}</span>
-        <button *ngIf="isLoggedIn" mat-icon-button (click)="logout()" routerLink="/login">
-          <mat-icon>exit_to_app</mat-icon>
-        </button>
-      </mat-toolbar-row>
-    </mat-toolbar>
-    <router-outlet></router-outlet>
-    <div class="table-container">
-      <button mat-button routerLink="/new-category" style="background-color: rgb(19, 192, 19); color: white; margin-bottom: 12px;">
-        AGREGAR CATEGORIA
-        <!-- <mat-icon>add</mat-icon> -->
-      </button>
-      <table mat-table class="mat-elevation-z8" [dataSource]="categories">
-        <!-- Position Column -->
-        <ng-container matColumnDef="imagen">
-          <th mat-header-cell *matHeaderCellDef></th>
-          <td mat-cell *matCellDef="let element" style="width: 8%;">
-            <img src="https://img.salamancartvaldia.es/simg/imgf/2016/09/fichero_160070_20160906.jpg" alt="Imagen categoria" style="width: 40px; height: 37px;">
-          </td>
-        </ng-container>
-      
-        <!-- Name Column -->
-        <ng-container matColumnDef="nombre">
-          <th mat-header-cell *matHeaderCellDef> Nombre </th>
-          <td mat-cell *matCellDef="let element" style="width: 78%;"> {{element.nombre}} </td>
-        </ng-container>
+<div class="table-container">
+  <button mat-button (click)="openCreateCategoryDialog()" style="background-color: rgb(19, 192, 19); color: white; margin-bottom: 12px;">
+    AGREGAR CATEGORIA
+    <!-- <mat-icon>add</mat-icon> -->
+  </button>
+  <table mat-table class="mat-elevation-z8" [dataSource]="categories">
+    <!-- Position Column -->
+    <ng-container matColumnDef="imagen">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let element" style="width: 8%;">
+        <img src="https://img.salamancartvaldia.es/simg/imgf/2016/09/fichero_160070_20160906.jpg" alt="Imagen categoria" style="width: 40px; height: 37px;">
+      </td>
+    </ng-container>
+  
+    <!-- Name Column -->
+    <ng-container matColumnDef="nombre">
+      <th mat-header-cell *matHeaderCellDef> Nombre </th>
+      <td mat-cell *matCellDef="let element" style="width: 78%;"> {{element.nombre}} </td>
+    </ng-container>
 
-        <ng-container matColumnDef="acciones">
-          <th mat-header-cell *matHeaderCellDef> Acciones </th>
-          <td mat-cell *matCellDef="let element">
-            <button mat-icon-button (click)="deleteCategory(element.id)">
-              <mat-icon>delete</mat-icon>
-            </button>
-            <button mat-icon-button route [routerLink]="['/edit-category', element.id]">
-              <mat-icon>edit</mat-icon>
-            </button>            
-            <button mat-icon-button route [routerLink]="['/category-product', element.id]">
-              <mat-icon>visibility</mat-icon>
-            </button>
-          </td>
-        </ng-container>
-      
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
-      <div class="contenido">
-        <button mat-raised-button (click)="getPage(currentPage - 1)">
-          <mat-icon aria-hidden="false" aria-label="Example thumbs up SVG icon"
-            >navigate_before</mat-icon
-          ></button
-        >&nbsp;
-        <div>
-          <button mat-raised-button>{{currentPage+1}}</button
-          >&nbsp;
-        </div>
-        <button mat-raised-button (click)="getPage(currentPage + 1)">
-          <mat-icon aria-hidden="false" aria-label="Example thumbs up SVG icon"
-            >navigate_next</mat-icon
-          ></button
-        >&nbsp;
-      </div>
+    <ng-container matColumnDef="acciones">
+      <th mat-header-cell *matHeaderCellDef> Acciones </th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-icon-button (click)="openDeleteCategoryDialog(element.id)">
+          <mat-icon>delete</mat-icon>
+        </button>
+        <button mat-icon-button (click)="openEditCategoryDialog(element.id)">
+          <mat-icon>edit</mat-icon>
+        </button>            
+        <button mat-icon-button route [routerLink]="['/category-product', element.id]">
+          <mat-icon>visibility</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+  
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+  <div class="contenido">
+    <button mat-raised-button (click)="getPage(currentPage - 1)">
+      <mat-icon aria-hidden="false" aria-label="Example thumbs up SVG icon"
+        >navigate_before</mat-icon
+      ></button
+    >&nbsp;
+    <div>
+      <button mat-raised-button>{{currentPage+1}}</button
+      >&nbsp;
     </div>
-  </mat-sidenav-content>
-</mat-sidenav-container>
+    <button mat-raised-button (click)="getPage(currentPage + 1)">
+      <mat-icon aria-hidden="false" aria-label="Example thumbs up SVG icon"
+        >navigate_next</mat-icon
+      ></button
+    >&nbsp;
+  </div>
+</div>

@@ -1,9 +1,7 @@
-import 'dart:math';
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:flutter_tecnocholloapp/blocs/category/category.dart';
-import 'package:flutter_tecnocholloapp/services/services.dart';
 
 import '../../services/category_service.dart';
 
@@ -76,16 +74,4 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
       emit(state.copyWith(status: CategoryStatus.failDeleted));
     }
   }
-
-  // Future<void> _onEditCategory(
-  //   EditCategory event,
-  //   Emitter<CategoryState> emit,
-  // ) async {
-  //   try {
-  //     await _categoryService.editCategory(event.id, event.nombre);
-  //     emit(state.copyWith(status: CategoryStatus.edited));
-  //   } catch (_) {
-  //     emit(state.copyWith(status: CategoryStatus.failEdited));
-  //   }
-  // }
 }

@@ -2,6 +2,7 @@ package com.salesianostriana.dam.tecnocholloapp.producto.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.salesianostriana.dam.tecnocholloapp.producto.model.Product;
+import com.salesianostriana.dam.tecnocholloapp.usuario.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,7 +14,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@JsonInclude(JsonInclude.Include.NON_NULL)
+//@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProductDto {
 
     private Long id;
@@ -32,7 +33,13 @@ public class ProductDto {
 
     private String usuario;
 
-    public static ProductDto fromProduct(Product p){
+    private int cantidad;
+
+    private boolean sent;
+
+    private boolean inFav;
+
+    public static ProductDto fromProduct(Product p, User user){
         return ProductDto
                 .builder()
                 .id(p.getId())
@@ -43,6 +50,9 @@ public class ProductDto {
                 .fechaPublicacion(p.getFechaPublicacion())
                 .categoria(p.getCategoria().getNombre())
                 .usuario(p.getUser().getUsername())
+                .cantidad(p.getCantidad())
+                .sent(p.isSent())
+                .inFav(user.getFavoritos().contains(p))
                 .build();
     }
 

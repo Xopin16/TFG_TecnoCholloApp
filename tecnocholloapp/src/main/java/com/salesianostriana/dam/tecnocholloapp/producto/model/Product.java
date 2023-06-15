@@ -1,6 +1,5 @@
 package com.salesianostriana.dam.tecnocholloapp.producto.model;
 
-import com.salesianostriana.dam.tecnocholloapp.carrito.model.Carrito;
 import com.salesianostriana.dam.tecnocholloapp.categoria.model.Category;
 import com.salesianostriana.dam.tecnocholloapp.usuario.model.User;
 import com.salesianostriana.dam.tecnocholloapp.venta.model.Venta;
@@ -36,6 +35,10 @@ public class Product {
     @Builder.Default
     private LocalDate fechaPublicacion = LocalDate.now();
 
+    private int cantidad;
+
+    private boolean sent = false;
+
     @ManyToOne
     @JoinColumn(name = "categoria_id", foreignKey = @ForeignKey(name ="FK_PRODUCTO_CATEGORIA"))
     private Category categoria;
@@ -44,8 +47,6 @@ public class Product {
     @JoinColumn(name = "usuario_id", foreignKey = @ForeignKey(name ="FK_PRODUCTO_USUARIO"))
     private User user;
 
-    @ManyToOne
-    private Carrito carrito;
 
     @ManyToOne
     private Venta venta;
@@ -65,11 +66,20 @@ public class Product {
         this.user.getFavoritos().remove(product);
     }
 
-    public Product(String nombre, double precio, String descripcion, String imagen, Category categoria) {
+    public Product(String nombre, double precio, String descripcion, String imagen, int cantidad, Category categoria) {
         this.nombre = nombre;
         this.precio = precio;
         this.descripcion = descripcion;
         this.imagen = imagen;
         this.categoria = categoria;
+    }
+
+    public Product(String nombre, double precio, String descripcion, String imagen, int cantidad) {
+        this.id = id;
+        this.nombre = nombre;
+        this.precio = precio;
+        this.descripcion = descripcion;
+        this.imagen = imagen;
+        this.cantidad = cantidad;
     }
 }

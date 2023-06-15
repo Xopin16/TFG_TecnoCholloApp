@@ -19,7 +19,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
@@ -92,13 +91,16 @@ public class UsuarioService {
         return usuarioRepository.findFirstByUsername(username);
     }
 
-    public User edit(UUID id, EditUserDto dto) {
-        return usuarioRepository.findById(id)
-                .map(u -> {
-                    u.setAvatar(dto.getAvatar());
-                    u.setFullName(dto.getFullName());
-                    return usuarioRepository.save(u);
-                }).orElseThrow(UserNotFoundException::new);
+    public User edit(UUID id, EditUserDto dto, MultipartFile file) {
+        String filename = storageService.store(file);
+        return usuarioRepository.findById(id).map(u-> {
+            if(dto.getEmail().equals(dto.getVerifyEmail())){
+                u.setEmail(dto.getEmail());
+                u.setAvatar(filename);
+            }
+            return usuarioRepository.save(u);
+        }).orElseThrow(UserNotFoundException::new);
+
     }
 
     public boolean passwordMatch(User user, String clearPassword) {
@@ -161,6 +163,10 @@ public class UsuarioService {
         return usuarioRepository.usuarioConProductos(id);
     }
 
+    @Transactional
+    public User findUserVentas(UUID id){
+        return usuarioRepository.usuarioConVentas(id);
+    }
     @Transactional
     public User findUserFavoritos(UUID id){
         return usuarioRepository.usuarioConFavoritos(id);

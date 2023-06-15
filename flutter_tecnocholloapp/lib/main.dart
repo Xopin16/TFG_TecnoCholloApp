@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tecnocholloapp/services/authentication_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'blocs/authentication/authentication.dart';
 import 'config/locator.dart';
@@ -11,6 +12,7 @@ void main() {
   //await SharedPreferences.getInstance();
   setupAsyncDependencies();
   configureDependencies();
+  SharedPreferences.setMockInitialValues({});
   //await getIt.allReady();
   // Bloc.observer = SimpleBlocObserver();
 

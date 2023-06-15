@@ -8,6 +8,8 @@ import com.salesianostriana.dam.tecnocholloapp.producto.dto.ProductDto;
 import com.salesianostriana.dam.tecnocholloapp.producto.service.ProductoService;
 import com.salesianostriana.dam.tecnocholloapp.search.util.SearchCriteria;
 import com.salesianostriana.dam.tecnocholloapp.search.util.SearchCriteriaExtractor;
+import com.salesianostriana.dam.tecnocholloapp.usuario.model.User;
+import com.salesianostriana.dam.tecnocholloapp.usuario.service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -19,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -34,6 +37,7 @@ public class CategoriaController {
 
     private final ProductoService productoService;
 
+    private final UsuarioService usuarioService;
     @Operation(summary = "Obtiene un listado de categorias")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -135,9 +139,11 @@ public class CategoriaController {
     @GetMapping("/categoria/producto/{id}")
     public PageDto<ProductDto> obtenerProductosCategoria(
             @PathVariable Long id,
-            @PageableDefault(size = 10, page = 0) Pageable pageable
+            @PageableDefault(size = 10, page = 0) Pageable pageable,
+            @AuthenticationPrincipal User user
     ){
-        return productoService.findProductsCategory(id, pageable);
+        User usuario = usuarioService.findUserProducts(user.getId());
+        return productoService.findProductsCategory(id, pageable, usuario);
     }
 
 

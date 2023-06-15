@@ -17,6 +17,7 @@ class AuthenticationBloc
     on<UserLoggedOut>(_onUserLoggedOut);
     on<SessionExpiredEvent>(_onSessionExpired);
     on<DeleteAccount>(_onDeleteAccount);
+    on<UserEdited>(_onUserEdited);
   }
 
   _onAppLoaded(
@@ -27,7 +28,6 @@ class AuthenticationBloc
     try {
       await Future.delayed(Duration(milliseconds: 500)); // a simulated delay
       final currentUser = await _authenticationService.getCurrentUser();
-
       if (currentUser != null) {
         emit(AuthenticationAuthenticated(user: currentUser));
       } else {
@@ -40,6 +40,19 @@ class AuthenticationBloc
       emit(AuthenticationFailure(
           message: 'An unknown error occurred: ${e.toString()}'));
     }
+  }
+
+  _onUserEdited(
+    UserEdited event,
+    Emitter<AuthenticationState> emit,
+  ) async {
+    // try {
+    await Future.delayed(Duration(milliseconds: 500)); // a simulated delay
+    final currentUser = await _authenticationService.getCurrentUser();
+    emit(UserEditedState(user: currentUser!));
+    // } catch (e) {
+
+    // }
   }
 
   _onUserLoggedIn(

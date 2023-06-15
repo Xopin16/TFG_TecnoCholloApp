@@ -2,6 +2,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { User, UserResponse } from '../interfaces/user';
 import { Observable } from 'rxjs';
+import { CreateUser } from '../interfaces/createUser';
+import { UserPassword } from '../interfaces/userPassword';
 
 const TOKEN = window.sessionStorage.getItem('auth-token');
 const headers = new HttpHeaders({
@@ -25,6 +27,14 @@ export class UserService {
 
   getUserById(id: string): Observable<User>{
     return this.http.get<User>(`http://localhost:8080/usuario/${id}`, {headers});
+  }
+
+  changePassword(userPassword: UserPassword): Observable<User>{
+    return this.http.put<User>(`http://localhost:8080/user/changePassword`, userPassword, {headers});
+  }
+
+  deleteAccount(): Observable<void>{
+    return this.http.delete<void>(`http://localhost:8080/usuario/`, {headers});
   }
 
   deleteUser(id: string): Observable<void>{

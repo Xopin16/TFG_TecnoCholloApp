@@ -6,3 +6,10 @@ abstract class CarritoEvent extends Equatable {
 }
 
 class CarritoFetched extends CarritoEvent {}
+
+class RemoveCarrito extends CarritoEvent {
+  RemoveCarrito(this.id);
+  final int id;
+}
+
+class CarritoSold extends CarritoEvent {}

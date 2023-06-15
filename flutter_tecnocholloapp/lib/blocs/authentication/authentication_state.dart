@@ -41,6 +41,14 @@ class SessionExpiredState extends AuthenticationFailure {
   List<Object> get props => [message];
 }
 
+class UserEditedState extends AuthenticationState {
+  final User user;
+  UserEditedState({required this.user});
+
+  @override
+  List<Object> get props => [user];
+}
+
 class UserDeletedState extends AuthenticationState {}
 
 class UserFailDeleteState extends AuthenticationState {}

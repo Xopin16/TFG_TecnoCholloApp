@@ -27,7 +27,8 @@ class _CategoryProductListState extends State<CategoryProductList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Lista de productos'),
+        title: Text('CATEGORÍAS'),
+        backgroundColor: Color.fromARGB(211, 244, 67, 54),
       ),
       body: BlocBuilder<CategoryProductBloc, CategoryProductState>(
         builder: (context, state) {
@@ -41,9 +42,8 @@ class _CategoryProductListState extends State<CategoryProductList> {
               }
               return ConstrainedBox(
                 constraints: BoxConstraints(
-                  minHeight: 0,
-                  maxHeight: MediaQuery.of(context).size.height * 0.8,
-                ),
+                    minHeight: 0,
+                    maxHeight: MediaQuery.of(context).size.height),
                 child: ListView.builder(
                   itemBuilder: (BuildContext context, int index) {
                     return index >= state.products.length

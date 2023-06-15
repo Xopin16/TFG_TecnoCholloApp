@@ -1,0 +1,13 @@
+<h2>Editar categoría</h2>
+
+<form [formGroup]="editCategoryForm" (ngSubmit)="onSave()" class="product-form">
+  <div class="form-group">
+    <label for="nombre">Nombre:</label>
+    <input type="text" id="nombre" formControlName="nombre" class="form-control">
+  </div>
+
+  <div class="button-group">
+    <button type="submit" [disabled]="editCategoryForm.invalid" class="btn btn-primary">Guardar</button>
+    <button type="button" (click)="onCancel()" class="btn btn-secondary">Cancelar</button>
+  </div>
+</form>

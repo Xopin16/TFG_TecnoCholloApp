@@ -1,9 +1,9 @@
 package com.salesianostriana.dam.tecnocholloapp.usuario.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.salesianostriana.dam.tecnocholloapp.carrito.model.Carrito;
 import com.salesianostriana.dam.tecnocholloapp.categoria.model.Category;
 import com.salesianostriana.dam.tecnocholloapp.producto.model.Product;
+import com.salesianostriana.dam.tecnocholloapp.venta.model.Venta;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NaturalId;
@@ -62,8 +62,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Product> products = new ArrayList<>();
 
-    @OneToOne
-    private Carrito carrito;
+    @OneToMany(mappedBy = "usuario")
+    @Builder.Default
+    private List<Venta> ventas = new ArrayList<>();
 
     @Builder.Default
     private boolean accountNonExpired = true;

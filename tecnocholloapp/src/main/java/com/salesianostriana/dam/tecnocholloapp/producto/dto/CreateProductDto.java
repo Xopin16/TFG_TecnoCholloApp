@@ -2,6 +2,7 @@ package com.salesianostriana.dam.tecnocholloapp.producto.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.salesianostriana.dam.tecnocholloapp.categoria.model.Category;
 import com.salesianostriana.dam.tecnocholloapp.producto.model.Product;
 import com.salesianostriana.dam.tecnocholloapp.usuario.dto.UserViews;
 import lombok.AllArgsConstructor;
@@ -34,20 +35,26 @@ public class CreateProductDto {
 
     private String categoria;
 
-//    @JsonView({UserViews.Productos.class, UserViews.Favoritos.class})
-//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-//    @Builder.Default
-//    private LocalDate fechaPublicacion = LocalDate.now();
+    @JsonView({UserViews.Productos.class, UserViews.Favoritos.class})
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    @Builder.Default
+    private LocalDate fechaPublicacion = LocalDate.now();
 
     private String imagen;
 
-    public static Product of(CreateProductDto dto){
+    private int cantidad;
+
+    public static Product of(Category category, CreateProductDto dto, String img){
         return Product
                 .builder()
                 .nombre(dto.nombre)
                 .precio(dto.precio)
                 .descripcion(dto.descripcion)
-//                .fechaPublicacion(dto.getFechaPublicacion())
+                .imagen(img)
+                .cantidad(dto.cantidad)
+                .fechaPublicacion(dto.getFechaPublicacion())
+                .sent(false)
+                .categoria(category)
                 .build();
     }
 
@@ -58,9 +65,10 @@ public class CreateProductDto {
                 .nombre(p.getNombre())
                 .precio(p.getPrecio())
                 .descripcion(p.getDescripcion())
-                .imagen("teclado.jpg")
+                .imagen(p.getImagen())
                 .categoria(p.getCategoria().getNombre())
-//                .fechaPublicacion(p.getFechaPublicacion())
+                .fechaPublicacion(p.getFechaPublicacion())
+                .cantidad(p.getCantidad())
                 .build();
     }
 

@@ -13,7 +13,7 @@ import java.util.UUID;
 
 public interface ProductoRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
     @Query("""
-            select new com.salesianostriana.dam.tecnocholloapp.producto.dto.CreateProductDto(p.id, p.nombre, p.precio, p.descripcion, c.nombre, p.imagen)
+            select new com.salesianostriana.dam.tecnocholloapp.producto.dto.CreateProductDto(p.id, p.nombre, p.precio, p.descripcion, c.nombre, p.fechaPublicacion, p.imagen, p.cantidad)
             from Product p left join Category c
             where id = :id
             """

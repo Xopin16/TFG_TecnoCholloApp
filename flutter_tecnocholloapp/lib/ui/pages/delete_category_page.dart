@@ -40,7 +40,7 @@ class _DeletedCategoryPageState extends State<DeletedCategoryPage> {
             ),
             const SizedBox(height: 10),
             const Text(
-              '¡CATEGORÍA BORRADA!',
+              '¡SE HA ELIMINADO DE FAVORITOS!',
               style: TextStyle(fontSize: 24, color: Colors.black),
               textAlign: TextAlign.center,
             ),

@@ -1,25 +1,32 @@
 // import { HTTP_INTERCEPTORS, HttpEvent } from '@angular/common/http';
 // import { Injectable } from '@angular/core';
 // import { HttpInterceptor, HttpHandler, HttpRequest } from '@angular/common/http';
-
-// import { TokenStorageService } from '../_services/token-storage.service';
 // import { Observable } from 'rxjs';
- 
-// const TOKEN_HEADER_KEY = 'Authorization';       
+
+// const TOKEN_HEADER_KEY = 'Authorization';
 
 // @Injectable()
 // export class AuthInterceptor implements HttpInterceptor {
-//   constructor(private token: TokenStorageService) { }
-
+//   constructor() { }
 //   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-//     let authReq = req;
-//     const token = this.token.getToken();
-//     if (token != null) {
-//       // for Spring Boot back-end
-//       authReq = req.clone({ headers: req.headers.set(TOKEN_HEADER_KEY, 'Bearer ' + token) });
+//     if (req.url != 'http://localhost:8080/auth/login') {
 
-//     }
-//     return next.handle(authReq);
+//       req = req.clone({
+//         setHeaders: {
+//           'Access-Control-Allow-Origin': 'http://localhost:4200',
+//           'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, PATCH, DELETE',
+//           'Access-Control-Allow-Headers': 'X-Requested-With, Content-Type, Authorization'
+//         }
+//       });
+
+//       let authReq = req;
+//       const token = localStorage.getItem('auth_token');
+//       if (token != null) {
+//         authReq = req.clone({ headers: req.headers.set(TOKEN_HEADER_KEY, 'Bearer ' + token) });
+//       }
+
+//       return next.handle(authReq);
+//     } return next.handle(req);
 //   }
 // }
 

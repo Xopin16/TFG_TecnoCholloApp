@@ -56,10 +56,6 @@ class _CategoryListState extends State<CategoryList> {
             return DeletedCategoryPage(user: widget.user);
           case CategoryStatus.failDeleted:
             return Text("Fallo al borrar");
-          // case CategoryStatus.edited:
-          //   return DeletedCategoryPage(user: widget.user);
-          // case CategoryStatus.failEdited:
-          //   return Text("Fallo al borrar");
         }
       },
     );

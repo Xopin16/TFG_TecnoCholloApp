@@ -10,13 +10,10 @@ import 'localstorage_service.dart';
 @singleton
 class CategoryService {
   late CategoryRepository _categoryRepository;
-  late LocalStorageService _localStorageService;
+  LocalStorageService _localStorageService = LocalStorageService();
 
   CategoryService() {
     _categoryRepository = getIt<CategoryRepository>();
-    GetIt.I
-        .getAsync<LocalStorageService>()
-        .then((value) => _localStorageService = value);
   }
 
   Future<CategoryResponse> getAllCategories(page) async {

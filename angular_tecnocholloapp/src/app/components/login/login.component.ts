@@ -15,18 +15,15 @@ export class LoginComponent implements OnInit {
   };
   isLoggedIn = false;
   isLoginFailed = false;
+  registrationComplete = false;
   errorMessage = '';
   roles: string[] = [];
 
   constructor(private authService: AuthService, private tokenStorage: TokenStorageService, private router: Router) { }
 
   ngOnInit(): void {
-    if (this.tokenStorage.getToken()) {
-      // var token = this.tokenStorage.getToken();
-      // console.log(token);
+    if (this.tokenStorage.getToken() && this.registrationComplete) {
       this.isLoggedIn = true;
-      //this.roles = this.tokenStorage.getUser().roles;
-      // this.roles = ['ROLE_USER'];
     }
   }
 
@@ -35,14 +32,11 @@ export class LoginComponent implements OnInit {
 
     this.authService.login(username, password).subscribe({
       next: data => {
-        //this.tokenStorage.saveToken(data.accessToken);
         this.tokenStorage.saveToken(data.token);
         this.tokenStorage.saveUser(data);
-
         this.isLoginFailed = false;
         this.isLoggedIn = true;
-        //this.roles = this.tokenStorage.getUser().roles;
-        // this.roles = ['ROLE_USER'];
+        this.registrationComplete = true;
         this.router.navigate(['/product']).then(() => {
           window.location.reload();
         });

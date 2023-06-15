@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Product } from 'src/app/interfaces/product';
 import { CategoryService } from 'src/app/services/category.service';
 import { ProductService } from 'src/app/services/product.service';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
+import { EditProductDialogComponent } from '../edit-product-dialog/edit-product-dialog.component';
+import { DeleteProductDialogComponent } from '../delete-product-dialog/delete-product-dialog.component';
 
 @Component({
   selector: 'app-category-products',
@@ -21,7 +24,7 @@ export class CategoryProductsComponent implements OnInit {
   currentPage = 0; 
 
   constructor(private categoryService: CategoryService, private tokenStorageService: TokenStorageService,
-    private router: Router, private route: ActivatedRoute, private productService: ProductService) { }
+    private router: Router, private route: ActivatedRoute, private productService: ProductService, private dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.isLoggedIn = !!this.tokenStorageService.getToken();
@@ -62,6 +65,40 @@ export class CategoryProductsComponent implements OnInit {
   logout(): void {
     this.tokenStorageService.signOut();
   }
+
+  openEditProductDialog(id: number): void {
+    this.productService.getProductId(id).subscribe((product: Product) => {
+      const dialogRef = this.dialog.open(EditProductDialogComponent, {
+        width: '300px',
+        data: product
+      });
+  
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          const body = result.body;
+          const file = result.file;
+          this.productService.putProduct(body, id, file).subscribe(() => {
+            window.location.reload()
+          });
+        }
+      });
+    });
+  }
+  
+
+  openDeleteProductDialog(id: number): void{
+    const dialogRef = this.dialog.open(DeleteProductDialogComponent, {
+      width:'250px',
+      data: { id: id }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.deleteProduct(result);
+      }
+    })
+  }
+  
 
   deleteProduct(id: number){
     this.productService.deleteProduct(id).subscribe(() => {

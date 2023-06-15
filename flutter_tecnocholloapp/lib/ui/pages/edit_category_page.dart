@@ -9,7 +9,7 @@ import 'home_page.dart';
 class EditCategoryBloc extends FormBloc<String, String> {
   late final CategoryService _categoryService;
   final int id;
-  final nombre = TextFieldBloc();
+  final nombre = TextFieldBloc(validators: [FieldBlocValidators.required]);
 
   EditCategoryBloc(this.id) {
     _categoryService = getIt<CategoryService>();

@@ -16,6 +16,28 @@ class PasswordBloc extends FormBloc<String, String> {
     validators: [FieldBlocValidators.required],
   );
 
+  Validator<String> _equalsPasswords(
+    TextFieldBloc changePasswordBloc,
+  ) {
+    return (String? password) {
+      if (password == changePasswordBloc.value) {
+        return null;
+      }
+      return 'Las contraseñas deben ser iguales';
+    };
+  }
+
+  Validator<String> _differentsPasswords(
+    TextFieldBloc changePasswordBloc,
+  ) {
+    return (String? password) {
+      if (password != changePasswordBloc.value) {
+        return null;
+      }
+      return 'Las contraseñas deben ser diferentes';
+    };
+  }
+
   PasswordBloc() {
     _authenticationService = getIt<JwtAuthenticationService>();
     addFieldBlocs(
@@ -25,18 +47,30 @@ class PasswordBloc extends FormBloc<String, String> {
         verifyNewPassword,
       ],
     );
+
+    verifyNewPassword
+      ..addValidators([_equalsPasswords(newPassword)])
+      ..subscribeToFieldBlocs([newPassword]);
+
+    newPassword
+      ..addValidators([_differentsPasswords(oldPassword)])
+      ..subscribeToFieldBlocs([oldPassword]);
+  }
+
+  Future<dynamic> changePassword() async {
+    return await _authenticationService.changePassWord(UserPassword(
+        oldPassword.value, newPassword.value, verifyNewPassword.value));
   }
 
   @override
   void onSubmitting() async {
     // await Future<void>.delayed(const Duration(seconds: 1));
-    try {
-      final result = await _authenticationService.changePassWord(UserPassword(
-          oldPassword.value, newPassword.value, verifyNewPassword.value));
+
+    changePassword().then((value) {
       emitSuccess();
-    } on Exception catch (_) {
+    }).catchError((error) {
       emitFailure();
-    }
+    });
   }
 }
 
@@ -53,7 +87,10 @@ class PasswordPage extends StatelessWidget {
 
           return Scaffold(
             resizeToAvoidBottomInset: false,
-            appBar: AppBar(title: const Text('Cambiar contraseña')),
+            appBar: AppBar(
+              title: const Text('CAMBIAR CONTRASEÑA'),
+              backgroundColor: Color.fromARGB(211, 244, 67, 54),
+            ),
             body: FormBlocListener<PasswordBloc, String, String>(
               onSubmitting: (context, state) {
                 LoadingDialog.show(context);
@@ -73,39 +110,101 @@ class PasswordPage extends StatelessWidget {
               },
               child: SingleChildScrollView(
                 physics: const ClampingScrollPhysics(),
-                child: AutofillGroup(
-                  child: Column(
-                    children: <Widget>[
-                      TextFieldBlocBuilder(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(32, 20, 2, 0),
+                      child: Text(
+                        'Contraseña',
+                        style: TextStyle(
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                      child: TextFieldBlocBuilder(
                         textFieldBloc: changePasswordBloc.oldPassword,
                         keyboardType: TextInputType.visiblePassword,
-                        decoration: const InputDecoration(
-                          labelText: 'Contraseña',
-                          prefixIcon: Icon(Icons.password),
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(36),
+                            borderSide: BorderSide(
+                              color: Colors.black,
+                            ),
+                          ),
                         ),
                       ),
-                      TextFieldBlocBuilder(
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(32, 2, 2, 0),
+                      child: Text(
+                        'Contraseña nueva',
+                        style: TextStyle(
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                      child: TextFieldBlocBuilder(
                         textFieldBloc: changePasswordBloc.newPassword,
                         keyboardType: TextInputType.visiblePassword,
-                        decoration: const InputDecoration(
-                          labelText: 'Contraseña',
-                          prefixIcon: Icon(Icons.password),
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(36),
+                            borderSide: BorderSide(
+                              color: Colors.black,
+                            ),
+                          ),
                         ),
                       ),
-                      TextFieldBlocBuilder(
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(32, 2, 2, 0),
+                      child: Text(
+                        'Verificación de contraseña',
+                        style: TextStyle(
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(16, 0, 16, 8),
+                      child: TextFieldBlocBuilder(
                         textFieldBloc: changePasswordBloc.verifyNewPassword,
                         keyboardType: TextInputType.visiblePassword,
-                        decoration: const InputDecoration(
-                          labelText: 'Verificación de contraseña',
-                          prefixIcon: Icon(Icons.password),
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(36),
+                            borderSide: BorderSide(
+                              color: Colors.black,
+                            ),
+                          ),
                         ),
                       ),
-                      ElevatedButton(
+                    ),
+                    Center(
+                      child: ElevatedButton(
                         onPressed: changePasswordBloc.submit,
                         child: const Text('GUARDAR'),
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              Color.fromARGB(211, 244, 67, 54)),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                        ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),

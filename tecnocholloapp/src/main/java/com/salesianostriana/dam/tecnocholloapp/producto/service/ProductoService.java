@@ -1,6 +1,8 @@
 package com.salesianostriana.dam.tecnocholloapp.producto.service;
 
+import com.salesianostriana.dam.tecnocholloapp.categoria.model.Category;
 import com.salesianostriana.dam.tecnocholloapp.categoria.service.CategoriaService;
+import com.salesianostriana.dam.tecnocholloapp.exception.CategoryNotFoundException;
 import com.salesianostriana.dam.tecnocholloapp.exception.ProductNotFoundException;
 import com.salesianostriana.dam.tecnocholloapp.file.StorageService;
 import com.salesianostriana.dam.tecnocholloapp.page.PageDto;
@@ -17,12 +19,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -36,6 +38,10 @@ public class ProductoService {
     private final CategoriaService categoriaService;
 
     private final StorageService storageService;
+
+    public Product edit(Product product){
+       return productoRepository.save(product);
+    }
 
     public List<Product> findAll() {
         List<Product> result = productoRepository.findAll();
@@ -52,25 +58,40 @@ public class ProductoService {
                 .orElseThrow(() -> new ProductNotFoundException(id));
     }
 
-    public Product save(UUID id, CreateProductDto productDto, Long idCategoria) {
+//    public Product save(UUID id, CreateProductDto productDto) {
+//        User user = usuarioService.findUserById(id);
+//        Product product = CreateProductDto.of(productDto);
+//        product.setCategoria(categoriaService.findById(idCategoria));
+//        product.setUser(user);
+////        product.setFechaPublicacion(productDto.getFechaPublicacion());
+//        user.addProduct(product);
+//        return productoRepository.save(product);
+//    }
+
+    @Transactional
+    public Product saveProduct(UUID id, CreateProductDto productDto, MultipartFile file){
         User user = usuarioService.findUserById(id);
-        Product product = CreateProductDto.of(productDto);
-        product.setCategoria(categoriaService.findById(idCategoria));
-        product.setUser(user);
-//        product.setFechaPublicacion(productDto.getFechaPublicacion());
-        user.addProduct(product);
-        return productoRepository.save(product);
+        String filename = storageService.store(file);
+        Optional<Category> categoryOptional = categoriaService.findByNombre(productDto.getCategoria());
+        if(categoryOptional.isPresent()){
+            Category category = categoryOptional.get();
+            Product product = CreateProductDto.of(category, productDto, filename);
+            product.setUser(user);
+            user.addProduct(product);
+            return productoRepository.save(product);
+        }
+        throw new CategoryNotFoundException();
     }
 
-    public Product add(CreateProductDto createProductDto) {
-        return productoRepository.save(CreateProductDto.of(createProductDto));
-    }
+//    public Product add(CreateProductDto createProductDto) {
+//        return productoRepository.save(CreateProductDto.of(createProductDto));
+//    }
 
-    public PageDto<ProductDto> search(List<SearchCriteria> params, Pageable pageable) {
+    public PageDto<ProductDto> search(List<SearchCriteria> params, Pageable pageable, User user) {
         ProductSpecificationBuilder productSpecificationBuilder =
                 new ProductSpecificationBuilder(params);
         Specification<Product> spec = productSpecificationBuilder.build();
-        Page<ProductDto> pageProductDto = productoRepository.findAll(spec, pageable).map(ProductDto::fromProduct);
+        Page<ProductDto> pageProductDto = productoRepository.findAll(spec, pageable).map(p-> ProductDto.fromProduct(p, user));
         if (!pageProductDto.isEmpty()) {
             return new PageDto<>(pageProductDto);
         } else {
@@ -88,12 +109,19 @@ public class ProductoService {
                 }).orElseThrow(ProductNotFoundException::new);
     }
 
-    public Product editMiProduct(Long id, CreateProductDto productDto, User user) {
+    public Product editMiProduct(Long id, CreateProductDto productDto, User user, MultipartFile file) {
+        String filename = storageService.store(file);
         Product product = findById(id);
-        product.setNombre(productDto.getNombre());
-        product.setPrecio(productDto.getPrecio());
-        product.setDescripcion(productDto.getDescripcion());
-        return productoRepository.save(product);
+        if(user.getProducts().contains(product)){
+            product.setNombre(productDto.getNombre());
+            product.setPrecio(productDto.getPrecio());
+            product.setDescripcion(productDto.getDescripcion());
+            product.setCantidad(productDto.getCantidad());
+            product.setImagen(filename);
+            return productoRepository.save(product);
+        }else{
+            throw new ProductNotFoundException();
+        }
     }
 
 
@@ -116,17 +144,8 @@ public class ProductoService {
         }
     }
 
-    public void removeFavorito(Long id, User user) {
-        Product product = findById(id);
-        if (productoRepository.existsById(id) && user.getFavoritos().contains(product)) {
-            user.deleteFavorito(product);
-        } else {
-            throw new ProductNotFoundException(id);
-        }
-    }
-
     public PageDto<ProductDto> paginarProductos(User user, Pageable pageable) {
-        List<ProductDto> productos = user.getProducts().stream().map(ProductDto::fromProduct).toList();
+        List<ProductDto> productos = user.getProducts().stream().map(p-> ProductDto.fromProduct(p, user)).toList();
         if (!productos.isEmpty()) {
             Page<ProductDto> pageProduct = new PageImpl<>(productos, pageable, productos.size());
             return new PageDto<>(pageProduct);
@@ -135,14 +154,35 @@ public class ProductoService {
         }
     }
 
+    public ProductDto agregarFavorito(User user, Long idProducto){
+        Product product = findById(idProducto);
+//        product.setInFav(true);
+        user.addFavorito(product);
+        productoRepository.save(product);
+        usuarioService.save(user);
+        return ProductDto.fromProduct(product, user);
+    }
+
+    public void removeFavorito(Long id, User user) {
+        Product product = findById(id);
+//        product.setInFav(false);
+        user.deleteFavorito(product);
+        productoRepository.save(product);
+        usuarioService.save(user);
+//        if (productoRepository.existsById(id)) {
+//            user.deleteFavorito(product);
+//        } else {
+//            throw new ProductNotFoundException(id);
+//        }
+    }
     public PageDto<ProductDto> paginarFavoritos(User user, Pageable pageable) {
 //        List<ProductDto> favoritos = user.getFavoritos().stream().map(ProductDto::fromProduct).toList();
-        Page<ProductDto> pageFavoritos = productoRepository.favoritosDeUnUsuario(user.getId(), pageable).map(ProductDto::fromProduct);
+        Page<ProductDto> pageFavoritos = productoRepository.favoritosDeUnUsuario(user.getId(), pageable).map(p-> ProductDto.fromProduct(p, user));
         return new PageDto<>(pageFavoritos);
     }
 
     public PageDto<ProductDto> paginarChollos(User user, Pageable pageable) {
-        Page<ProductDto> pageFavoritos = productoRepository.productConUser(user.getId(), pageable).map(ProductDto::fromProduct);
+        Page<ProductDto> pageFavoritos = productoRepository.productConUser(user.getId(), pageable).map(p-> ProductDto.fromProduct(p, user));
         return new PageDto<>(pageFavoritos);
     }
 
@@ -156,8 +196,8 @@ public class ProductoService {
     }
 
     @Transactional
-    public PageDto<ProductDto> findProductsCategory(Long id, Pageable pageable) {
-        Page<ProductDto> pageProductsCategory = productoRepository.productosDeCategoria(id, pageable).map(ProductDto::fromProduct);
+    public PageDto<ProductDto> findProductsCategory(Long id, Pageable pageable, User user) {
+        Page<ProductDto> pageProductsCategory = productoRepository.productosDeCategoria(id, pageable).map(p-> ProductDto.fromProduct(p, user));
         return new PageDto<>(pageProductsCategory);
     }
 

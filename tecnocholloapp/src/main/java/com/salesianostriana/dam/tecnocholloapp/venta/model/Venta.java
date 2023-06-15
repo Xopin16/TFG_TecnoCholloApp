@@ -1,7 +1,6 @@
 package com.salesianostriana.dam.tecnocholloapp.venta.model;
 
-import com.salesianostriana.dam.tecnocholloapp.carrito.model.Carrito;
-import com.salesianostriana.dam.tecnocholloapp.producto.model.Product;
+import com.salesianostriana.dam.tecnocholloapp.lineaVenta.model.LineaVenta;
 import com.salesianostriana.dam.tecnocholloapp.usuario.model.User;
 import lombok.*;
 
@@ -25,27 +24,26 @@ public class Venta {
 
     private LocalDate fechaVenta;
 
+    private boolean cart;
+
     @ManyToOne
-    private User user;
+    private User usuario;
 
-    @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL)
-    private List<Product> products = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "venta_id")
+    @Builder.Default
+    private List<LineaVenta> lineasVenta = new ArrayList<>();
 
-//    @Builder.Default
-//    @ToString.Exclude
-//    @EqualsAndHashCode.Exclude
-//    @OneToMany(mappedBy="venta", fetch = FetchType.EAGER)
-//    private List<LineaVenta> lista = new ArrayList<>();
+    public double calcularPrecioFinal() {
+        double precio = 0.0;
 
+        for (LineaVenta lineaVenta : lineasVenta) {
+            double precioUnitario = lineaVenta.getProducto().getPrecio();
+            int cantidad = lineaVenta.getCantidad();
+            precio += precioUnitario * cantidad;
+        }
 
-//    public Double calcularTotal(){
-//        return lista.stream()
-//                .mapToDouble(linea -> linea.getProducto().getPrecio() * linea.getCantidad())
-//                .sum();
-//    }
-//
-//    public void addLineaVenta(LineaVenta lineaVenta) {
-//        lineaVenta.setVenta(this);
-//        lista.add(lineaVenta);
-//    }
+        return precio;
+    }
+
 }
